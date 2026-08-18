@@ -1,0 +1,49 @@
+<?php
+class Order {
+    private PDO $db;
+    public function __construct() {
+        $this->db = Database::getInstance()->getConnection();
+    }
+    public function create(array $data): int|false {
+        $sql = "INSERT INTO orders (user_id, full_name, phone, address_line1, address_line2, city, governorate, zip_code, total_price, products) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($sql);
+        $success = $stmt->execute([
+            $data['user_id'] ?? null,
+            $data['full_name'],
+            $data['phone'],
+            $data['address_line1'],
+            $data['address_line2'] ?? null,
+            $data['city'],
+            $data['governorate'],
+            $data['zip_code'] ?? null,
+            $data['total_price'],
+            $data['products']
+        ]);
+        return $success ? (int)$this->db->lastInsertId() : false;
+    }
+
+    public function countAll(): int {
+        return (int)$this->db->query("SELECT COUNT(*) FROM orders")->fetchColumn();
+    }
+
+    public function getAll(): array {
+        $stmt = $this->db->query("SELECT * FROM orders ORDER BY created_at DESC");
+        return $stmt->fetchAll();
+    }
+
+    public function updateStatus(int $id, string $status): bool {
+        $stmt = $this->db->prepare("UPDATE orders SET status = ? WHERE id = ?");
+        return $stmt->execute([$status, $id]);
+    }
+
+    public function delete(int $id): bool {
+        $stmt = $this->db->prepare("DELETE FROM orders WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
+
+    public function getByUserId(int $userId): array {
+        $stmt = $this->db->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll();
+    }
+}

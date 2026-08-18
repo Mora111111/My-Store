@@ -1,0 +1,6 @@
+.git
+.cursorrules
+.editorconfig
+node_modules
+vendor
+*.sql
