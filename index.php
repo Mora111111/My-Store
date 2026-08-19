@@ -65,6 +65,8 @@ $router->add('POST', '/admin/messages/reply', 'AdminMessageController@reply');
 $router->add('GET', '/admin/comments', 'AdminCommentController@index');
 $router->add('POST', '/admin/comments/reply', 'AdminCommentController@reply');
 $router->add('GET', '/admin/comments/delete', 'AdminCommentController@delete');
+// ✅ المسار الجديد للزوار المتصلين
+$router->add('GET', '/admin/online-visitors', 'AdminController@onlineVisitors');
 $router->add('GET', '/product', 'ProductController@show');
 $router->add('POST', '/product', 'ProductController@show');
 $router->add('POST', '/contact', 'PageController@sendMessage');

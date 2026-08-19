@@ -192,7 +192,7 @@ require_once 'db.php';
             <li class="footer_li"><i class="fa-solid fa-phone footer-icon"></i><span>+201017******</span></li>
             <li class="footer_li"><i class="fa-solid fa-phone footer-icon"></i><span>+201034******</span></li>
             <li class="footer_li"><i class="fa-solid fa-envelope footer-icon"></i><span>MY-Store@gmail.com</span></li>
-            <li class="footer_li"><i class="fa-solid fa-location-dot footer-icon"></i><span>كفر الشيخ - مصر</span></li>
+            <li class="footer_li"><i class="fa-solid fa-location-dot footer-icon"></i><span>المحافظات - مصر</span></li>
         </ul>
       </div>
     </div>

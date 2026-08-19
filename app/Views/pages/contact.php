@@ -61,7 +61,7 @@
         </div>
         <div>
           <i class="fa-solid fa-location-dot footer-icon"></i>
-          <a href="#">كفر الشيخ - مصر</a>
+          <a href="#">المحافظات - مصر</a>
         </div>
       </div>
 

@@ -22,4 +22,15 @@ class AdminController {
         require_once APP_DIR . '/Views/admin/dashboard.php';
         require_once APP_DIR . '/Views/admin/layout_end.php';
     }
+
+    public function onlineVisitors() {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->query("SELECT * FROM online_users ORDER BY last_activity DESC");
+        $onlineUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $pageTitle = 'الزوار المتصلين';
+        $pageIcon = 'fa-globe';
+
+        require_once APP_DIR . '/Views/admin/online_visitors.php';
+    }
 }

@@ -313,7 +313,7 @@
 
             <i class="fa-solid fa-location-dot footer-icon"></i>
 
-            <span>كفر الشيخ - مصر</span>
+            <span>المحافظات - مصر</span>
 
           </li>
 
