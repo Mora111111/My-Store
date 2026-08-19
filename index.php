@@ -1,11 +1,12 @@
 <?php
-if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== 'zoro' || $_SERVER['PHP_AUTH_PW'] !== '654321') {
+ob_start();
+session_start();
+
+if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] !== 'zoro' || $_SERVER['PHP_AUTH_PW'] !== '654321') {
     header('WWW-Authenticate: Basic realm="Maintenance Mode"');
     header('HTTP/1.0 401 Unauthorized');
     die('<h2 style="text-align:center; margin-top:50px; font-family:sans-serif; direction:rtl;">الموقع تحت الصيانة مؤقتاً. جاري التحديث...</h2>');
 }
-ob_start();
-session_start();
 
 define('ROOT_DIR', __DIR__);
 define('APP_DIR', __DIR__ . '/app');
