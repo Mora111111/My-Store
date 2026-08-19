@@ -12,12 +12,15 @@ class Session {
         }
 
         $ip = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
+if (strpos($ip, ',') !== false) {
+    $ip = trim(explode(',', $ip)[0]);
+}
 
-        if ($ip === '127.0.0.1' || $ip === '::1' || empty($ip)) {
-            $location = ['ip' => $ip, 'country' => 'Localhost', 'city' => 'Localhost'];
-            $_SESSION['visitor_location'] = $location;
-            return $location;
-        }
+if ($ip === '127.0.0.1' || $ip === '::1' || empty($ip)) {
+    $location = ['ip' => $ip, 'country' => 'Localhost', 'city' => 'Localhost'];
+    $_SESSION['visitor_location'] = $location;
+    return $location;
+}
 
         $ctx = stream_context_create(['http' => ['timeout' => 2]]);
         $geoData = @file_get_contents("http://ip-api.com/json/{$ip}?fields=status,country,city", false, $ctx);

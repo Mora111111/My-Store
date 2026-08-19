@@ -3,13 +3,13 @@
 // تحديد المسار الحالي بدون query string
 $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); 
 
-// دالة لتحديد الرابط النشط بدقة
 function isActive($path) {
-    global $currentUri;
+    $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     if ($path === '/admin') {
         return ($currentUri === '/admin') ? 'active' : '';
     }
-    return (strpos($currentUri, $path) === 0) ? 'active' : '';
+    // يضمن التطابق التام أو التطابق مع مسار فرعي لنفس القسم
+    return ($currentUri === $path || strpos($currentUri, $path . '/') === 0) ? 'active' : '';
 }
 ?>
 <html lang="ar" dir="rtl">

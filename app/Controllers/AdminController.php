@@ -31,6 +31,8 @@ class AdminController {
         $pageTitle = 'الزوار المتصلين';
         $pageIcon = 'fa-globe';
 
+        require_once APP_DIR . '/Views/admin/layout_start.php';
         require_once APP_DIR . '/Views/admin/online_visitors.php';
+        require_once APP_DIR . '/Views/admin/layout_end.php';
     }
 }
