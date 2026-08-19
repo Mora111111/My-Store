@@ -39,4 +39,17 @@ class AdminMessageController {
         header('Location: /admin/messages');
         exit;
     }
+    public function delete(): void {
+        $messageModel = new Message();
+        $id = intval($_GET['id'] ?? 0);
+        $type = $_GET['type'] ?? 'contact';
+
+        if ($id > 0) {
+            $messageModel->deleteMessage($id, $type);
+            $_SESSION['toast_msg'] = 'تم حذف الرسالة بنجاح.';
+            $_SESSION['toast_type'] = 'success';
+        }
+        header('Location: /admin/messages');
+        exit;
+    }
 }
