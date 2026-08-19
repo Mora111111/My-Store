@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <?php 
-// ده كود بيعرفنا إحنا في أي صفحة حالياً
-$currentUri = $_SERVER['REQUEST_URI']; 
+// تحديد المسار الحالي بدون query string
+$currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); 
 
-// دالة بسيطة بتشوف هل الرابط ده هو اللي إحنا واقفين عليه ولا لا
+// دالة لتحديد الرابط النشط بدقة
 function isActive($path) {
     global $currentUri;
-    return (strpos($currentUri, $path) !== false) ? 'active' : '';
+    if ($path === '/admin') {
+        return ($currentUri === '/admin') ? 'active' : '';
+    }
+    return (strpos($currentUri, $path) === 0) ? 'active' : '';
 }
 ?>
 <html lang="ar" dir="rtl">
@@ -72,25 +75,28 @@ function isActive($path) {
 <body>
 <div class="sidebar">
     <h2>مدير المتجر</h2>
-    <a href="/admin" class="<?php echo ($currentUri === '/admin') ? 'active' : ''; ?>">
+    <a href="/admin" class="<?= isActive('/admin') ?>">
         <i class="fa-solid fa-house"></i><span>الرئيسية</span>
     </a>
-    <a href="/admin/products" class="<?php echo isActive('/admin/products'); ?>">
+    <a href="/admin/products" class="<?= isActive('/admin/products') ?>">
         <i class="fa-solid fa-box-open"></i><span>إدارة المنتجات</span>
     </a>
-    <a href="/admin/orders" class="<?php echo isActive('/admin/orders'); ?>">
+    <a href="/admin/orders" class="<?= isActive('/admin/orders') ?>">
         <i class="fa-solid fa-cart-shopping"></i><span>طلبات الشراء</span>
     </a>
-    <a href="/admin/messages" class="<?php echo isActive('/admin/messages'); ?>">
+    <a href="/admin/messages" class="<?= isActive('/admin/messages') ?>">
         <i class="fa-solid fa-envelope"></i><span>رسائل الزوار</span>
     </a>
-    <a href="/admin/comments" class="<?php echo isActive('/admin/comments'); ?>">
+    <a href="/admin/comments" class="<?= isActive('/admin/comments') ?>">
         <i class="fa-solid fa-comments"></i><span>تعليقات العملاء</span>
     </a>
-    <a href="/admin/users" class="<?php echo isActive('/admin/users'); ?>">
+    <a href="/admin/users" class="<?= isActive('/admin/users') ?>">
         <i class="fa-solid fa-users"></i><span>إدارة المستخدمين</span>
     </a>
-    <a href="/admin/settings" class="<?php echo isActive('/admin/settings'); ?>">
+    <a href="/admin/online-visitors" class="<?= isActive('/admin/online-visitors') ?>">
+        <i class="fa-solid fa-globe"></i><span>الزوار المتصلين</span>
+    </a>
+    <a href="/admin/settings" class="<?= isActive('/admin/settings') ?>">
         <i class="fa-solid fa-gear"></i><span>الإعدادات</span>
     </a>
   </div>
