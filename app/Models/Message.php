@@ -39,4 +39,12 @@ class Message {
         $stmt = $this->db->prepare("INSERT INTO contact_messages (first_name, last_name, phone, email, message) VALUES (?, ?, ?, ?, ?)");
         return $stmt->execute([$data['first_name'], $data['last_name'], $data['phone'], $data['email'], $data['message']]);
     }
+    public function deleteMessage(int $id, string $type): bool {
+        if ($type === 'user') {
+            $stmt = $this->db->prepare("DELETE FROM messages WHERE id = ?");
+        } else {
+            $stmt = $this->db->prepare("DELETE FROM contact_messages WHERE id = ?");
+        }
+        return $stmt->execute([$id]);
+    }
 }

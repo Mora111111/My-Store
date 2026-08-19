@@ -70,9 +70,9 @@ function isActive($path) {
   </style>
 </head>
 <body>
-  <div class="sidebar">
+<div class="sidebar">
     <h2>مدير المتجر</h2>
-    <a href="/admin" class="<?php echo ($currentUri == '/admin') ? 'active' : ''; ?>">
+    <a href="/admin" class="<?php echo ($currentUri === '/admin') ? 'active' : ''; ?>">
         <i class="fa-solid fa-house"></i><span>الرئيسية</span>
     </a>
     <a href="/admin/products" class="<?php echo isActive('/admin/products'); ?>">
@@ -93,8 +93,7 @@ function isActive($path) {
     <a href="/admin/settings" class="<?php echo isActive('/admin/settings'); ?>">
         <i class="fa-solid fa-gear"></i><span>الإعدادات</span>
     </a>
-   
-</div>
+  </div>
 
   <div class="main-content">
     <div class="header">

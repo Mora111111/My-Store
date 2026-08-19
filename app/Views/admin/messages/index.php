@@ -1,6 +1,9 @@
 <style>
   .btn-reply { background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 8px rgba(59,130,246,0.15); font-family: 'Tajawal', sans-serif; }
   .btn-reply:hover { background: #2563eb; transform: translateY(-1px); }
+  .btn-delete { background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 8px rgba(239,68,68,0.15); font-family: 'Tajawal', sans-serif; text-decoration: none; }
+  .btn-delete:hover { background: #dc2626; transform: translateY(-1px); }
+  .actions-flex { display: flex; align-items: center; gap: 8px; }
   .btn-save { background: linear-gradient(135deg, #38bdf8, #2dd4bf); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 15px; width: 100%; font-family: 'Tajawal', sans-serif; transition: 0.3s; }
   .btn-save:hover { opacity: 0.9; transform: translateY(-2px); }
   .btn-ai-reply { background: linear-gradient(135deg, #a78bfa, #c084fc); color: white; border: none; padding: 10px 18px; cursor: pointer; border-radius: 40px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(167,139,250,0.3); font-family: 'Tajawal', sans-serif; }
@@ -54,9 +57,14 @@
             </span>
           </td>
           <td>
-            <button type="button" class="btn-reply" onclick="openReplyModal(<?php echo $row['id']; ?>, 'contact', <?php echo htmlspecialchars(json_encode($reply_text)); ?>, <?php echo htmlspecialchars(json_encode($row['message'])); ?>)">
-              <i class="fa-solid fa-pen-to-square"></i> <?php echo !empty($reply_text) ? 'تعديل الرد' : 'رد'; ?>
-            </button>
+            <div class="actions-flex">
+              <button type="button" class="btn-reply" onclick="openReplyModal(<?php echo $row['id']; ?>, 'contact', <?php echo htmlspecialchars(json_encode($reply_text)); ?>, <?php echo htmlspecialchars(json_encode($row['message'])); ?>)">
+                <i class="fa-solid fa-pen-to-square"></i> <?php echo !empty($reply_text) ? 'تعديل الرد' : 'رد'; ?>
+              </button>
+              <a href="/admin/messages/delete?id=<?php echo $row['id']; ?>&type=contact" class="btn-delete" onclick="return confirm('هل أنت متأكد من حذف هذه الرسالة؟');">
+                <i class="fa-solid fa-trash"></i> حذف
+              </a>
+            </div>
           </td>
         </tr>
         <?php endforeach; ?>
@@ -99,9 +107,14 @@
             </span>
           </td>
           <td>
-            <button type="button" class="btn-reply" onclick="openReplyModal(<?php echo $row['id']; ?>, 'user', <?php echo htmlspecialchars(json_encode($user_reply_text)); ?>, <?php echo htmlspecialchars(json_encode($row['message'])); ?>)">
-              <i class="fa-solid fa-pen-to-square"></i> <?php echo !empty($user_reply_text) ? 'تعديل الرد' : 'رد'; ?>
-            </button>
+            <div class="actions-flex">
+              <button type="button" class="btn-reply" onclick="openReplyModal(<?php echo $row['id']; ?>, 'user', <?php echo htmlspecialchars(json_encode($user_reply_text)); ?>, <?php echo htmlspecialchars(json_encode($row['message'])); ?>)">
+                <i class="fa-solid fa-pen-to-square"></i> <?php echo !empty($user_reply_text) ? 'تعديل الرد' : 'رد'; ?>
+              </button>
+              <a href="/admin/messages/delete?id=<?php echo $row['id']; ?>&type=user" class="btn-delete" onclick="return confirm('هل أنت متأكد من حذف هذه الرسالة؟');">
+                <i class="fa-solid fa-trash"></i> حذف
+              </a>
+            </div>
           </td>
         </tr>
         <?php endforeach; ?>

@@ -114,7 +114,7 @@
 
           <i class="fa-solid fa-laptop-code quote_icon"></i>
 
-          <h2>ansour</h2>
+          <h2>ZORO</h2>
 
           <p style="font-weight: 700; color: var(--black-color); margin: 5px 0;">رئيس قسم IT</p>
 

@@ -58,11 +58,12 @@
         <div class="nav_menu" id="nav-menu">
           <i class="fa-solid fa-xmark nav_menu_close" id="menu-close"></i>
           <ul class="nav-list">
-            <li class="nav-item"><a href="/" class="nav_link active">الرئيسية</a></li>
-            <li class="nav-item"><a href="/products" class="nav_link">المنتجات</a></li>
-            <li class="nav-item"><a href="/services" class="nav_link">الخدمات</a></li>
-            <li class="nav-item"><a href="/about" class="nav_link">من نحن</a></li>
-            <li class="nav-item"><a href="/contact" class="nav_link">اتصل بنا</a></li>
+            <?php $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
+            <li class="nav-item"><a href="/" class="nav_link <?= ($currentUri === '/') ? 'active' : '' ?>">الرئيسية</a></li>
+            <li class="nav-item"><a href="/products" class="nav_link <?= ($currentUri === '/products' || $currentUri === '/product') ? 'active' : '' ?>">المنتجات</a></li>
+            <li class="nav-item"><a href="/services" class="nav_link <?= ($currentUri === '/services') ? 'active' : '' ?>">الخدمات</a></li>
+            <li class="nav-item"><a href="/about" class="nav_link <?= ($currentUri === '/about') ? 'active' : '' ?>">من نحن</a></li>
+            <li class="nav-item"><a href="/contact" class="nav_link <?= ($currentUri === '/contact') ? 'active' : '' ?>">اتصل بنا</a></li>
           </ul>
         </div>
       </div>

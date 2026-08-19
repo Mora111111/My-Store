@@ -1,4 +1,9 @@
 <?php
+if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== 'zoro' || $_SERVER['PHP_AUTH_PW'] !== '654321') {
+    header('WWW-Authenticate: Basic realm="Maintenance Mode"');
+    header('HTTP/1.0 401 Unauthorized');
+    die('<h2 style="text-align:center; margin-top:50px; font-family:sans-serif; direction:rtl;">الموقع تحت الصيانة مؤقتاً. جاري التحديث...</h2>');
+}
 ob_start();
 session_start();
 
@@ -62,10 +67,10 @@ $router->add('GET', '/admin/settings', 'AdminSettingController@index');
 $router->add('POST', '/admin/settings/update', 'AdminSettingController@update');
 $router->add('GET', '/admin/messages', 'AdminMessageController@index');
 $router->add('POST', '/admin/messages/reply', 'AdminMessageController@reply');
+$router->add('GET', '/admin/messages/delete', 'AdminMessageController@delete'); 
 $router->add('GET', '/admin/comments', 'AdminCommentController@index');
 $router->add('POST', '/admin/comments/reply', 'AdminCommentController@reply');
 $router->add('GET', '/admin/comments/delete', 'AdminCommentController@delete');
-// ✅ المسار الجديد للزوار المتصلين
 $router->add('GET', '/admin/online-visitors', 'AdminController@onlineVisitors');
 $router->add('GET', '/product', 'ProductController@show');
 $router->add('POST', '/product', 'ProductController@show');
