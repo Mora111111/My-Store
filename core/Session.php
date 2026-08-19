@@ -47,12 +47,26 @@ if ($ip === '127.0.0.1' || $ip === '::1' || empty($ip)) {
         $sessionId = session_id();
         $time = time();
         
+        // جلب بيانات العميل إذا كان مسجل الدخول
+        $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+        $userName = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : null;
+        
         $location = self::getVisitorLocation();
         
-        $stmt = $db->prepare("INSERT INTO online_users (session_id, last_activity, ip_address, country, city) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE last_activity = VALUES(last_activity)");
-        $stmt->execute([$sessionId, $time, $location['ip'], $location['country'], $location['city']]);
+        $stmt = $db->prepare("
+            INSERT INTO online_users (session_id, user_id, user_name, last_activity, ip_address, country, city) 
+            VALUES (?, ?, ?, ?, ?, ?, ?) 
+            ON DUPLICATE KEY UPDATE 
+            user_id = VALUES(user_id),
+            user_name = VALUES(user_name),
+            last_activity = VALUES(last_activity),
+            ip_address = VALUES(ip_address),
+            country = VALUES(country),
+            city = VALUES(city)
+        ");
+        $stmt->execute([$sessionId, $userId, $userName, $time, $location['ip'], $location['country'], $location['city']]);
         
-        $timeout = $time - 300;
+        $timeout = $time - 300; // 5 دقائق
         $db->prepare("DELETE FROM online_users WHERE last_activity < ?")->execute([$timeout]);
     }
 
