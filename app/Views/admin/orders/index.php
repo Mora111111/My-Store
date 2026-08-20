@@ -1,17 +1,4 @@
-<style>
-  .status-pending { background: #fef3c7; color: #92400e; }
-  .status-shipped { background: #dbeafe; color: #1e40af; }
-  .status-completed { background: #d1fae5; color: #065f46; }
-  .status-cancelled { background: #fee2e2; color: #991b1b; }
-  .status-form { display: flex; align-items: center; gap: 8px; }
-  .status-select { padding: 8px 12px; border-radius: 30px; border: 1.5px solid #e2e8f0; font-family: 'Tajawal', sans-serif; font-size: 14px; background: #fafbfc; cursor: pointer; }
-  .status-select:focus { outline: none; border-color: #38bdf8; }
-  .btn-delete-order { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; text-decoration: none; display: inline-block; margin-right: 5px; font-weight: 500; font-size: 13px; transition: 0.2s; }
-  .btn-delete-order:hover { background: #dc2626; }
-  .product-item { display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; padding: 15px 0; }
-  .product-item img { width: 60px; height: 60px; object-fit: cover; margin-left: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-  .address-box { background: #f8fafc; padding: 18px; border-radius: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
-</style>
+
   <div class="card">
     <h2 style="margin-top:0;"><i class="fa-solid fa-list"></i> سجل جميع الطلبات</h2>
     <table>

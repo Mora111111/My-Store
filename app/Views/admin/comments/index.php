@@ -1,25 +1,3 @@
-<style>
-  .btn-reply { background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 8px rgba(59,130,246,0.15); font-family: 'Tajawal', sans-serif; }
-  .btn-reply:hover { background: #2563eb; transform: translateY(-1px); }
-  .btn-delete { background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 8px rgba(239,68,68,0.15); font-family: 'Tajawal', sans-serif; text-decoration: none; }
-  .btn-delete:hover { background: #dc2626; transform: translateY(-1px); }
-  .btn-ai-reply { background: linear-gradient(135deg, #a78bfa, #c084fc); color: white; border: none; padding: 10px 18px; cursor: pointer; border-radius: 40px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; transition: 0.3s; box-shadow: 0 4px 10px rgba(167,139,250,0.3); font-family: 'Tajawal', sans-serif; }
-  .btn-ai-reply:hover { opacity: 0.9; transform: translateY(-1px); }
-  .btn-ai-reply:disabled { background: #cbd5e1; cursor: not-allowed; opacity: 1; transform: none; box-shadow: none; }
-  .comment-text { color: #334155; line-height: 1.6; font-size: 14px; margin-bottom: 5px; }
-  .admin-reply-box { font-size: 14px; color: #0f766e; background: #ccfbf1; padding: 12px 15px; border-radius: 12px 0 12px 12px; border-right: 4px solid #0d9488; margin-top: 10px; display: block; box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.1); line-height: 1.6; position: relative; }
-  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-  .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-  .close-modal { position: absolute; top: 15px; left: 15px; font-size: 20px; cursor: pointer; color: #94a3b8; transition: 0.2s; }
-  .close-modal:hover { color: #ef4444; }
-  #modal_admin_reply { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'Tajawal', sans-serif; resize: vertical; box-sizing: border-box; }
-  #modal_admin_reply:focus { outline: none; border-color: #38bdf8; }
-  
-  .badge-success { background-color: #d1fae5; color: #065f46; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
-  .badge-warning { background-color: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
-  .date-badge { color: #64748b; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; padding: 6px 12px; border-radius: 8px; border: 1px solid #e2e8f0; white-space: nowrap; }
-  .actions-flex { display: flex; items-content: center; gap: 8px; }
-</style>
 
 <div class="card">
     <h2 style="margin-top:0;"><i class="fa-solid fa-list"></i> أحدث التعليقات</h2>

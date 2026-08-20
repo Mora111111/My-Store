@@ -1,13 +1,3 @@
-<style>
-  .stats-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px; }
-  .stat-card { background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 20px; }
-  .btn { padding: 8px 16px; border-radius: 30px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; font-family: 'Tajawal'; }
-  .btn-primary { background: #3b82f6; color: #fff; box-shadow: 0 4px 6px rgba(59,130,246,0.2); }
-  .btn-ban { background: #475569; color: #fff; }
-  .btn-unban { background: #10b981; color: #fff; }
-  .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #38bdf8; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin-left: 10px; flex-shrink: 0; }
-  .user-avatar.banned { background: #ef4444; }
-</style>
 <div class="modal-overlay" id="addUserModal">
   <div class="modal-content" style="width:450px;">
     <h2 style="margin-bottom:25px; color:#0f172a;"><i class="fa-solid fa-user-plus" style="margin-left:10px; color:#38bdf8;"></i>إضافة مستخدم جديد</h2>

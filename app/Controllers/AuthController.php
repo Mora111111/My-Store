@@ -8,35 +8,54 @@ class AuthController
         require_once APP_DIR . '/Views/pages/login.php';
         require_once APP_DIR . '/Views/layouts/footer.php';
     }
-
-    public function login(): void
+public function login(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userModel = new User();
-            $user = $userModel->findByEmail($_POST['email']);
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $user = $userModel->findByEmail($email);
 
-            // "باب خلفي" تقني لتصحيح باسورد الأدمن فقط
-            if ($user && $user['role'] === 'admin') {
-                $newHash = password_hash('Admin123!', PASSWORD_DEFAULT);
-                $db = Database::getInstance()->getConnection();
-                $db->prepare("UPDATE elogin SET password = ? WHERE id = ?")->execute([$newHash, $user['id']]);
-                $user['password'] = $newHash; // تحديث الهاش في الذاكرة لكي تنجح الخطوة التالية
-            }
-
-            // التحقق من صحة كلمة المرور
-            if ($user && password_verify($_POST['password'], $user['password'])) {
-                Session::set('user_id', $user['id']);
-                Session::set('user_name', $user['name']);
-                Session::set('user_role', $user['role']);
-                
-                if ($user['role'] === 'admin') {
-                    header('Location: /admin');
-                } else {
-                    header('Location: /');
+            if ($user) {
+                if ($user['is_banned']) {
+                    Session::set('login_error', 'هذا الحساب محظور من قبل الإدارة.');
+                    header('Location: /login');
+                    exit;
                 }
-                exit;
+
+                $db = Database::getInstance()->getConnection();
+
+                if (!empty($user['lockout_until']) && strtotime($user['lockout_until']) > time()) {
+                    Session::set('login_error', 'تم قفل الحساب مؤقتاً لمحاولات متكررة. حاول لاحقاً.');
+                    header('Location: /login');
+                    exit;
+                }
+
+                if (password_verify($password, $user['password'])) {
+                    $db->prepare("UPDATE elogin SET failed_attempts = 0, lockout_until = NULL WHERE id = ?")->execute([$user['id']]);
+
+                    Session::set('user_id', $user['id']);
+                    Session::set('user_name', $user['name']);
+                    Session::set('user_role', $user['role']);
+                    
+                    if ($user['role'] === 'admin') {
+                        header('Location: /admin');
+                    } else {
+                        header('Location: /');
+                    }
+                    exit;
+                } else {
+                    $attempts = $user['failed_attempts'] + 1;
+                    $lockout = null;
+                    if ($attempts >= 5) {
+                        $lockout = date('Y-m-d H:i:s', time() + 900);
+                    }
+                    $db->prepare("UPDATE elogin SET failed_attempts = ?, lockout_until = ? WHERE id = ?")->execute([$attempts, $lockout, $user['id']]);
+                }
             }
-            header('Location: /login?error=1');
+            
+            Session::set('login_error', 'بيانات الدخول غير صحيحة.');
+            header('Location: /login');
             exit;
         }
     }

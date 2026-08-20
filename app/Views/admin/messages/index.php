@@ -1,27 +1,3 @@
-<style>
-  .btn-reply { background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 8px rgba(59,130,246,0.15); font-family: 'Tajawal', sans-serif; }
-  .btn-reply:hover { background: #2563eb; transform: translateY(-1px); }
-  .btn-delete { background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 8px rgba(239,68,68,0.15); font-family: 'Tajawal', sans-serif; text-decoration: none; }
-  .btn-delete:hover { background: #dc2626; transform: translateY(-1px); }
-  .actions-flex { display: flex; align-items: center; gap: 8px; }
-  .btn-save { background: linear-gradient(135deg, #38bdf8, #2dd4bf); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 15px; width: 100%; font-family: 'Tajawal', sans-serif; transition: 0.3s; }
-  .btn-save:hover { opacity: 0.9; transform: translateY(-2px); }
-  .btn-ai-reply { background: linear-gradient(135deg, #a78bfa, #c084fc); color: white; border: none; padding: 10px 18px; cursor: pointer; border-radius: 40px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(167,139,250,0.3); font-family: 'Tajawal', sans-serif; }
-  .btn-ai-reply:hover { opacity: 0.9; transform: translateY(-1px); }
-  .btn-ai-reply:disabled { background: #cbd5e1; cursor: not-allowed; opacity: 1; transform: none; box-shadow: none; }
-  
-  .message-content { color: #334155; line-height: 1.6; font-size: 14px; margin-bottom: 5px; max-width: 250px; }
-  .admin-reply-box { font-size: 14px; color: #0f766e; background: #ccfbf1; padding: 12px 15px; border-radius: 12px 0 12px 12px; border-right: 4px solid #0d9488; display: block; box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.1); line-height: 1.6; max-width: 280px; }
-  .badge-warning { background-color: #fef3c7; color: #92400e; padding: 6px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
-  .date-badge { color: #64748b; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; padding: 6px 12px; border-radius: 8px; border: 1px solid #e2e8f0; white-space: nowrap; }
-  
-  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-  .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-  .close-modal { position: absolute; top: 15px; left: 15px; font-size: 20px; cursor: pointer; color: #94a3b8; transition: 0.2s; }
-  .close-modal:hover { color: #ef4444; }
-  #modal_reply_text { width: 100%; height: 150px; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'Tajawal', sans-serif; resize: vertical; box-sizing: border-box; }
-  #modal_reply_text:focus { outline: none; border-color: #38bdf8; }
-</style>
 
 <div class="card">
     <h2 style="margin-top:0;"><i class="fa-solid fa-inbox"></i> الرسائل الواردة (جهات الاتصال)</h2>

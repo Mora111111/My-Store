@@ -21,7 +21,7 @@ class AiController {
             return;
         }
         
-        $api_key = 'AIzaSyBOQ7Ytdg4ruRpHA7cN37kttrpuIs9kvCo';
+        $api_key = GEMINI_API_KEY;
         $api_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $api_key;
         $system_instruction = "أنت ممثل خدمة عملاء محترف ولبق جداً في متجر إلكتروني مصري. سأعطيك تعليقاً كتبه أحد العملاء على منتج.
 مهمتك: كتابة رد احترافي ومناسب على هذا التعليق نيابة عن إدارة المتجر.
@@ -75,7 +75,7 @@ class AiController {
             return;
         }
         
-        $api_key = 'AIzaSyBOQ7Ytdg4ruRpHA7cN37kttrpuIs9kvCo';
+        $api_key = GEMINI_API_KEY;
         $api_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $api_key;
         $system_instruction = "أنت مساعد ذكي ومسوق محترف لمدير متجر إلكتروني. سأعطيك وصفاً مختصراً لمنتج. 
 مهمتك هي استخراج وتوليد البيانات التالية:
@@ -130,7 +130,7 @@ class AiController {
             return;
         }
         
-        $api_key = 'AIzaSyBOQ7Ytdg4ruRpHA7cN37kttrpuIs9kvCo';
+        $api_key = GEMINI_API_KEY;
         $api_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $api_key;
         $system_instruction = "أنت مدير خدمة عملاء محترف في متجر إلكتروني. سأعطيك رسالة أو استفسار من عميل. 
 مهمتك: صياغة رد احترافي، لبق، ومناسب لحل المشكلة أو الإجابة على الاستفسار. 
