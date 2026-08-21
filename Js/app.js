@@ -253,3 +253,50 @@ function removeActiveBtn() {
         btn.classList.remove("active_btn");
     });
 }
+// منع تكرار الإرسال لأي فورم في المنصة (رسائل، تقييم، تسجيل)
+document.addEventListener('submit', function (e) {
+    if (e.target && e.target.tagName === 'FORM') {
+        const submitBtn = e.target.querySelector('button[type="submit"], input[type="submit"], .btn-submit, .send_btn');
+        
+        if (submitBtn) {
+            // تعطيل الزر برمجياً بعد جزء من الثانية لضمان نجاح الإرسال
+            setTimeout(() => {
+                submitBtn.disabled = true;
+                submitBtn.style.cursor = 'not-allowed';
+                submitBtn.style.opacity = '0.7';
+                
+                if (submitBtn.tagName === 'INPUT') {
+                    submitBtn.value = 'جاري الإرسال...';
+                } else {
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
+                }
+            }, 0);
+        }
+    }
+});
+// تفعيل قائمة الموبايل (Hamburger Menu)
+const navMenu = document.getElementById('nav-menu');
+const navToggle = document.getElementById('nav-toggle');
+const navClose = document.getElementById('menu-close');
+
+if (navToggle && navMenu) {
+    navToggle.addEventListener('click', () => {
+        navMenu.classList.add('show_menu');
+    });
+}
+
+if (navClose && navMenu) {
+    navClose.addEventListener('click', () => {
+        navMenu.classList.remove('show_menu');
+    });
+}
+
+// إغلاق القائمة تلقائياً عند الضغط على أي رابط بداخلها
+const navLinks = document.querySelectorAll('.nav_link');
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        if(navMenu.classList.contains('show_menu')) {
+            navMenu.classList.remove('show_menu');
+        }
+    });
+});

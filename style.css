@@ -2090,3 +2090,32 @@ input[type="checkbox"] {
     margin: 0;
   }
 }
+@media only screen and (max-width: 800px) {
+  /* تحسين المساحات الجانبية */
+  .container { 
+    padding: 0 15px; 
+  }
+  
+  /* منع خروج قائمة الحساب عن الشاشة */
+  .profile-menu { 
+    right: auto; 
+    left: 0; 
+    width: 180px; 
+  }
+  
+  /* تحسين عرض شبكة المنتجات على الموبايل لتظهر كروت مناسبة */
+  .grid_content { 
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
+    gap: 15px;
+  }
+  
+  /* تصغير صور المنتجات لتوفير المساحة */
+  .box_img { 
+    height: 200px; 
+  }
+  
+  /* ضمان ظهور القائمة الجانبية فوق كل العناصر */
+  .nav_menu { 
+    z-index: 1000; 
+  }
+}
