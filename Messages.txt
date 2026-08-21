@@ -1,3 +1,8 @@
+<!-- ==========================================================================
+   1. View: app/Views/admin/messages/index.php (Admin Messages View)
+   ========================================================================== -->
+
+
 <div class="card">
     <h2 style="margin-top:0;"><i class="fa-solid fa-inbox"></i> الرسائل الواردة (جهات الاتصال)</h2>
     <table>
@@ -86,14 +91,9 @@
               <button type="button" class="btn-reply" onclick="openReplyModal(<?php echo $row['id']; ?>, 'user', <?php echo htmlspecialchars(json_encode($user_reply_text)); ?>, <?php echo htmlspecialchars(json_encode($row['message'])); ?>)">
                 <i class="fa-solid fa-pen-to-square"></i> <?php echo !empty($user_reply_text) ? 'تعديل الرد' : 'رد'; ?>
               </button>
-              <form method="POST" action="/admin/messages/delete" style="display:inline-block;" onsubmit="return confirm('هل أنت متأكد من حذف هذه الرسالة؟');">
-                <?= CSRF::getField() ?>
-                <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                <input type="hidden" name="type" value="user">
-                <button type="submit" class="btn-delete" style="border:none; cursor:pointer; font-family:inherit;">
-                  <i class="fa-solid fa-trash"></i> حذف
-                </button>
-              </form>
+              <a href="/admin/messages/delete?id=<?php echo $row['id']; ?>&type=user" class="btn-delete" onclick="return confirm('هل أنت متأكد من حذف هذه الرسالة؟');">
+                <i class="fa-solid fa-trash"></i> حذف
+              </a>
             </div>
           </td>
         </tr>
@@ -111,8 +111,11 @@
       <h3 style="color:#0f172a; margin:0; font-size:20px; display:flex; align-items:center; gap:8px;">
         <i class="fa-solid fa-reply" style="color:#38bdf8;"></i> إدارة الرد
       </h3>
+      <button type="button" id="aiReplyBtn" class="btn-ai-reply">
+        توليد الرد ذكياً <i class="fa-solid fa-wand-magic-sparkles"></i>
+      </button>
     </div>
-    <p style="color:#64748b; font-size:14px; margin-bottom:15px;">قم بكتابة الرد يدوياً للعميل.</p>
+    <p style="color:#64748b; font-size:14px; margin-bottom:15px;">قم بكتابة الرد يدوياً أو استخدم المساعد الذكي.</p>
     
     <form method="POST" action="/admin/messages/reply">
       <?= CSRF::getField() ?>
@@ -129,19 +132,173 @@ const modal = document.getElementById('replyModal');
 const msgIdInput = document.getElementById('modal_msg_id');
 const msgTypeInput = document.getElementById('modal_msg_type');
 const replyTextInput = document.getElementById('modal_reply_text');
+const aiReplyBtn = document.getElementById('aiReplyBtn');
+let currentMessageText = "";
 
-function openReplyModal(id, type, currentReply) {
+function openReplyModal(id, type, currentReply, messageText) {
   msgIdInput.value = id;
   msgTypeInput.value = type;
   replyTextInput.value = currentReply;
+  currentMessageText = messageText;
   modal.style.display = 'flex';
 }
 
-function closeReplyModal() { 
-  modal.style.display = 'none'; 
-}
+function closeReplyModal() { modal.style.display = 'none'; }
 
 window.onclick = function(event) {
   if (event.target == modal) closeReplyModal();
 }
+
+if (aiReplyBtn) {
+  aiReplyBtn.addEventListener('click', async function() {
+    const originalText = this.innerHTML;
+    this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التفكير...';
+    this.disabled = true;
+    
+    const csrfToken = document.querySelector('input[name="csrf_token"]')?.value || '';
+    const promptText = "قم بالرد باحترافية ولباقة كخدمة عملاء لمتجر إلكتروني على رسالة العميل التالية: " + currentMessageText;
+    
+    try {
+      const formData = new FormData();
+      formData.append('prompt', promptText);
+      formData.append('csrf_token', csrfToken);
+
+      const response = await fetch('/ai/message-reply', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      if (data.reply) replyTextInput.value = data.reply;
+      else if (data.description) replyTextInput.value = data.description; 
+      else if (data.error) alert("حدث خطأ من الخادم: " + data.error);
+    } catch(e) {
+      alert('خطأ في الاتصال بالمساعد الذكي.');
+    } finally {
+      this.innerHTML = originalText;
+      this.disabled = false;
+    }
+  });
+}
 </script>
+
+<?php
+/* ==========================================================================
+   2. Controller: app/Controllers/AdminMessageController.php (Handling messages logic: viewing, replying, deleting)
+   ========================================================================== */
+?>
+<?php
+class AdminMessageController {
+    public function __construct() {
+        if (Session::get('user_role') !== 'admin') {
+            header('Location: /');
+            exit;
+        }
+    }
+
+    public function index(): void {
+        $messageModel = new Message();
+        $contact_messages = $messageModel->getAllContactMessages();
+        $user_messages = $messageModel->getAllUserMessages();
+        $showSearch = true;
+        $toast_msg = $_SESSION['toast_msg'] ?? '';
+        $toast_type = $_SESSION['toast_type'] ?? '';
+        unset($_SESSION['toast_msg'], $_SESSION['toast_type']);
+        $pageIcon = 'fa-envelope';
+        $pageTitle = 'الرسائل';
+        require_once APP_DIR . '/Views/admin/layout_start.php';
+        require_once APP_DIR . '/Views/admin/messages/index.php';
+        require_once APP_DIR . '/Views/admin/layout_end.php';
+    }
+
+    public function reply(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $messageModel = new Message();
+            $type = $_POST['type'] ?? 'contact';
+            $id = intval($_POST['msg_id'] ?? 0);
+            $reply_text = trim($_POST['reply_text'] ?? '');
+            if ($type === 'user') {
+                $messageModel->replyUserMessage($id, $reply_text);
+            } else {
+                $messageModel->replyContactMessage($id, $reply_text);
+            }
+            $_SESSION['toast_msg'] = 'تم حفظ الرد بنجاح!';
+            $_SESSION['toast_type'] = 'success';
+        }
+        header('Location: /admin/messages');
+        exit;
+    }
+    public function delete(): void {
+        $messageModel = new Message();
+        $id = intval($_GET['id'] ?? 0);
+        $type = $_GET['type'] ?? 'contact';
+
+        if ($id > 0) {
+            $messageModel->deleteMessage($id, $type);
+            $_SESSION['toast_msg'] = 'تم حذف الرسالة بنجاح.';
+            $_SESSION['toast_type'] = 'success';
+        }
+        header('Location: /admin/messages');
+        exit;
+    }
+}
+
+
+<?php
+/* ==========================================================================
+   3. Model: app/Models/Message.php (Database logic for contact_messages and messages tables)
+   ========================================================================== */
+?>
+<?php
+class Message {
+    private PDO $db;
+    public function __construct() {
+        $this->db = Database::getInstance()->getConnection();
+    }
+    public function countAllContactMessages(): int {
+        return (int)$this->db->query("SELECT COUNT(*) FROM contact_messages")->fetchColumn();
+    }
+
+    public function getAllContactMessages(): array {
+        $stmt = $this->db->query("SELECT * FROM contact_messages ORDER BY id DESC");
+        return $stmt->fetchAll();
+    }
+    public function replyContactMessage(int $id, string $reply): bool {
+        $stmt = $this->db->prepare("UPDATE contact_messages SET reply = ? WHERE id = ?");
+        return $stmt->execute([$reply, $id]);
+    }
+    public function getAllUserMessages(): array {
+        $stmt = $this->db->query("SELECT * FROM messages ORDER BY id DESC");
+        return $stmt->fetchAll();
+    }
+    public function replyUserMessage(int $id, string $reply): bool {
+        $stmt = $this->db->prepare("UPDATE messages SET reply = ? WHERE id = ?");
+        return $stmt->execute([$reply, $id]);
+    }
+
+    public function getByUserId(int $userId): array {
+        $stmt = $this->db->prepare("SELECT * FROM messages WHERE user_id = ? ORDER BY created_at DESC");
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll();
+    }
+
+    public function create(array $data): bool {
+        $stmt = $this->db->prepare("INSERT INTO messages (user_id, subject, message) VALUES (?, ?, ?)");
+        return $stmt->execute([$data['user_id'], $data['subject'], $data['message']]);
+    }
+    public function createContactMessage(array $data): bool {
+        $stmt = $this->db->prepare("INSERT INTO contact_messages (first_name, last_name, phone, email, message) VALUES (?, ?, ?, ?, ?)");
+        return $stmt->execute([$data['first_name'], $data['last_name'], $data['phone'], $data['email'], $data['message']]);
+    }
+    public function deleteMessage(int $id, string $type): bool {
+        if ($type === 'user') {
+            $stmt = $this->db->prepare("DELETE FROM messages WHERE id = ?");
+        } else {
+            $stmt = $this->db->prepare("DELETE FROM contact_messages WHERE id = ?");
+        }
+        return $stmt->execute([$id]);
+    }
+}
+
+

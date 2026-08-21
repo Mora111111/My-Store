@@ -21,13 +21,21 @@ class AdminMessageController {
         require_once APP_DIR . '/Views/admin/messages/index.php';
         require_once APP_DIR . '/Views/admin/layout_end.php';
     }
-
-    public function reply(): void {
+public function reply(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // التحقق من أمان الطلب (CSRF)
+            if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {
+                $_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
+                $_SESSION['toast_type'] = 'error';
+                header('Location: /admin/messages');
+                exit;
+            }
+
             $messageModel = new Message();
             $type = $_POST['type'] ?? 'contact';
             $id = intval($_POST['msg_id'] ?? 0);
             $reply_text = trim($_POST['reply_text'] ?? '');
+
             if ($type === 'user') {
                 $messageModel->replyUserMessage($id, $reply_text);
             } else {
@@ -39,15 +47,26 @@ class AdminMessageController {
         header('Location: /admin/messages');
         exit;
     }
-    public function delete(): void {
-        $messageModel = new Message();
-        $id = intval($_GET['id'] ?? 0);
-        $type = $_GET['type'] ?? 'contact';
 
-        if ($id > 0) {
-            $messageModel->deleteMessage($id, $type);
-            $_SESSION['toast_msg'] = 'تم حذف الرسالة بنجاح.';
-            $_SESSION['toast_type'] = 'success';
+    public function delete(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // التحقق من أمان الطلب (CSRF)
+            if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {
+                $_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
+                $_SESSION['toast_type'] = 'error';
+                header('Location: /admin/messages');
+                exit;
+            }
+
+            $messageModel = new Message();
+            $id = intval($_POST['id'] ?? 0);
+            $type = $_POST['type'] ?? 'contact';
+
+            if ($id > 0) {
+                $messageModel->deleteMessage($id, $type);
+                $_SESSION['toast_msg'] = 'تم حذف الرسالة بنجاح.';
+                $_SESSION['toast_type'] = 'success';
+            }
         }
         header('Location: /admin/messages');
         exit;
