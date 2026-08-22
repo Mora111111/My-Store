@@ -33,7 +33,7 @@ function isActive($path) {
     .logout-btn { background: #fff; color: #ef4444; border: 1.5px solid #fee2e2; padding: 12px 24px; border-radius: 40px; text-decoration: none; font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px; transition: all 0.25s; }
     .logout-btn:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
     .content-area { padding: 35px 40px; }
-    .card { background: #fff; padding: 30px 35px; border-radius: 28px; box-shadow: 0 15px 30px -10px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; margin-bottom: 35px; }
+    .card { background: #fff; padding: 30px 35px; border-radius: 28px; box-shadow: 0 15px 30px -10px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; margin-bottom: 35px; overflow-x: auto; }
     .card h2 { color: #0f172a; font-size: 24px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
     .card h2 i { color: #38bdf8; }
     table { width: 100%; border-collapse: collapse; text-align: right; margin-top: 15px; }
@@ -42,14 +42,6 @@ function isActive($path) {
     .action-btn { padding: 8px 16px; border-radius: 30px; text-decoration: none; color: #fff; font-size: 14px; margin-left: 8px; display: inline-block; font-weight: 500; transition: all 0.2s; border: none; cursor: pointer; font-family: 'Tajawal', sans-serif; }
     .action-btn:hover { transform: translateY(-1px); }
     
-    /* Unified Actions & Buttons for All Admin Pages */
-    .actions-flex { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: nowrap; }
-    .btn-reply, .btn-edit, .btn-view, .btn-delete { color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; text-decoration: none; white-space: nowrap; font-family: 'Tajawal', sans-serif; }
-    .btn-reply, .btn-edit, .btn-view { background: #3b82f6; box-shadow: 0 4px 8px rgba(59,130,246,0.15); }
-    .btn-reply:hover, .btn-edit:hover, .btn-view:hover { background: #2563eb; transform: translateY(-1px); }
-    .btn-delete { background: #ef4444; box-shadow: 0 4px 8px rgba(239,68,68,0.15); }
-    .btn-delete:hover { background: #dc2626; transform: translateY(-1px); }
-
     .btn-submit { background: linear-gradient(135deg, #38bdf8, #2dd4bf); color: #0f172a; border: none; padding: 14px 28px; cursor: pointer; border-radius: 40px; font-size: 16px; font-weight: 700; transition: all 0.3s; box-shadow: 0 8px 16px rgba(56,189,248,0.2); display: inline-block; text-decoration: none; }
     .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(56,189,248,0.3); }
     .btn-update { background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 30px; cursor: pointer; font-weight: 500; font-size: 13px; transition: 0.2s; }
@@ -75,8 +67,6 @@ function isActive($path) {
     .btn-ai-reply:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-ai-reply:disabled { background: #cbd5e1; cursor: not-allowed; opacity: 1; transform: none; box-shadow: none; }
     .date-badge { color: #64748b; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; padding: 6px 12px; border-radius: 8px; border: 1px solid #e2e8f0; white-space: nowrap; }
-    td { max-width: 200px; word-wrap: break-word; overflow-wrap: break-word; }
-    .message-content, .comment-text, .admin-reply-box { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; white-space: normal; line-height: 1.6; }
  
     /* Product & Modal Specific Styles */
     .ai-magic-btn { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
@@ -106,6 +96,20 @@ function isActive($path) {
     .form_row label { display: block; font-weight: bold; margin-bottom: 8px; color: #334155; }
     .form_row input, .form_row textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 15px; box-sizing: border-box; }
     .form_row input:focus, .form_row textarea:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 0 4px rgba(56,189,248,0.1); }
+
+    /* تقييد النصوص الطويلة فقط دون الضغط على الأزرار */
+    td { word-wrap: break-word; overflow-wrap: break-word; }
+    td:last-child { min-width: 210px; } /* ضمان مساحة كافية لعمود الأزرار */
+    
+    .message-content, .comment-text, .admin-reply-box { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; white-space: normal; line-height: 1.6; }
+
+    /* توحيد مقاسات الأزرار بشكل متطابق */
+    .actions-flex { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+    .btn-reply, .btn-edit, .btn-view, .btn-delete { flex: 1; min-width: 95px; justify-content: center; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; text-decoration: none; white-space: nowrap; font-family: 'Tajawal', sans-serif; }
+    .btn-reply, .btn-edit, .btn-view { background: #3b82f6; box-shadow: 0 4px 8px rgba(59,130,246,0.15); }
+    .btn-reply:hover, .btn-edit:hover, .btn-view:hover { background: #2563eb; transform: translateY(-1px); }
+    .btn-delete { background: #ef4444; box-shadow: 0 4px 8px rgba(239,68,68,0.15); }
+    .btn-delete:hover { background: #dc2626; transform: translateY(-1px); }
   </style>
 </head>
 <body>
