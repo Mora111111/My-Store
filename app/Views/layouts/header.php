@@ -8,8 +8,7 @@
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="/images/icons/shopping-cart_head.png">
   <title>MY Store - متجر على الإنترنت</title>
-  <meta name="csrf-token" content="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : (class_exists('CSRF') ? CSRF::getToken() : ''); ?>">
-</head>
+<meta name="csrf-token" content="<?= CSRF::generate() ?>"></head>
 
 <body>
   <header class="header" id="header">

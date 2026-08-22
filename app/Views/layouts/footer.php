@@ -69,8 +69,5 @@
 <script src="/Js/app.js"></script>
 <script src="/Js/scroll.js"></script>
 <script src="/Js/account.js"></script>
-<script src="/Js/app.js"></script>
-<script src="/Js/scroll.js"></script>
 </body>
-
 </html>

@@ -1,10 +1,4 @@
 <?php
-// تفعيل عرض الأخطاء مؤقتاً لمعرفة سبب الشاشة البيضاء
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// استدعاء ملف المفضلة ليتعرف عليه النظام
-require_once __DIR__ . '/app/Models/Favorite.php';
 ob_start();
 session_start();
 
