@@ -101,6 +101,30 @@
         </table>
       </div>
     </section>
+
+    <section class="favorites-container container" style="margin-top: 40px; padding: 0 20px 80px;">
+        <h2 class="main_title">المنتجات المفضلة</h2>
+        <?php
+        $favoriteModel = new Favorite();
+        $favorites = $favoriteModel->getUserFavorites(Session::get('user_id'));
+        ?>
+        <div class="products-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 20px;">
+            <?php foreach ($favorites as $row): ?>
+                <div class="product-card" style="border: 1px solid #eee; padding: 15px; border-radius: 8px; position: relative; text-align: center;">
+                    <button class="favorite-btn" data-product-id="<?= $row['id'] ?>" style="position:absolute; top:10px; right:10px; background:transparent; border:none; cursor:pointer; font-size:1.5rem; color:#ff4757;">
+                        <i class="fa-solid fa-heart"></i>
+                    </button>
+                    <img src="<?= htmlspecialchars($row['image_url'] ?? '') ?>" alt="<?= htmlspecialchars($row['title']) ?>" style="width: 100%; max-height: 200px; object-fit: contain;">
+                    <h3 style="font-size: 1.1rem; margin: 10px 0;"><?= htmlspecialchars($row['title']) ?></h3>
+                    <p style="color: #ff4757; font-weight: bold; margin-bottom: 15px;"><?= htmlspecialchars($row['price']) ?>$</p>
+                    <a href="/product?id=<?= $row['id'] ?>" style="display: inline-block; padding: 8px 15px; background: #333; color: #fff; text-decoration: none; border-radius: 4px;">عرض التفاصيل</a>
+                </div>
+            <?php endforeach; ?>
+            <?php if (empty($favorites)): ?>
+                <p style="grid-column: 1 / -1; text-align: center; color: #666;">لا توجد منتجات في المفضلة حالياً.</p>
+            <?php endif; ?>
+        </div>
+    </section>
 </main>
 
 <div id="userOrderModal" class="modal">

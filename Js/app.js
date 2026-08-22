@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
     const profileBtn = document.getElementById('profile-btn');
     const profileMenu = document.getElementById('profile-menu');
     
@@ -298,5 +298,48 @@ navLinks.forEach(link => {
         if(navMenu.classList.contains('show_menu')) {
             navMenu.classList.remove('show_menu');
         }
+    });
+});
+
+// Favorites AJAX
+document.addEventListener('DOMContentLoaded', () => {
+    const favoriteButtons = document.querySelectorAll('.favorite-btn');
+    
+    favoriteButtons.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const productId = btn.getAttribute('data-product-id');
+            const icon = btn.querySelector('i');
+            
+            try {
+                const response = await fetch('/toggle-favorite', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ product_id: productId })
+                });
+                
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (data.status === 'added') {
+                        icon.classList.remove('fa-regular');
+                        icon.classList.add('fa-solid');
+                    } else {
+                        icon.classList.remove('fa-solid');
+                        icon.classList.add('fa-regular');
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
     });
 });

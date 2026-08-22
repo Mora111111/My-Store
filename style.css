@@ -597,6 +597,12 @@ a {
   height: 3.2em;
   line-height: 1.6em;
   margin-bottom: 10px;
+  transition: 0.3s;
+}
+
+.card_title:hover {
+  color: var(--main-color) !important;
+  text-shadow: 0px 0px 8px rgba(56, 189, 248, 0.5);
 }
 
 .card_details p {

@@ -1,3 +1,10 @@
+<?php 
+$favoriteIds = [];
+if (Session::isLoggedIn()) {
+    $favoriteModel = new Favorite();
+    $favoriteIds = $favoriteModel->getUserFavoriteIds(Session::get('user_id'));
+}
+?>
     <div class="cart">
       <h2 class="cart_title">عربة التسوق</h2>
       <div class="cart_content"></div>
@@ -54,7 +61,11 @@
               }
               $price_parts = explode('.', number_format($row['price'], 2, '.', ''));
           ?>
-          <div class="card">
+          <div class="card" style="position: relative;">
+            <?php $isFavorited = in_array($row['id'], $favoriteIds); ?>
+            <button class="favorite-btn" data-product-id="<?php echo $row['id']; ?>" style="position:absolute; top:10px; right:10px; background:transparent; border:none; cursor:pointer; font-size:1.5rem; color:#ff4757; z-index:10;">
+                <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
+            </button>
             <div class="box_img">
               <img src="<?php echo htmlspecialchars($row['image_url']); ?>" alt="" class="card_image" />
             </div>
@@ -81,7 +92,11 @@
               }
               $price_parts = explode('.', number_format($row['price'], 2, '.', ''));
           ?>
-          <div class="card">
+          <div class="card" style="position: relative;">
+            <?php $isFavorited = in_array($row['id'], $favoriteIds); ?>
+            <button class="favorite-btn" data-product-id="<?php echo $row['id']; ?>" style="position:absolute; top:10px; right:10px; background:transparent; border:none; cursor:pointer; font-size:1.5rem; color:#ff4757; z-index:10;">
+                <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
+            </button>
             <div class="box_img">
               <img src="<?php echo htmlspecialchars($row['image_url']); ?>" alt="" class="card_image" />
             </div>

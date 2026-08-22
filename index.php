@@ -60,6 +60,7 @@ $router->add('POST', '/profile/update', 'UserProfileController@update');
 $router->add('GET', '/my-orders', 'UserProfileController@orders');
 $router->add('GET', '/my-messages', 'UserProfileController@messages');
 $router->add('POST', '/my-messages/send', 'UserProfileController@sendMessage');
+$router->add('POST', '/toggle-favorite', 'UserProfileController@toggleFavorite');
 $router->add('GET', '/login', 'AuthController@showLogin');
 $router->add('POST', '/login', 'AuthController@login');
 $router->add('GET', '/signup', 'AuthController@showSignup');

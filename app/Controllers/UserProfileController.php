@@ -53,4 +53,36 @@ class UserProfileController {
             exit;
         }
     }
+
+    public function toggleFavorite(): void {
+        header('Content-Type: application/json');
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['error' => 'Method not allowed']);
+            exit;
+        }
+        
+        $userId = Session::get('user_id');
+        if (!$userId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $productId = $input['product_id'] ?? $_POST['product_id'] ?? null;
+
+        if (!$productId) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Product ID required']);
+            exit;
+        }
+
+        $favoriteModel = new Favorite();
+        $status = $favoriteModel->toggleFavorite((int)$userId, (int)$productId);
+        
+        echo json_encode(['success' => true, 'status' => $status]);
+        exit;
+    }
 }
