@@ -46,8 +46,6 @@ function isActive($path) {
     .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(56,189,248,0.3); }
     .btn-update { background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 30px; cursor: pointer; font-weight: 500; font-size: 13px; transition: 0.2s; }
     .btn-update:hover { background: #2563eb; }
-    .btn-danger { background: #ef4444; color: #fff; box-shadow: 0 4px 6px rgba(239,68,68,0.2); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 30px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; font-family: 'Tajawal'; }
-    .btn-success { background: #10b981; color: #fff; display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 30px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; font-family: 'Tajawal'; }
     .modal-overlay, .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); justify-content: center; align-items: center; }
     .modal-content { background: #fff; padding: 35px; border-radius: 32px; width: 520px; max-width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); position: relative; }
     .close-modal { position: absolute; top: 20px; left: 20px; font-size: 24px; cursor: pointer; color: #94a3b8; transition: 0.2s; }
@@ -81,8 +79,6 @@ function isActive($path) {
     .stat-card { background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 20px; }
     .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #38bdf8; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin-left: 10px; flex-shrink: 0; }
     .user-avatar.banned { background: #ef4444; }
-    .btn-ban { background: #475569; color: #fff; }
-    .btn-unban { background: #10b981; color: #fff; }
 
     /* Orders Details */
     .product-item { display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; padding: 15px 0; }
@@ -103,13 +99,21 @@ function isActive($path) {
     
     .message-content, .comment-text, .admin-reply-box { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; white-space: normal; line-height: 1.6; }
 
-    /* توحيد مقاسات الأزرار بشكل متطابق */
+    /* توحيد مقاسات جميع الأزرار في كل صفحات لوحة الإدارة */
     .actions-flex { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
-    .btn-reply, .btn-edit, .btn-view, .btn-delete { flex: 1; min-width: 95px; justify-content: center; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; text-decoration: none; white-space: nowrap; font-family: 'Tajawal', sans-serif; }
-    .btn-reply, .btn-edit, .btn-view { background: #3b82f6; box-shadow: 0 4px 8px rgba(59,130,246,0.15); }
-    .btn-reply:hover, .btn-edit:hover, .btn-view:hover { background: #2563eb; transform: translateY(-1px); }
-    .btn-delete { background: #ef4444; box-shadow: 0 4px 8px rgba(239,68,68,0.15); }
-    .btn-delete:hover { background: #dc2626; transform: translateY(-1px); }
+    .btn-reply, .btn-edit, .btn-view, .btn-delete, .btn-primary, .btn-ban, .btn-unban, .btn-success, .btn-danger { flex: 1; min-width: 95px; justify-content: center; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; text-decoration: none; white-space: nowrap; font-family: 'Tajawal', sans-serif; }
+    
+    .btn-primary, .btn-reply, .btn-edit, .btn-view { background: #3b82f6; box-shadow: 0 4px 8px rgba(59,130,246,0.15); }
+    .btn-primary:hover, .btn-reply:hover, .btn-edit:hover, .btn-view:hover { background: #2563eb; transform: translateY(-1px); }
+    
+    .btn-danger, .btn-delete { background: #ef4444; box-shadow: 0 4px 8px rgba(239,68,68,0.15); }
+    .btn-danger:hover, .btn-delete:hover { background: #dc2626; transform: translateY(-1px); }
+    
+    .btn-ban { background: #475569; box-shadow: 0 4px 8px rgba(71,85,105,0.15); }
+    .btn-ban:hover { background: #334155; transform: translateY(-1px); }
+    
+    .btn-unban, .btn-success { background: #10b981; box-shadow: 0 4px 8px rgba(16,185,129,0.15); }
+    .btn-unban:hover, .btn-success:hover { background: #059669; transform: translateY(-1px); }
   </style>
 </head>
 <body>

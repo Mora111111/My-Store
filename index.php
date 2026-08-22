@@ -32,6 +32,21 @@ require_once __DIR__ . '/config.php';
 
 Session::trackOnline();
 
+if (Session::isLoggedIn()) {
+    $db = Database::getInstance()->getConnection();
+    $stmt = $db->prepare("SELECT is_banned FROM elogin WHERE id = ?");
+    $stmt->execute([Session::get('user_id')]);
+    
+    if ($stmt->fetchColumn() == 1) {
+        Session::remove('user_id');
+        Session::remove('user_name');
+        Session::remove('user_role');
+        Session::set('login_error', 'عفواً، تم حظر هذا الحساب من قبل الإدارة ولا يمكنه إتمام أي عملية.');
+        header('Location: /login');
+        exit;
+    }
+}
+
 $router = new Router();
 
 $router->add('GET', '/', 'HomeController@index');
