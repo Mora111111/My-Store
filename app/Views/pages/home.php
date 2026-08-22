@@ -61,17 +61,26 @@ if (Session::isLoggedIn()) {
               }
               $price_parts = explode('.', number_format($row['price'], 2, '.', ''));
           ?>
-          <div class="card" style="position: relative;">
-            <?php $isFavorited = in_array($row['id'], $favoriteIds); ?>
-            <button class="favorite-btn" data-product-id="<?php echo $row['id']; ?>" style="position:absolute; top:10px; right:10px; background:transparent; border:none; cursor:pointer; font-size:1.5rem; color:#ff4757; z-index:10;">
-                <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
-            </button>
+          <div class="card">
             <div class="box_img">
               <img src="<?php echo htmlspecialchars($row['image_url']); ?>" alt="" class="card_image" />
             </div>
             <div class="card_details">
               <a href="/product?id=<?php echo $row['id']; ?>" class="card_title" style="display:block; color:#555; font-weight:normal; font-size:14px; margin-bottom:10px;"><?php echo htmlspecialchars($row['title']); ?></a>
-              <div class="rating"><?php echo $stars_html; ?></div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  <div class="rating"><?php echo $stars_html; ?></div>
+                  <?php 
+                  $favoriteIds = [];
+                  if (Session::isLoggedIn()) {
+                      $favoriteModel = new Favorite();
+                      $favoriteIds = $favoriteModel->getUserFavoriteIds(Session::get('user_id'));
+                  }
+                  $isFavorited = in_array($row['id'], $favoriteIds);
+                  ?>
+                  <button class="favorite-btn" data-product-id="<?php echo $row['id']; ?>" style="background:transparent; border:none; cursor:pointer; font-size:18px; color:#ff4757; transition: transform 0.2s;">
+                      <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
+                  </button>
+              </div>
               <p class="card_price"><?php echo $price_parts[0]; ?>.<small><?php echo $price_parts[1]; ?></small> <span>جنيه</span></p>
               <button class="card_btn">أضافة إلي العربة</button>
             </div>
@@ -92,17 +101,26 @@ if (Session::isLoggedIn()) {
               }
               $price_parts = explode('.', number_format($row['price'], 2, '.', ''));
           ?>
-          <div class="card" style="position: relative;">
-            <?php $isFavorited = in_array($row['id'], $favoriteIds); ?>
-            <button class="favorite-btn" data-product-id="<?php echo $row['id']; ?>" style="position:absolute; top:10px; right:10px; background:transparent; border:none; cursor:pointer; font-size:1.5rem; color:#ff4757; z-index:10;">
-                <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
-            </button>
+          <div class="card">
             <div class="box_img">
               <img src="<?php echo htmlspecialchars($row['image_url']); ?>" alt="" class="card_image" />
             </div>
             <div class="card_details">
               <a href="/product?id=<?php echo $row['id']; ?>" class="card_title" style="display:block; color:#555; font-weight:normal; font-size:14px; margin-bottom:10px;"><?php echo htmlspecialchars($row['title']); ?></a>
-              <div class="rating"><?php echo $stars_html; ?></div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  <div class="rating"><?php echo $stars_html; ?></div>
+                  <?php 
+                  $favoriteIds = [];
+                  if (Session::isLoggedIn()) {
+                      $favoriteModel = new Favorite();
+                      $favoriteIds = $favoriteModel->getUserFavoriteIds(Session::get('user_id'));
+                  }
+                  $isFavorited = in_array($row['id'], $favoriteIds);
+                  ?>
+                  <button class="favorite-btn" data-product-id="<?php echo $row['id']; ?>" style="background:transparent; border:none; cursor:pointer; font-size:18px; color:#ff4757; transition: transform 0.2s;">
+                      <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
+                  </button>
+              </div>
               <p class="card_price"><?php echo $price_parts[0]; ?>.<small><?php echo $price_parts[1]; ?></small> <span>جنيه</span></p>
               <button class="card_btn">أضافة إلي العربة</button>
             </div>

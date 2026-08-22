@@ -308,8 +308,15 @@ document.addEventListener('DOMContentLoaded', () => {
     favoriteButtons.forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
+            e.stopPropagation();
             const productId = btn.getAttribute('data-product-id');
             const icon = btn.querySelector('i');
+            
+            // Animation
+            btn.style.transform = 'scale(1.3)';
+            setTimeout(() => btn.style.transform = 'scale(1)', 200);
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
             
             try {
                 const response = await fetch('/toggle-favorite', {
@@ -318,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Content-Type': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify({ product_id: productId })
+                    body: JSON.stringify({ product_id: productId, csrf_token: csrfToken })
                 });
                 
                 if (response.status === 401) {
