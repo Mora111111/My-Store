@@ -71,7 +71,14 @@ class UserProfileController {
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
-        $productId = $input['product_id'] ?? $_POST['product_id'] ?? null;
+        $productId = $input['product_id'] ?? null;
+        $csrfToken = $input['csrf_token'] ?? '';
+
+        if (!CSRF::validate($csrfToken)) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Invalid CSRF token']);
+            exit;
+        }
 
         if (!$productId) {
             http_response_code(400);

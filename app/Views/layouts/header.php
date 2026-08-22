@@ -4,11 +4,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="csrf-token" content="<?= CSRF::generate() ?>">
   <link rel="stylesheet" href="/css/all.min.css" />
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="/images/icons/shopping-cart_head.png">
   <title>MY Store - متجر على الإنترنت</title>
+  <meta name="csrf-token" content="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : (class_exists('CSRF') ? CSRF::getToken() : ''); ?>">
 </head>
 
 <body>
@@ -40,8 +40,7 @@
                     <li><a href="/my-messages"><i class="fa-solid fa-envelope"></i> رسائلي</a></li>
                   <?php endif; ?>
                   <li>
-                    <a href="/logout" class="logout-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل
-                      خروج</a>
+                    <a href="/logout" class="logout-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل خروج</a>
                   </li>
                 </ul>
               </div>
