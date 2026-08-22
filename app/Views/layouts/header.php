@@ -37,6 +37,7 @@
                   <?php else: ?>
                     <li><a href="/profile"><i class="fa-solid fa-user-gear"></i> الملف الشخصي</a></li>
                     <li><a href="/my-orders"><i class="fa-solid fa-box-open"></i> طلباتي</a></li>
+                    <li><a href="/my-messages"><i class="fa-solid fa-envelope"></i> رسائلي</a></li>
                   <?php endif; ?>
                   <li>
                     <a href="/logout" class="logout-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل

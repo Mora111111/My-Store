@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <?php 
-// تحديد المسار الحالي بدون query string
 $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); 
 
 function isActive($path) {
@@ -8,7 +7,6 @@ function isActive($path) {
     if ($path === '/admin') {
         return ($currentUri === '/admin') ? 'active' : '';
     }
-    // يضمن التطابق التام أو التطابق مع مسار فرعي لنفس القسم
     return ($currentUri === $path || strpos($currentUri, $path . '/') === 0) ? 'active' : '';
 }
 ?>
@@ -85,7 +83,38 @@ function isActive($path) {
     .close-modal { position: absolute; top: 15px; left: 15px; font-size: 20px; cursor: pointer; color: #94a3b8; transition: 0.2s; }
     .close-modal:hover { color: #ef4444; }
     .actions-flex { display: flex; align-items: center; gap: 8px; }
-  </style>
+    td { max-width: 200px; word-wrap: break-word; overflow-wrap: break-word; }
+    .message-content, .comment-text, .admin-reply-box { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; white-space: normal; line-height: 1.6; }
+ 
+    /* Product & Modal Specific Styles */
+    .ai-magic-btn { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
+    .ai-magic-btn:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); }
+    .btn-cancel { background: #e2e8f0; color: #475569; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+    .btn-cancel:hover { background: #cbd5e1; }
+    .ai-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1100; justify-content: center; align-items: center; }
+    .ai-modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; }
+
+    /* Users Stats & Avatars */
+    .stats-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px; }
+    .stat-card { background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 20px; }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #38bdf8; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin-left: 10px; flex-shrink: 0; }
+    .user-avatar.banned { background: #ef4444; }
+    .btn-ban { background: #475569; color: #fff; }
+    .btn-unban { background: #10b981; color: #fff; }
+
+    /* Orders Details */
+    .product-item { display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; padding: 15px 0; }
+    .product-item img { width: 60px; height: 60px; object-fit: cover; margin-left: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .address-box { background: #f8fafc; padding: 18px; border-radius: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+    .status-select { padding: 8px 12px; border-radius: 30px; border: 1.5px solid #e2e8f0; font-family: 'Tajawal', sans-serif; font-size: 14px; background: #fafbfc; cursor: pointer; }
+    .status-select:focus { outline: none; border-color: #38bdf8; }
+
+    /* Settings Form */
+    .form_row { margin-bottom: 20px; }
+    .form_row label { display: block; font-weight: bold; margin-bottom: 8px; color: #334155; }
+    .form_row input, .form_row textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 15px; box-sizing: border-box; }
+    .form_row input:focus, .form_row textarea:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 0 4px rgba(56,189,248,0.1); }
+ </style>
 </head>
 <body>
 <div class="sidebar">
