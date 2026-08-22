@@ -33,8 +33,8 @@
           </td>
           <td>
             <div class="actions-flex">
-              <button type="button" class="btn-reply" onclick="openReplyModal(<?php echo $row['id']; ?>, 'contact', <?php echo htmlspecialchars(json_encode($reply_text)); ?>)">
-                <i class="fa-solid fa-pen-to-square"></i> <?php echo !empty($reply_text) ? 'تعديل الرد' : 'رد'; ?>
+              <button type="button" class="btn-reply" onclick="openReplyModal(<?php echo $row['id']; ?>, 'contact', <?php echo htmlspecialchars(json_encode($reply_text)); ?>, <?php echo htmlspecialchars(json_encode($row['message'])); ?>)">
+                <i class="fa-solid fa-pen-to-square"></i> <?php echo !empty($reply_text) ? 'عرض وتعديل' : 'قراءة ورد'; ?>
               </button>
               <a href="/admin/messages/delete?id=<?php echo $row['id']; ?>&type=contact" class="btn-delete" onclick="return confirm('هل أنت متأكد من حذف هذه الرسالة؟');">
                 <i class="fa-solid fa-trash"></i> حذف
@@ -83,8 +83,8 @@
           </td>
           <td>
             <div class="actions-flex">
-              <button type="button" class="btn-reply" onclick="openReplyModal(<?php echo $row['id']; ?>, 'user', <?php echo htmlspecialchars(json_encode($user_reply_text)); ?>)">
-                <i class="fa-solid fa-pen-to-square"></i> <?php echo !empty($user_reply_text) ? 'تعديل الرد' : 'رد'; ?>
+              <button type="button" class="btn-reply" onclick="openReplyModal(<?php echo $row['id']; ?>, 'user', <?php echo htmlspecialchars(json_encode($user_reply_text)); ?>, <?php echo htmlspecialchars(json_encode($row['message'])); ?>)">
+                <i class="fa-solid fa-pen-to-square"></i> <?php echo !empty($user_reply_text) ? 'عرض وتعديل' : 'قراءة ورد'; ?>
               </button>
               <form method="POST" action="/admin/messages/delete" style="display:inline-block;" onsubmit="return confirm('هل أنت متأكد من حذف هذه الرسالة؟');">
                 <?= CSRF::getField() ?>
@@ -259,6 +259,11 @@
     <div class="modal-body-modern">
       <p class="modal-desc-modern">قم بكتابة الرد يدوياً للعميل. سيتم إرسال هذا الرد وحفظه مباشرة.</p>
       
+      <div style="background:#f8fafc; padding:15px; border-radius:12px; margin-bottom:20px; border-right:4px solid #3b82f6;">
+        <strong style="color:#1e293b; font-size:14px;"><i class="fa-solid fa-envelope-open-text"></i> نص الرسالة كاملاً:</strong>
+        <p id="display_full_message" style="margin:8px 0 0 0; color:#334155; line-height:1.6; font-size:14px;"></p>
+      </div>
+
       <form method="POST" action="/admin/messages/reply" style="margin:0;">
         <?= CSRF::getField() ?>
         <input type="hidden" name="type" id="modal_msg_type" value="contact">
@@ -283,10 +288,11 @@ const msgIdInput = document.getElementById('modal_msg_id');
 const msgTypeInput = document.getElementById('modal_msg_type');
 const replyTextInput = document.getElementById('modal_reply_text');
 
-function openReplyModal(id, type, currentReply) {
+function openReplyModal(id, type, currentReply, messageText) {
   msgIdInput.value = id;
   msgTypeInput.value = type;
   replyTextInput.value = currentReply;
+  document.getElementById('display_full_message').innerText = messageText;
   modal.style.display = 'flex';
 }
 

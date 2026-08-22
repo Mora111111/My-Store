@@ -41,16 +41,19 @@ function isActive($path) {
     th { background: #f8fafc; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0; font-size: 15px; }
     .action-btn { padding: 8px 16px; border-radius: 30px; text-decoration: none; color: #fff; font-size: 14px; margin-left: 8px; display: inline-block; font-weight: 500; transition: all 0.2s; border: none; cursor: pointer; font-family: 'Tajawal', sans-serif; }
     .action-btn:hover { transform: translateY(-1px); }
-    .btn-edit { background: #3b82f6; box-shadow: 0 4px 8px rgba(59,130,246,0.2); }
-    .btn-edit:hover { background: #2563eb; }
-    .btn-delete { background: #ef4444; box-shadow: 0 4px 8px rgba(239,68,68,0.2); }
-    .btn-delete:hover { background: #dc2626; }
+    
+    /* Unified Actions & Buttons for All Admin Pages */
+    .actions-flex { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: nowrap; }
+    .btn-reply, .btn-edit, .btn-view, .btn-delete { color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; text-decoration: none; white-space: nowrap; font-family: 'Tajawal', sans-serif; }
+    .btn-reply, .btn-edit, .btn-view { background: #3b82f6; box-shadow: 0 4px 8px rgba(59,130,246,0.15); }
+    .btn-reply:hover, .btn-edit:hover, .btn-view:hover { background: #2563eb; transform: translateY(-1px); }
+    .btn-delete { background: #ef4444; box-shadow: 0 4px 8px rgba(239,68,68,0.15); }
+    .btn-delete:hover { background: #dc2626; transform: translateY(-1px); }
+
     .btn-submit { background: linear-gradient(135deg, #38bdf8, #2dd4bf); color: #0f172a; border: none; padding: 14px 28px; cursor: pointer; border-radius: 40px; font-size: 16px; font-weight: 700; transition: all 0.3s; box-shadow: 0 8px 16px rgba(56,189,248,0.2); display: inline-block; text-decoration: none; }
     .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(56,189,248,0.3); }
     .btn-update { background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 30px; cursor: pointer; font-weight: 500; font-size: 13px; transition: 0.2s; }
     .btn-update:hover { background: #2563eb; }
-    .btn-view { background: #38bdf8; color: #0f172a; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; text-decoration: none; display: inline-block; font-weight: 500; font-size: 13px; transition: 0.2s; }
-    .btn-view:hover { background: #2dd4bf; }
     .btn-danger { background: #ef4444; color: #fff; box-shadow: 0 4px 6px rgba(239,68,68,0.2); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 30px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; font-family: 'Tajawal'; }
     .btn-success { background: #10b981; color: #fff; display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 30px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; font-family: 'Tajawal'; }
     .modal-overlay, .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); justify-content: center; align-items: center; }
@@ -63,26 +66,15 @@ function isActive($path) {
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #38bdf8; background: #fff; box-shadow: 0 0 0 4px rgba(56,189,248,0.1); }
     .status-badge { padding: 6px 14px; border-radius: 40px; font-size: 13px; font-weight: 600; display: inline-block; }
     .badge { background: #e0f2fe; color: #0369a1; padding: 6px 14px; border-radius: 40px; font-size: 13px; font-weight: 600; }
-    .badge-success { background: #d1fae5; color: #065f46; padding: 6px 14px; border-radius: 40px; font-size: 13px; font-weight: 600; }
-    .badge-warning { background: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 40px; font-size: 13px; font-weight: 600; }
+    .badge-success { background-color: #d1fae5; color: #065f46; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+    .badge-warning { background-color: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
     .main-content::-webkit-scrollbar { width: 8px; }
     .main-content::-webkit-scrollbar-track { background: #f1f5f9; }
     .main-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 20px; }
-    .btn-reply { background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 8px rgba(59,130,246,0.15); font-family: 'Tajawal', sans-serif; }
-    .btn-reply:hover { background: #2563eb; transform: translateY(-1px); }
-    .btn-delete { background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 8px rgba(239,68,68,0.15); font-family: 'Tajawal', sans-serif; text-decoration: none; }
-    .btn-delete:hover { background: #dc2626; transform: translateY(-1px); }
     .btn-ai-reply { background: linear-gradient(135deg, #a78bfa, #c084fc); color: white; border: none; padding: 10px 18px; cursor: pointer; border-radius: 40px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; transition: 0.3s; box-shadow: 0 4px 10px rgba(167,139,250,0.3); font-family: 'Tajawal', sans-serif; }
     .btn-ai-reply:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-ai-reply:disabled { background: #cbd5e1; cursor: not-allowed; opacity: 1; transform: none; box-shadow: none; }
-    .badge-success { background-color: #d1fae5; color: #065f46; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
-    .badge-warning { background-color: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
     .date-badge { color: #64748b; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; padding: 6px 12px; border-radius: 8px; border: 1px solid #e2e8f0; white-space: nowrap; }
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-    .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-    .close-modal { position: absolute; top: 15px; left: 15px; font-size: 20px; cursor: pointer; color: #94a3b8; transition: 0.2s; }
-    .close-modal:hover { color: #ef4444; }
-    .actions-flex { display: flex; align-items: center; gap: 8px; }
     td { max-width: 200px; word-wrap: break-word; overflow-wrap: break-word; }
     .message-content, .comment-text, .admin-reply-box { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; white-space: normal; line-height: 1.6; }
  
@@ -114,7 +106,7 @@ function isActive($path) {
     .form_row label { display: block; font-weight: bold; margin-bottom: 8px; color: #334155; }
     .form_row input, .form_row textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 15px; box-sizing: border-box; }
     .form_row input:focus, .form_row textarea:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 0 4px rgba(56,189,248,0.1); }
- </style>
+  </style>
 </head>
 <body>
 <div class="sidebar">
