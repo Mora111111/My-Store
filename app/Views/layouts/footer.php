@@ -93,7 +93,8 @@ document.addEventListener('click', async function(e) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': csrfToken
             },
             body: JSON.stringify({ product_id: productId, csrf_token: csrfToken })
         });

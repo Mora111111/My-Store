@@ -49,11 +49,11 @@
         <h3 class="title">تواصل معنا</h3>
         <div>
           <i class="fa-solid fa-phone footer-icon"></i>
-          <a href="#">01017******</a>
+          <a href="#">رقم التواصل الاول</a>
         </div>
         <div>
           <i class="fa-solid fa-phone footer-icon"></i>
-          <a href="#">01034******</a>
+          <a href="#">رقم التواصل الثاني</a>
         </div>
         <div>
           <i class="fa-solid fa-envelope footer-icon"></i>
