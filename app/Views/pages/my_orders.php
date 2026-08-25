@@ -115,7 +115,9 @@
                         <i class="fa-solid fa-heart"></i>
                     </button>
                     <img src="<?= htmlspecialchars($row['image_url'] ?? '') ?>" alt="<?= htmlspecialchars($row['title']) ?>" style="width: 100%; max-height: 200px; object-fit: contain;">
-                    <h3 style="font-size: 1.1rem; margin: 10px 0;"><?= htmlspecialchars($row['title']) ?></h3>
+                    <div class="card_title_wrapper" style="margin: 10px 0;">
+                      <h3 style="font-size: 1.1rem; margin: 0; position:relative; z-index:2;"><?= htmlspecialchars($row['title']) ?></h3>
+                    </div>
                     <p style="color: #ff4757; font-weight: bold; margin-bottom: 15px;"><?= htmlspecialchars($row['price']) ?>$</p>
                     <a href="/product?id=<?= $row['id'] ?>" style="display: inline-block; padding: 8px 15px; background: #333; color: #fff; text-decoration: none; border-radius: 4px;">عرض التفاصيل</a>
                 </div>

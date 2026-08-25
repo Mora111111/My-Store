@@ -56,7 +56,9 @@ if (Session::isLoggedIn()) {
             <img src="<?php echo htmlspecialchars($row['image_url']); ?>" alt="" class="card_image" />
           </div>
           <div class="card_details">
-            <a href="/product?id=<?php echo $row['id']; ?>" class="card_title"><?php echo htmlspecialchars($row['title']); ?></a>
+            <div class="card_title_wrapper" style="margin-bottom:10px;">
+              <a href="/product?id=<?php echo $row['id']; ?>" class="card_title" style="margin:0; position:relative; z-index:2;"><?php echo htmlspecialchars($row['title']); ?></a>
+            </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <div class="rating"><?php echo $stars_html; ?></div>
                 <?php 

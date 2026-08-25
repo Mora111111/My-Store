@@ -2129,3 +2129,40 @@ input[type="checkbox"] {
 }
 .card_title { transition: 0.3s; }
 .card_title:hover { color: var(--main-color) !important; text-shadow: 0px 0px 8px rgba(56, 189, 248, 0.5); }
+
+.card_title_wrapper {
+  position: relative;
+  display: block;
+  padding: 4px;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 1;
+}
+.card_title_wrapper::before {
+  content: "";
+  position: absolute;
+  top: -150%; 
+  left: -50%; 
+  width: 200%; 
+  height: 300%;
+  background: conic-gradient(transparent, var(--main-color), #38bdf8, transparent 30%);
+  animation: rotate-border 2s linear infinite;
+  z-index: -2;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.card_title_wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: var(--white-color);
+  border-radius: 6px;
+  z-index: -1;
+}
+.card:hover .card_title_wrapper::before,
+.product-card:hover .card_title_wrapper::before {
+  opacity: 1;
+}
+@keyframes rotate-border {
+  100% { transform: rotate(360deg); }
+}
