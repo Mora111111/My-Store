@@ -538,6 +538,8 @@ a {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   transition: var(--main-transition);
   animation: fadeIn 0.4s;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes fadeIn {
@@ -582,9 +584,9 @@ a {
   width: 100%;
   padding: 15px 15px 20px;
   background-color: var(--white-color);
-  min-height: 200px;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 }
 
 .card_title {
@@ -624,11 +626,9 @@ a {
 
 .card_btn {
   width: 180px;
-  position: absolute;
-  left: 50%;
-  bottom: 20px;
-  transform: translateX(-50%);
-  font-family: "Cairo", serif;
+  position: static;
+  transform: none;
+  margin: auto auto 0 auto;
   display: block;
   border: none;
   outline: none;
@@ -641,6 +641,11 @@ a {
   transition: var(--main-transition);
   cursor: pointer;
   visibility: visible;
+}
+
+.card_price {
+  margin-bottom: 20px;
+  font-weight: bold;
 }
 
 .card_btn:hover {
