@@ -1,4 +1,4 @@
-<div class="cart">
+﻿<div class="cart">
   <h2 class="cart_title">عربة التسوق</h2>
   <div class="cart_content"></div>
   <div class="total">

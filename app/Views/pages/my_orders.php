@@ -31,7 +31,7 @@
 
 <main class="main">
     <section class="my-orders-container container">
-      <h2 class="main_title">Ø³Ø¬Ù„ Ø·Ù„Ø¨Ø§ØªÙŠ</h2>
+      <h2 class="main_title">سجل طلباتي</h2>
 
       <?php if(isset($_GET['cancel_error'])): ?>
           <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: center;">
@@ -43,25 +43,25 @@
         <table class="orders-table">
             <thead>
                 <tr>
-                    <th>Ø±Ù‚Ù… Ø§Ù„Ø·Ù„Ø¨</th>
-                    <th>ØªØ§Ø±ÙŠØ® Ø§Ù„Ø·Ù„Ø¨</th>
-                    <th>Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ</th>
-                    <th>Ø­Ø§Ù„Ø© Ø§Ù„Ø·Ù„Ø¨</th>
-                    <th>Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª</th>
+                    <th>رقم الطلب</th>
+                    <th>تاريخ الطلب</th>
+                    <th>الإجمالي</th>
+                    <th>حالة الطلب</th>
+                    <th>الإجراءات</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                 $status_map = [
-                    'Ù‚ÙŠØ¯ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø©' => 'status-pending',
-                    'ØªÙ… Ø§Ù„Ø´Ø­Ù†' => 'status-shipped',
-                    'Ù…ÙƒØªÙ…Ù„' => 'status-completed',
-                    'Ù…Ù„ØºÙŠ' => 'status-cancelled'
+                    'قيد المراجعة' => 'status-pending',
+                    'تم الشحن' => 'status-shipped',
+                    'مكتمل' => 'status-completed',
+                    'ملغي' => 'status-cancelled'
                 ];
                 ?>
                 <?php if (!empty($orders)): ?>
                     <?php foreach ($orders as $row):
-                        $status = $row['status'] ?? 'Ù‚ÙŠØ¯ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø©';
+                        $status = $row['status'] ?? 'قيد المراجعة';
                         $status_class = $status_map[$status] ?? 'status-pending';
                         $products_json = htmlspecialchars($row['products'] ?? '[]', ENT_QUOTES, 'UTF-8');
                         $date = isset($row['created_at']) ? date('Y-m-d', strtotime($row['created_at'])) : '';
@@ -69,22 +69,22 @@
                     <tr>
                         <td>#<?php echo $row['id']; ?></td>
                         <td><?php echo $date; ?></td>
-                        <td style="font-weight:bold;"><?php echo htmlspecialchars($row['total_price'] ?? '0'); ?> Ø¬Ù†ÙŠÙ‡</td>
+                        <td style="font-weight:bold;"><?php echo htmlspecialchars($row['total_price'] ?? '0'); ?> جنيه</td>
                         <td><span class="status-badge <?php echo $status_class; ?>"><?php echo $status; ?></span></td>
                         <td>
-                            <button class="btn-view details-btn" data-id="<?php echo $row['id']; ?>" data-products='<?php echo $products_json; ?>'><i class="fa-solid fa-eye"></i> ØªÙØ§ØµÙŠÙ„</button>
-                            <?php if ($status === 'Ù‚ÙŠØ¯ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø©'): ?>
-                                <span style="color: #999; font-size: 12px; margin-right: 10px;">Ù‚ÙŠØ¯ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø©</span>
-                            <?php elseif ($status === 'Ù…Ù„ØºÙŠ' || $status === 'Ù…ÙƒØªÙ…Ù„'): ?>
-                                <span style="color: #999; font-size: 12px; margin-right: 10px;">Ù…ÙƒØªÙ…Ù„/Ù…Ù„ØºÙŠ</span>
+                            <button class="btn-view details-btn" data-id="<?php echo $row['id']; ?>" data-products='<?php echo $products_json; ?>'><i class="fa-solid fa-eye"></i> تفاصيل</button>
+                            <?php if ($status === 'قيد المراجعة'): ?>
+                                <span style="color: #999; font-size: 12px; margin-right: 10px;">قيد المراجعة</span>
+                            <?php elseif ($status === 'ملغي' || $status === 'مكتمل'): ?>
+                                <span style="color: #999; font-size: 12px; margin-right: 10px;">مكتمل/ملغي</span>
                             <?php else: ?>
-                                <span style="color: #999; font-size: 12px; margin-right: 10px;">Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø§Ù„Ø¥Ù„ØºØ§Ø¡</span>
+                                <span style="color: #999; font-size: 12px; margin-right: 10px;">لا يمكن الإلغاء</span>
                             <?php endif; ?>
                         </td>
                     </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <tr><td colspan='5' style='text-align: center; padding: 30px; color:#777;'>Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù„Ø¯ÙŠÙƒ Ø·Ù„Ø¨Ø§Øª Ø³Ø§Ø¨Ù‚Ø© Ø­ØªÙ‰ Ø§Ù„Ø¢Ù†.</td></tr>
+                    <tr><td colspan='5' style='text-align: center; padding: 30px; color:#777;'>لا يوجد لديك طلبات سابقة حتى الآن.</td></tr>
                 <?php endif; ?>
             </tbody>
         </table>
@@ -92,7 +92,7 @@
     </section>
 
     <section class="favorites-container container" style="margin-top: 40px; padding: 0 20px 80px;">
-        <h2 class="main_title">Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ù…ÙØ¶Ù„Ø©</h2>
+        <h2 class="main_title">المنتجات المفضلة</h2>
         <?php
         $favoriteModel = new Favorite();
         $favorites = $favoriteModel->getUserFavorites(Session::get('user_id'));
@@ -108,11 +108,11 @@
                       <h3 style="font-size: 1.1rem; margin: 0; position:relative; z-index:2;"><?= htmlspecialchars($row['title']) ?></h3>
                     </div>
                     <p style="color: #ff4757; font-weight: bold; margin-bottom: 15px;"><?= htmlspecialchars($row['price']) ?>$</p>
-                    <a href="/product?id=<?= $row['id'] ?>" style="display: inline-block; padding: 8px 15px; background: #333; color: #fff; text-decoration: none; border-radius: 4px;">Ø¹Ø±Ø¶ Ø§Ù„ØªÙØ§ØµÙŠÙ„</a>
+                    <a href="/product?id=<?= $row['id'] ?>" style="display: inline-block; padding: 8px 15px; background: #333; color: #fff; text-decoration: none; border-radius: 4px;">عرض التفاصيل</a>
                 </div>
             <?php endforeach; ?>
             <?php if (empty($favorites)): ?>
-                <p style="grid-column: 1 / -1; text-align: center; color: #666;">Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ù†ØªØ¬Ø§Øª ÙÙŠ Ø§Ù„Ù…ÙØ¶Ù„Ø© Ø­Ø§Ù„ÙŠØ§Ù‹.</p>
+                <p style="grid-column: 1 / -1; text-align: center; color: #666;">لا توجد منتجات في المفضلة حالياً.</p>
             <?php endif; ?>
         </div>
     </section>
@@ -121,7 +121,7 @@
 <div id="userOrderModal" class="modal">
     <div class="modal-content">
       <span class="close-modal" id="closeUserModalBtn">&times;</span>
-      <h3 style="margin-top:0; border-bottom:2px solid var(--main-color); padding-bottom:10px; color: var(--main-color);">Ù…Ø­ØªÙˆÙŠØ§Øª Ø§Ù„Ø·Ù„Ø¨ Ø±Ù‚Ù… #<span id="modalOrderIdUser"></span></h3>
+      <h3 style="margin-top:0; border-bottom:2px solid var(--main-color); padding-bottom:10px; color: var(--main-color);">محتويات الطلب رقم #<span id="modalOrderIdUser"></span></h3>
       <div id="modalProductsListUser"></div>
     </div>
 </div>
@@ -139,11 +139,11 @@ document.querySelectorAll('.details-btn').forEach(btn => {
         try {
             const products = JSON.parse(productsJson);
             if(products.length === 0) {
-                productsList.innerHTML = '<p>Ù„Ø§ ØªÙˆØ¬Ø¯ ØªÙØ§ØµÙŠÙ„.</p>';
+                productsList.innerHTML = '<p>لا توجد تفاصيل.</p>';
             } else {
                 products.forEach(product => {
                     const imgUrl = product.src || 'images/logos/logo.png';
-                    const title = product.title || 'Ù…Ù†ØªØ¬ ØºÙŠØ± Ù…Ø¹Ø±ÙˆÙ';
+                    const title = product.title || 'منتج غير معروف';
                     const price = product.price || '0';
                     const qty = product.quantity || product.quantty || product.number || 1; 
                     
@@ -152,14 +152,14 @@ document.querySelectorAll('.details-btn').forEach(btn => {
                             <img src="${imgUrl}" alt="">
                             <div style="flex:1;">
                                 <h4 style="margin: 0 0 5px 0;">${title}</h4>
-                                <p style="margin: 0; color: #666; font-size: 14px;">Ø§Ù„ÙƒÙ…ÙŠØ©: <strong>${qty}</strong> | Ø§Ù„Ø³Ø¹Ø±: <strong>${price}</strong></p>
+                                <p style="margin: 0; color: #666; font-size: 14px;">الكمية: <strong>${qty}</strong> | السعر: <strong>${price}</strong></p>
                             </div>
                         </div>
                     `;
                 });
             }
         } catch (e) {
-            productsList.innerHTML = '<p style="color:red;">Ø¹Ø°Ø±Ø§Ù‹ØŒ Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø¹Ø±Ø¶ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø­Ø§Ù„ÙŠØ§Ù‹.</p>';
+            productsList.innerHTML = '<p style="color:red;">عذراً، لا يمكن عرض المنتجات حالياً.</p>';
         }
 
         document.getElementById('userOrderModal').style.display = 'block';

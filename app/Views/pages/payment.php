@@ -1,4 +1,4 @@
-<style>
+﻿<style>
     body { font-family: 'Tajawal', sans-serif; background-color: #f4f6f9; }
 
     .container_payment { padding-top: 120px !important; }
@@ -41,16 +41,16 @@
     <div class="item_payment address"></div>
     
     <div class="item_payment" id="order-review-section">
-      <h4 class="title_payment">المنتجات في طلبك</h4>
+      <h4 class="title_payment">???????? ?? ????</h4>
       <div id="review-products-container" style="display: flex; flex-direction: column; gap: 15px;"></div>
     </div>
 
     <div class="item_payment">
-      <h4 class="title_payment">طرق السداد</h4>
+      <h4 class="title_payment">??? ??????</h4>
       <div class="cards_payment">
         <div class="card_payment" id="card-payment">
           <img src="/images/payment/payMent.png" class="card_payment_img" />
-          <span class="card_payment_p">إضافة بطاقة جديدة</span>
+          <span class="card_payment_p">????? ????? ?????</span>
         </div>
         <div class="card_payment">
           <img src="/images/payment/payment_1.png" class="visa_img" />
@@ -64,35 +64,35 @@
 
   <div class="content_payment">
     <div class="item_payment" id="item-payment">
-      <h4 class="title_payment">الملخص</h4>
+      <h4 class="title_payment">??????</h4>
       <div class="boxs_order_total">
         <div class="box_order_total">
-          <span>إجمالي الطلب</span>
+          <span>?????? ?????</span>
           <span class="order_total cart-total-price"></span>
         </div>
         <div class="box_order_total">
-          <span>تكاليف الشحن</span>
-          <span>مجاني</span>
+          <span>?????? ?????</span>
+          <span>?????</span>
         </div>
       </div>
       <div class="boxs_order_total">
         <div class="box_order_total">
-          <span>الإجمالي</span>
+          <span>????????</span>
           <span class="order_total cart-total-price"></span>
         </div>
-        <button class="order_btn">إكمال الطلب</button>
+        <button class="order_btn">????? ?????</button>
       </div>
     </div>
     <div class="item_payment item_payment_safety">
       <img src="/images/logos/logo.png" alt="Safety Logo" />
-      <p>يحافظ MY Store على أمان معلوماتك ومدفوعاتك</p>
+      <p>????? MY Store ??? ???? ???????? ?????????</p>
       <img src="/images/payment/payment_5.png" alt="Safety" />
     </div>
   </div>
 
   <div class="container_modal">
     <div class="modal_header">
-      <h4 class="modal_title">إضافة عنوان الشحن</h4>
+      <h4 class="modal_title">????? ????? ?????</h4>
     </div>
     <div class="modal_body">
       <div class="form_section">
@@ -100,23 +100,23 @@
         <input type="hidden" name="products" id="hidden-products" value="[]">
         <input type="hidden" name="total_price" id="hidden-total-price" value="0">
         <div class="form_body">
-          <div class="form_title">البيانات الشخصية</div>
+          <div class="form_title">???????? ???????</div>
           <div class="form_box_modal">
-            <input type="text" name="full_name" placeholder="* أسم العميل" required class="form_input input_user" />
-            <input type="text" name="phone" placeholder="* رقم الهاتف" required class="form_input input_tel" />
+            <input type="text" name="full_name" placeholder="* ??? ??????" required class="form_input input_user" />
+            <input type="text" name="phone" placeholder="* ??? ??????" required class="form_input input_tel" />
           </div>
-          <div class="form_title">العنوان</div>
+          <div class="form_title">???????</div>
           <div class="form_box_modal">
-            <input type="text" name="address_line1" placeholder="* الشارع، المنزل/الشقة/الوحدة السكنية" required class="form_input input_address_street" />
-            <input type="text" name="address_line2" placeholder="* الشقة،الجناح،الوحدة،ألخ..." required class="form_input input_address_unit" />
-          </div>
-          <div class="form_box_modal">
-            <input type="text" name="city" placeholder="* المدينة" required class="form_input input_address_city" />
-            <input type="text" name="governorate" placeholder="* المحافظة " required class="form_input input_address_boycott" />
-            <input type="text" name="zip_code" placeholder="* الرقم البريدي" required class="form_input input_address_postal" />
+            <input type="text" name="address_line1" placeholder="* ??????? ??????/?????/?????? ???????" required class="form_input input_address_street" />
+            <input type="text" name="address_line2" placeholder="* ???????????????????????..." required class="form_input input_address_unit" />
           </div>
           <div class="form_box_modal">
-            <input type="button" value="إضافة عنوان الشحن" class="send_btn" />
+            <input type="text" name="city" placeholder="* ???????" required class="form_input input_address_city" />
+            <input type="text" name="governorate" placeholder="* ???????? " required class="form_input input_address_boycott" />
+            <input type="text" name="zip_code" placeholder="* ????? ???????" required class="form_input input_address_postal" />
+          </div>
+          <div class="form_box_modal">
+            <input type="button" value="????? ????? ?????" class="send_btn" />
           </div>
           <i class="fa-solid fa-xmark close_modal"></i>
         </div>
@@ -126,29 +126,29 @@
 
   <div class="container_modal modal_change">
     <div class="modal_header">
-      <h4 class="modal_title">تعديل عنوان الشحن</h4>
+      <h4 class="modal_title">????? ????? ?????</h4>
     </div>
     <div class="modal_body">
       <div class="form_section">
         <div class="form_body">
-          <div class="form_title">البيانات الشخصية</div>
+          <div class="form_title">???????? ???????</div>
           <div class="form_box_modal">
-            <input type="text" placeholder="* أسم العميل" required class="form_input input_user_change" />
-            <input type="text" placeholder="* رقم الهاتف" required class="form_input input_tel_change" />
+            <input type="text" placeholder="* ??? ??????" required class="form_input input_user_change" />
+            <input type="text" placeholder="* ??? ??????" required class="form_input input_tel_change" />
           </div>
-          <div class="form_title">العنوان</div>
+          <div class="form_title">???????</div>
           <div class="form_box_modal">
-            <input type="text" placeholder="* الشارع، المنزل/الشقة/الوحدة السكنية" required class="form_input input_address_street_change" />
-            <input type="text" placeholder="* الشقة،الجناح،الوحدة،ألخ..." required class="form_input input_address_unit_change" />
+            <input type="text" placeholder="* ??????? ??????/?????/?????? ???????" required class="form_input input_address_street_change" />
+            <input type="text" placeholder="* ???????????????????????..." required class="form_input input_address_unit_change" />
           </div>
           <div class="form_box_modal">
-            <input type="text" placeholder="* المدينة" required class="form_input input_address_city_change" />
-            <input type="text" placeholder="* المحافظة " required class="form_input input_address_boycott_change " />
-            <input type="text" placeholder="* الرقم البريدي" required class="form_input input_address_postal_change" />
+            <input type="text" placeholder="* ???????" required class="form_input input_address_city_change" />
+            <input type="text" placeholder="* ???????? " required class="form_input input_address_boycott_change " />
+            <input type="text" placeholder="* ????? ???????" required class="form_input input_address_postal_change" />
           </div>
           <div class="box_change_btn">
-            <button class="change_modal_btn done_change_btn">تأكيد</button>
-            <button class="change_modal_btn close_change_btn">إالغاء</button>
+            <button class="change_modal_btn done_change_btn">?????</button>
+            <button class="change_modal_btn close_change_btn">??????</button>
           </div>
         </div>
       </div>
@@ -157,14 +157,14 @@
 
   <div class="container_modal modal_card">
     <div class="modal_header">
-      <h4 class="modal_title_card">قدِّم مزيدًا من المعلومات</h4>
+      <h4 class="modal_title_card">????? ?????? ?? ?????????</h4>
       <div class="description_visa_card">
         <img src="/images/payment/payment_s.png" alt="">
-        <span>معلومات الدفع الخاصة بك في أمان معنا</span>
+        <span>??????? ????? ?????? ?? ?? ???? ????</span>
       </div>
       <div class="modal_row">
         <img src="/images/payment/payMent.png" alt="" class="card_payment_img">
-        <span>إضافة بطاقة جديدة</span>
+        <span>????? ????? ?????</span>
         <img src="/images/payment/payment_1.png" alt="" class="visa_img">
         <img src="/images/payment/payment_2.png" alt="" class="visa_img">
         <img src="/images/payment/payment_3.png" alt="" class="visa_img">
@@ -175,15 +175,15 @@
       <div class="form_section">
         <div class="form_body">
           <div class="form_box_modal">
-            <input type="text" placeholder="رقم البطاقة" class="form_input">
-            <input type="text" placeholder="أسم صاحب البطاقة" class="form_input">
+            <input type="text" placeholder="??? ???????" class="form_input">
+            <input type="text" placeholder="??? ???? ???????" class="form_input">
           </div>
           <div class="form_box_modal">
             <input type="date"  class="form_input">
             <input type="text" placeholder="CVV" class="form_input">
           </div>
           <div class="form_button_section">
-            <input type="button" value="حفظ وتأكيد" class="send_btn visa_card_btn">
+            <input type="button" value="??? ??????" class="send_btn visa_card_btn">
           </div>
         </div>
       </div>
@@ -194,9 +194,9 @@
   <div class="container_modal popup">
     <div class="popup_content">
       <i class="fa-solid fa-circle-check popup_icon" style="font-size: 70px; color: #10b981;"></i>
-      <p class="popup_p" style="font-size: 24px; font-weight: bold; margin: 20px 0;">تم تأكيد الطلب بنجاح</p>
+      <p class="popup_p" style="font-size: 24px; font-weight: bold; margin: 20px 0;">?? ????? ????? ?????</p>
     </div>
-    <button class="popup_btn" style="background: #10b981; color: white; border: none; padding: 15px 40px; border-radius: 40px; font-size: 20px; font-weight: bold; cursor: pointer;" onclick="localStorage.removeItem('cards'); window.location.href='/my-orders'">حسناً</button>
+    <button class="popup_btn" style="background: #10b981; color: white; border: none; padding: 15px 40px; border-radius: 40px; font-size: 20px; font-weight: bold; cursor: pointer;" onclick="localStorage.removeItem('cards'); window.location.href='/my-orders'">?????</button>
   </div>
 </div>
 
@@ -219,7 +219,7 @@
         }
         
         document.querySelectorAll('.cart-total-price').forEach(el => {
-            el.textContent = cartTotal.toFixed(2) + ' جنيه';
+            el.textContent = cartTotal.toFixed(2) + ' ????';
         });
         window.cartTotalValue = cartTotal;
 
@@ -228,7 +228,7 @@
             const cartItems = JSON.parse(cartItemsStr);
             cartItems.forEach(item => {
                 let productImg = item.img || item.image || item.image_url || item.imgSrc || item.productImg || item.src || '/images/logos/logo.png';
-                let productTitle = item.title || item.name || item.productName || 'منتج إلكتروني';
+                let productTitle = item.title || item.name || item.productName || '???? ????????';
 
                 reviewContainer.innerHTML += `
                  <div class="checkout-item" style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9; transition: 0.3s;">
@@ -238,7 +238,7 @@
                              <div class="card_title_wrapper" style="margin-bottom: 5px;">
                                  <p style="margin: 0; font-weight: bold; color: #0f172a; font-size: 16px; position: relative; z-index: 2;">${productTitle}</p>
                              </div>
-                             <p style="margin: 0; font-size: 14px; color: #64748b;">الكمية: ${item.number || 1}</p>
+                             <p style="margin: 0; font-size: 14px; color: #64748b;">??????: ${item.number || 1}</p>
                          </div>
                      </div>
                      <div style="font-weight: bold; color: #f97316; font-size: 17px;">${item.price}</div>
