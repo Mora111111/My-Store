@@ -111,7 +111,7 @@
         <div class="products-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 20px;">
             <?php foreach ($favorites as $row): ?>
                 <div class="product-card" style="border: 1px solid #eee; padding: 15px; border-radius: 8px; position: relative; text-align: center;">
-                    <button class="favorite-btn" data-product-id="<?= $row['id'] ?>" style="position:absolute; top:10px; right:10px; background:transparent; border:none; cursor:pointer; font-size:1.5rem; color:#ff4757;">
+                    <button class="heart-action-btn" data-product-id="<?= $row['id'] ?>" style="position:absolute; top:10px; right:10px; background:transparent; border:none; cursor:pointer; font-size:1.5rem; color:#ff4757;">
                         <i class="fa-solid fa-heart"></i>
                     </button>
                     <img src="<?= htmlspecialchars($row['image_url'] ?? '') ?>" alt="<?= htmlspecialchars($row['title']) ?>" style="width: 100%; max-height: 200px; object-fit: contain;">

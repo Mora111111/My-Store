@@ -73,7 +73,7 @@
 
 <script>
 document.addEventListener('click', async function(e) {
-    const btn = e.target.closest('.favorite-btn');
+    const btn = e.target.closest('.heart-action-btn');
     if (!btn) return;
     
     e.preventDefault();

@@ -77,7 +77,7 @@ if (Session::isLoggedIn()) {
                   }
                   $isFavorited = in_array($row['id'], $favoriteIds);
                   ?>
-                  <button class="favorite-btn" data-product-id="<?php echo $row['id']; ?>" style="background:transparent; border:none; cursor:pointer; font-size:18px; color:#ff4757; transition: transform 0.2s;">
+                  <button class="heart-action-btn" data-product-id="<?php echo $row['id']; ?>" style="background:transparent; border:none; cursor:pointer; font-size:18px; color:#ff4757; transition: transform 0.2s;">
                       <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
                   </button>
               </div>
@@ -117,7 +117,7 @@ if (Session::isLoggedIn()) {
                   }
                   $isFavorited = in_array($row['id'], $favoriteIds);
                   ?>
-                  <button class="favorite-btn" data-product-id="<?php echo $row['id']; ?>" style="background:transparent; border:none; cursor:pointer; font-size:18px; color:#ff4757; transition: transform 0.2s;">
+                  <button class="heart-action-btn" data-product-id="<?php echo $row['id']; ?>" style="background:transparent; border:none; cursor:pointer; font-size:18px; color:#ff4757; transition: transform 0.2s;">
                       <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
                   </button>
               </div>
