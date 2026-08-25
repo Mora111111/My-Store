@@ -95,7 +95,7 @@
       <h4 class="modal_title">إضافة عنوان الشحن</h4>
     </div>
     <div class="modal_body">
-      <form action="/checkout/process" method="POST" class="form_section">
+      <div class="form_section">
         <?= CSRF::getField() ?>
         <input type="hidden" name="products" id="hidden-products" value="[]">
         <input type="hidden" name="total_price" id="hidden-total-price" value="0">
@@ -116,11 +116,11 @@
             <input type="text" name="zip_code" placeholder="* الرقم البريدي" required class="form_input input_address_postal" />
           </div>
           <div class="form_box_modal">
-            <input type="submit" value="إضافة عنوان الشحن" class="send_btn" />
+            <input type="button" value="إضافة عنوان الشحن" class="send_btn" />
           </div>
           <i class="fa-solid fa-xmark close_modal"></i>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 
@@ -172,7 +172,7 @@
       </div>
     </div>
     <div class="modal_body">
-      <form action="" class="form_section">
+      <div class="form_section">
         <div class="form_body">
           <div class="form_box_modal">
             <input type="text" placeholder="رقم البطاقة" class="form_input">
@@ -183,10 +183,10 @@
             <input type="text" placeholder="CVV" class="form_input">
           </div>
           <div class="form_button_section">
-            <input type="submit" value="حفظ وتأكيد" class="send_btn visa_card_btn">
+            <input type="button" value="حفظ وتأكيد" class="send_btn visa_card_btn">
           </div>
         </div>
-      </form>
+      </div>
       <i class="fa-solid fa-xmark close_modal" id="close_visa_card"></i>
     </div>
   </div>

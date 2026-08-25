@@ -25,7 +25,7 @@ class CheckoutController {
                 'products' => $_POST['products'] ?? '[]'
             ];
 
-            $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+            $isAjax = !empty($_POST['ajax_checkout']) || (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
             if ($orderModel->create($data)) {
                 if ($isAjax) {

@@ -75,6 +75,12 @@ orderBtn.addEventListener("click", () => {
     orderBtn.disabled = true;
     orderBtn.textContent = "جاري التنفيذ...";
 
+    let finalPrice = window.cartTotalValue || window.localStorage.getItem("total_Price");
+    if (typeof finalPrice === 'string') {
+        finalPrice = finalPrice.replace(/[^\d.]/g, '');
+    }
+    formData.set("total_price", finalPrice || 0);
+
     fetch("/checkout/process", {
       method: "POST",
       headers: {
@@ -83,19 +89,27 @@ orderBtn.addEventListener("click", () => {
       },
       body: formData
     })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        localStorage.removeItem("cards");
-        window.location.href = data.redirect;
-      } else {
-        alert("حدث خطأ أثناء تسجيل الطلب.");
-        orderBtn.disabled = false;
-        orderBtn.textContent = "تأكيد الطلب";
+    .then(async res => {
+      const text = await res.text();
+      try {
+          const data = JSON.parse(text);
+          if (data.success) {
+            localStorage.removeItem("cards");
+            window.location.href = data.redirect;
+          } else {
+            alert("حدث خطأ أثناء تسجيل الطلب: " + (data.error || ""));
+            orderBtn.disabled = false;
+            orderBtn.textContent = "تأكيد الطلب";
+          }
+      } catch (e) {
+          console.error("Server response:", text);
+          alert("فشل استجابة السيرفر. راجع الكونسول (F12) لمعرفة السبب.");
+          orderBtn.disabled = false;
+          orderBtn.textContent = "تأكيد الطلب";
       }
     })
     .catch(err => {
-      alert("حدث خطأ في الاتصال بالسيرفر.");
+      alert("حدث خطأ في الاتصال: " + err.message);
       orderBtn.disabled = false;
       orderBtn.textContent = "تأكيد الطلب";
     });
