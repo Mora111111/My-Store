@@ -32,7 +32,7 @@
           <a href="/about" class="footer_link">من نحن</a>
         </li>
         <li class="footer_li">
-          <a href="#features" class="footer_link">المنتجات المميزة </a>
+          <a href="#features" class="footer_link">المنتجات المميزة</a>
         </li>
         <li class="footer_li">
           <a href="#latest" class="footer_link">أحدث المنتجات</a>
@@ -66,8 +66,58 @@
   </div>
   <p class="copyright container">جميع الحقوق محفوظة.MY Store &copy; 2025 - 2026</p>
 </footer>
+
 <script src="/Js/app.js"></script>
 <script src="/Js/scroll.js"></script>
 <script src="/Js/account.js"></script>
+
+<script>
+document.addEventListener('click', async function(e) {
+    const btn = e.target.closest('.favorite-btn');
+    if (!btn) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const productId = btn.getAttribute('data-product-id');
+    const icon = btn.querySelector('i');
+    
+    btn.style.transform = 'scale(1.3)';
+    setTimeout(() => btn.style.transform = 'scale(1)', 200);
+
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+    
+    try {
+        const response = await fetch('/toggle-favorite', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ product_id: productId, csrf_token: csrfToken })
+        });
+        
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = '/login';
+            return;
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            if (data.status === 'added') {
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid');
+            } else {
+                icon.classList.remove('fa-solid');
+                icon.classList.add('fa-regular');
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+});
+</script>
 </body>
 </html>

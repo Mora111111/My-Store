@@ -36,9 +36,14 @@
               <button type="button" class="btn-reply" onclick="openReplyModal(<?php echo $row['id']; ?>, 'contact', <?php echo htmlspecialchars(json_encode($reply_text)); ?>, <?php echo htmlspecialchars(json_encode($row['message'])); ?>)">
                 <i class="fa-solid fa-pen-to-square"></i> <?php echo !empty($reply_text) ? 'عرض وتعديل' : 'قراءة ورد'; ?>
               </button>
-              <a href="/admin/messages/delete?id=<?php echo $row['id']; ?>&type=contact" class="btn-delete" onclick="return confirm('هل أنت متأكد من حذف هذه الرسالة؟');">
-                <i class="fa-solid fa-trash"></i> حذف
-              </a>
+              <form method="POST" action="/admin/messages/delete" style="display:inline-block;" onsubmit="return confirm('هل أنت متأكد من حذف هذه الرسالة؟');">
+                <?= CSRF::getField() ?>
+                <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                <input type="hidden" name="type" value="contact">
+                <button type="submit" class="btn-delete" style="border:none; cursor:pointer; font-family:inherit;">
+                  <i class="fa-solid fa-trash"></i> حذف
+                </button>
+              </form>
             </div>
           </td>
         </tr>
