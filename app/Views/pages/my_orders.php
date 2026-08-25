@@ -1,5 +1,5 @@
 <style>
-    .my-orders-container { padding: 150px 20px 80px; min-height: 60vh; }
+    .my-orders-container { padding: 120px 20px 80px; min-height: 60vh; }
     .table-responsive { width: 100%; overflow-x: auto; background: #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .orders-table { width: 100%; border-collapse: collapse; min-width: 600px; }
     .orders-table th, .orders-table td { padding: 15px; text-align: right; border-bottom: 1px solid #eee; }

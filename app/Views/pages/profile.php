@@ -1,6 +1,6 @@
 <style>
-    body { background-color: #f8f9fa; font-family: 'Cairo', sans-serif; padding-top: 100px; }
-    .profile-container { max-width: 800px; margin: 0 auto 50px; padding: 0 20px; }
+
+    .profile-container { max-width: 800px; margin: 0 auto 50px; padding: 120px 20px 0; }
     .profile-header { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; margin-bottom: 30px; }
     .profile-avatar { width: 100px; height: 100px; background: var(--main-color, #1abc9c); color: #fff; font-size: 40px; line-height: 100px; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; }
     .profile-name { font-size: 24px; color: #333; margin-bottom: 5px; }

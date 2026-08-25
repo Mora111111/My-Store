@@ -295,7 +295,7 @@ if (navClose && navMenu) {
 const navLinks = document.querySelectorAll('.nav_link');
 navLinks.forEach(link => {
     link.addEventListener('click', () => {
-        if(navMenu.classList.contains('show_menu')) {
+        if (typeof navMenu !== 'undefined' && navMenu && navMenu.classList.contains('show_menu')) {
             navMenu.classList.remove('show_menu');
         }
     });
