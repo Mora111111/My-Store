@@ -47,11 +47,11 @@
       <ul class="footer_list">
         <li class="footer_li">
           <i class="fa-solid fa-phone footer-icon"></i>
-          <span>01017******</span>
+          <span>رقم التواصل الاول</span>
         </li>
         <li class="footer_li">
           <i class="fa-solid fa-phone footer-icon"></i>
-          <span>01034******</span>
+          <span>رقم التواصل الثاني</span>
         </li>
         <li class="footer_li">
           <i class="fa-solid fa-envelope footer-icon"></i>
