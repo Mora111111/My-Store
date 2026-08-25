@@ -1,7 +1,7 @@
 <style>
-    body { font-size: 18px !important; font-family: 'Tajawal', sans-serif; background-color: #f4f6f9; }
+    body { font-family: 'Tajawal', sans-serif; background-color: #f4f6f9; }
 
-    .header_payment { margin-top: 80px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .container_payment { padding-top: 120px !important; }
     .box_payment { max-width: 1200px; margin: 0 auto; padding: 0 25px; display: flex; align-items: center; justify-content: space-between; }
     
     .logo_payment { height: 60px !important; background-color: rgba(255, 255, 255, 0.95); padding: 5px 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s; }
@@ -34,14 +34,7 @@
     }
 </style>
 
-<div class="header_payment">
-  <div class="box_payment">
-    <a href="/">
-        <img src="/images/logos/logo.png" alt="MY Store Logo" class="logo_payment" />
-    </a>
-    <a href="/products" class="back-link"><i class="fa-solid fa-arrow-right"></i> العودة للتسوق</a>
-  </div>
-</div>
+
 
 <div class="container_payment">
   <div class="content_payment">
