@@ -30,11 +30,14 @@ const btnBuy = document.querySelector(".btn_buy");
 const cartEmpty = document.querySelector(".cart_empty");
 
 if (cartIcon && cart) {
-    cartIcon.addEventListener("click", () => cart.classList.add("showCart"));
+    cartIcon.addEventListener("click", () => {
+        cart.classList.add("showCart");
+    });
 }
-
 if (cartClose && cart) {
-    cartClose.addEventListener("click", () => cart.classList.remove("showCart"));
+    cartClose.addEventListener("click", () => {
+        cart.classList.remove("showCart");
+    });
 }
 
 if (cartEmpty && cart) {

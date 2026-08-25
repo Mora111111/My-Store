@@ -1,31 +1,15 @@
-<?php 
+﻿<?php 
 $favoriteIds = [];
 if (Session::isLoggedIn()) {
     $favoriteModel = new Favorite();
     $favoriteIds = $favoriteModel->getUserFavoriteIds(Session::get('user_id'));
 }
 ?>
-  <div class="cart">
-    <h2 class="cart_title">سلة التسوق</h2>
-    <div class="cart_content"></div>
-    <div class="total">
-      <div class="total_title">الاجمالي</div>
-      <div class="total_price">. جنية</div>
-    </div>
-    <a href="/checkout" class="btn_buy">شراء</a>
-    <div class="cart_empty">
-      <div><img src="/images/Cart-img.png"></div>
-      <p>عربة التسوق فارغة</p>
-      <a href="/products" class="btn_shopping">إستكشف المنتجات</a>
-    </div>
-    <i class="fa-solid fa-xmark" id="cart-close"></i>
-  </div>
-
   <div class="all_products container">
     <div class="category_filter">
-      <h2 class="all_products_title">منتجاتنا</h2>
+      <h2 class="all_products_title">Ù…Ù†ØªØ¬Ø§ØªÙ†Ø§</h2>
       <div class="filter_btns">
-        <button class="filter_btn active_btn" id="all">الكل</button>
+        <button class="filter_btn active_btn" id="all">Ø§Ù„ÙƒÙ„</button>
         <?php foreach ($categories as $catName):
             $catId = $catMap[$catName] ?? '';
         ?>
@@ -73,15 +57,15 @@ if (Session::isLoggedIn()) {
                     <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
                 </button>
             </div>
-            <p class="card_price"><?php echo $price_parts[0]; ?>.<small><?php echo $price_parts[1]; ?></small> <span>جنيه</span></p>
-            <button class="card_btn" id="add_to_card">أضافة إلي العربة</button>
+            <p class="card_price"><?php echo $price_parts[0]; ?>.<small><?php echo $price_parts[1]; ?></small> <span>Ø¬Ù†ÙŠÙ‡</span></p>
+            <button class="card_btn" id="add_to_card">Ø£Ø¶Ø§ÙØ© Ø¥Ù„ÙŠ Ø§Ù„Ø¹Ø±Ø¨Ø©</button>
           </div>
         </div>
       <?php
           endforeach;
       else:
       ?>
-        <h3 style='text-align:center; width:100%; color:#777; margin-top:50px;'>عذراً، جاري تحديث المخزن وإضافة منتجات جديدة قريباً..</h3>
+        <h3 style='text-align:center; width:100%; color:#777; margin-top:50px;'>Ø¹Ø°Ø±Ø§Ù‹ØŒ Ø¬Ø§Ø±ÙŠ ØªØ­Ø¯ÙŠØ« Ø§Ù„Ù…Ø®Ø²Ù† ÙˆØ¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬Ø§Øª Ø¬Ø¯ÙŠØ¯Ø© Ù‚Ø±ÙŠØ¨Ø§Ù‹..</h3>
       <?php endif; ?>
     </div>
   </div>

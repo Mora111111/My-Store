@@ -1,3 +1,19 @@
+<div class="cart">
+  <h2 class="cart_title">عربة التسوق</h2>
+  <div class="cart_content"></div>
+  <div class="total">
+    <div class="total_title">الاجمالي</div>
+    <div class="total_price">. جنية</div>
+  </div>
+  <a href="/checkout" class="btn_buy">شراء</a>
+  <div class="cart_empty">
+    <div><img src="/images/Cart-img.png" alt="Empty Cart"></div>
+    <p>عربة التسوق فارغة</p>
+    <a href="/products" class="btn_shopping">إستكشف المنتجات</a>
+  </div>
+  <i class="fa-solid fa-xmark" id="cart-close"></i>
+</div>
+
 <footer class="footer">
   <div class="footer_container container grid_content">
     <div class="footer_item">
