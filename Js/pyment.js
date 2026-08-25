@@ -1,4 +1,4 @@
-﻿const orderBtn = document.querySelector(".order_btn");
+const orderBtn = document.querySelector(".order_btn");
 const modal = document.querySelector(".container_modal");
 const layer = document.querySelector(".layer");
 const closeModal = document.querySelector(".close_modal");
@@ -59,6 +59,8 @@ orderBtn.addEventListener("click", () => {
     }
 
     const formData = new FormData();
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    formData.append("csrf_token", csrfToken);
     formData.append("ajax_checkout", "1");
     formData.append("full_name", document.getElementById("user-Address").textContent);
     formData.append("phone", document.getElementById("phone-Address").textContent);
@@ -73,18 +75,21 @@ orderBtn.addEventListener("click", () => {
     orderBtn.disabled = true;
     orderBtn.textContent = "جاري التنفيذ...";
 
-    fetch("payment.php", {
+    fetch("/checkout/process", {
       method: "POST",
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': csrfToken
+      },
       body: formData
     })
     .then(res => res.json())
     .then(data => {
-      if (data.status === "success") {
+      if (data.success) {
         localStorage.removeItem("cards");
-        popup.classList.add("modal_active");
-        layer.classList.add("layer_active");
+        window.location.href = data.redirect;
       } else {
-        alert("حدث خطأ: " + data.msg);
+        alert("حدث خطأ أثناء تسجيل الطلب.");
         orderBtn.disabled = false;
         orderBtn.textContent = "تأكيد الطلب";
       }

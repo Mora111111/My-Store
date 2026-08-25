@@ -231,17 +231,19 @@
                 let productTitle = item.title || item.name || item.productName || 'منتج إلكتروني';
 
                 reviewContainer.innerHTML += `
-                    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="${productImg}" style="width: 65px; height: 65px; object-fit: contain; border-radius: 8px; border: 1px solid #e2e8f0; padding: 5px; background: #fff;">
-                            <div>
-                                <p style="margin: 0; font-weight: bold; color: #0f172a; font-size: 16px;">${productTitle}</p>
-                                <p style="margin: 5px 0 0 0; font-size: 14px; color: #64748b;">الكمية: ${item.number || 1}</p>
-                            </div>
-                        </div>
-                        <div style="font-weight: bold; color: #f97316; font-size: 17px;">${item.price}</div>
-                    </div>
-                `;
+                 <div class="checkout-item" style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9; transition: 0.3s;">
+                     <div style="display: flex; align-items: center; gap: 15px;">
+                         <img src="${productImg}" style="width: 65px; height: 65px; object-fit: contain; border-radius: 8px; border: 1px solid #e2e8f0; padding: 5px; background: #fff;">
+                         <div>
+                             <div class="card_title_wrapper" style="margin-bottom: 5px;">
+                                 <p style="margin: 0; font-weight: bold; color: #0f172a; font-size: 16px; position: relative; z-index: 2;">${productTitle}</p>
+                             </div>
+                             <p style="margin: 0; font-size: 14px; color: #64748b;">الكمية: ${item.number || 1}</p>
+                         </div>
+                     </div>
+                     <div style="font-weight: bold; color: #f97316; font-size: 17px;">${item.price}</div>
+                 </div>
+             `;
             });
         }
     });

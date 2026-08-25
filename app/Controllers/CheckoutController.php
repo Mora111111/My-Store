@@ -24,8 +24,22 @@ class CheckoutController {
                 'total_price' => $_POST['total_price'] ?? 0.00,
                 'products' => $_POST['products'] ?? '[]'
             ];
+
+            $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
             if ($orderModel->create($data)) {
+                if ($isAjax) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => true, 'redirect' => '/my-orders']);
+                    exit;
+                }
                 header('Location: /?order_success=1');
+                exit;
+            }
+            
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'error' => 'Database error']);
                 exit;
             }
             header('Location: /checkout?error=1');

@@ -2165,7 +2165,8 @@ input[type="checkbox"] {
   z-index: -1;
 }
 .card:hover .card_title_wrapper::before,
-.product-card:hover .card_title_wrapper::before {
+.product-card:hover .card_title_wrapper::before,
+.checkout-item:hover .card_title_wrapper::before {
   opacity: 1;
 }
 @keyframes rotate-border {
