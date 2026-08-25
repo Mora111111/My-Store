@@ -46,4 +46,21 @@ class Order {
         $stmt->execute([$userId]);
         return $stmt->fetchAll();
     }
+
+    public function hasPurchasedProduct(int $userId, string $productTitle): bool {
+        $stmt = $this->db->prepare("SELECT products FROM orders WHERE user_id = ? AND status = 'مكتمل'");
+        $stmt->execute([$userId]);
+        $orders = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        foreach ($orders as $productsJson) {
+            $products = json_decode($productsJson, true);
+            if (is_array($products)) {
+                foreach ($products as $item) {
+                    if (isset($item['title']) && trim($item['title']) === trim($productTitle)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

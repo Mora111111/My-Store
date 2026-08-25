@@ -30,8 +30,18 @@ class Comment {
         $stmt->execute([$productId]);
         return $stmt->fetchAll();
     }
-    public function createComment(int $productId, string $customerName, string $commentText, string $adminReply = ''): bool {
-        $stmt = $this->db->prepare("INSERT INTO product_comments (product_id, customer_name, comment_text, admin_reply) VALUES (?, ?, ?, ?)");
-        return $stmt->execute([$productId, $customerName, $commentText, $adminReply]);
+    public function createComment(int $productId, string $customerName, string $commentText, string $adminReply = '', int $userRating = 5): bool {
+        $stmt = $this->db->prepare("INSERT INTO product_comments (product_id, customer_name, comment_text, admin_reply, user_rating) VALUES (?, ?, ?, ?, ?)");
+        return $stmt->execute([$productId, $customerName, $commentText, $adminReply, $userRating]);
+    }
+
+    public function updateProductAverageRating(int $productId): void {
+        $stmt = $this->db->prepare("SELECT AVG(user_rating) FROM product_comments WHERE product_id = ?");
+        $stmt->execute([$productId]);
+        $avg = round((float)$stmt->fetchColumn(), 1);
+        if ($avg > 0) {
+            $updateStmt = $this->db->prepare("UPDATE products SET rating = ? WHERE id = ?");
+            $updateStmt->execute([$avg, $productId]);
+        }
     }
 }

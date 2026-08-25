@@ -51,10 +51,16 @@
             <?php if (!empty($comments)): ?>
                 <?php foreach ($comments as $c): ?>
                     <div style='background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-right: 4px solid var(--main-color);'>
-                        <h4 style='margin: 0 0 10px 0; color: #333; display: flex; justify-content: space-between; align-items: center;'>
+                        <h4 style='margin: 0 0 5px 0; color: #333; display: flex; justify-content: space-between; align-items: center;'>
                             <span><i class='fa-solid fa-circle-user' style='color:#bdc3c7;'></i> <?php echo htmlspecialchars($c['customer_name']); ?></span>
                             <span style='font-size:12px; color:#999; font-weight:normal;'><i class='fa-regular fa-clock'></i> <?php echo date('Y-m-d', strtotime($c['created_at'])); ?></span>
                         </h4>
+                        <div style='margin-bottom: 10px; color:#f1c40f; font-size:13px;'>
+                            <?php 
+                            $u_rating = isset($c['user_rating']) ? (int)$c['user_rating'] : 5;
+                            for($i=1; $i<=5; $i++) echo $i <= $u_rating ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+                            ?>
+                        </div>
                         <p style='margin: 0; color: #555; line-height: 1.6; font-size: 15px;'><?php echo nl2br(htmlspecialchars($c['comment_text'])); ?></p>
                         <?php if (!empty($c['admin_reply'])): ?>
                             <div style='margin-top: 15px; padding: 15px; background: #e8f4f8; border-radius: 5px; border-right: 4px solid #3498db;'>
@@ -73,19 +79,47 @@
         </div>
 
         <div style="background: #fff; padding: 25px; border-radius: 8px; border: 1px solid #eee;">
-            <h3 style="margin-top:0; margin-bottom: 20px; color:#333;"><i class="fa-solid fa-pen"></i> أضف تعليقك على المنتج</h3>
-            <form method="POST" action="/product?id=<?php echo $id; ?>#comments-section">
-                <?= CSRF::getField() ?>
-                <div style="margin-bottom: 15px;">
-                    <label style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">الاسم :</label>
-                    <input type="text" name="customer_name" required placeholder="أكتب اسمك هنا" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 15px; box-sizing: border-box;">
+            <h3 style="margin-top:0; margin-bottom: 20px; color:#333;"><i class="fa-solid fa-pen"></i> أضف تقييمك للمنتج</h3>
+            <?php if (!Session::isLoggedIn()): ?>
+                <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
+                    <i class="fa-solid fa-lock" style="font-size: 30px; color: #94a3b8; margin-bottom: 10px;"></i>
+                    <p style="color: #475569; font-size: 16px; margin: 0;">يجب عليك <a href="/login" style="color: var(--main-color); font-weight: bold;">تسجيل الدخول</a> وشراء المنتج لتتمكن من إضافة تقييم.</p>
                 </div>
-                <div style="margin-bottom: 20px;">
-                    <label style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">نص التعليق أو الاستفسار:</label>
-                    <textarea name="comment_text" required placeholder="اكتب رأيك بصدق هنا ليفيد الآخرين..." rows="5" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 15px; resize: vertical; box-sizing: border-box;"></textarea>
+            <?php elseif (!isset($hasPurchased) || !$hasPurchased): ?>
+                <div style="text-align: center; padding: 20px; background: #fef2f2; border-radius: 8px; border: 1px dashed #fca5a5;">
+                    <i class="fa-solid fa-cart-circle-xmark" style="font-size: 30px; color: #f87171; margin-bottom: 10px;"></i>
+                    <p style="color: #991b1b; font-size: 16px; margin: 0;">عذراً، نظام التقييم متاح فقط للمشترين المؤكدين. يجب إتمام شراء هذا المنتج لتتمكن من تقييمه.</p>
                 </div>
-                <button type="submit" name="submit_comment" style="background: var(--main-color); color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-size: 16px; font-family: inherit; font-weight: bold; transition: 0.3s; width: 100%;"><i class="fa-solid fa-paper-plane"></i> إرسال التعليق</button>
-            </form>
+            <?php else: ?>
+                <style>
+                    .star-rating-input { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 5px; margin-bottom: 15px; }
+                    .star-rating-input input { display: none; }
+                    .star-rating-input label { cursor: pointer; font-size: 28px; color: #e2e8f0; transition: color 0.2s; }
+                    .star-rating-input input:checked ~ label, .star-rating-input label:hover, .star-rating-input label:hover ~ label { color: #f1c40f; }
+                </style>
+                <form method="POST" action="/product?id=<?php echo $id; ?>#comments-section">
+                    <?= CSRF::getField() ?>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">تقييمك للمنتج:</label>
+                        <div class="star-rating-input">
+                            <input type="radio" id="star5" name="user_rating" value="5" checked><label for="star5"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="star4" name="user_rating" value="4"><label for="star4"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="star3" name="user_rating" value="3"><label for="star3"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="star2" name="user_rating" value="2"><label for="star2"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="star1" name="user_rating" value="1"><label for="star1"><i class="fa-solid fa-star"></i></label>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">الاسم :</label>
+                        <input type="text" name="customer_name" required value="<?= htmlspecialchars(explode(' ', Session::get('user_name'))[0]) ?>" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 15px; box-sizing: border-box;">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">نص التقييم:</label>
+                        <textarea name="comment_text" required placeholder="اكتب رأيك بصدق هنا ليفيد الآخرين..." rows="5" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 15px; resize: vertical; box-sizing: border-box;"></textarea>
+                    </div>
+                    <button type="submit" name="submit_comment" style="background: var(--main-color); color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-size: 16px; font-family: inherit; font-weight: bold; transition: 0.3s; width: 100%;"><i class="fa-solid fa-paper-plane"></i> إرسال التقييم</button>
+                </form>
+            <?php endif; ?>
         </div>
     </div>
   </div>
