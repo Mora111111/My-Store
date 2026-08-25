@@ -32,6 +32,8 @@
     .item_payment.address:empty {
         display: none !important;
     }
+    .header, .footer { display: none !important; }
+    body { padding-top: 0 !important; background-color: #f4f6f9; }
 </style>
 
 <div class="header_payment">
