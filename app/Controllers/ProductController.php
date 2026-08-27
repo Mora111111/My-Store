@@ -77,7 +77,7 @@ class ProductController {
         $commentModel = new Comment();
         $comments = $commentModel->getByProductId((int)$id);
         $productUpdated = (new Product())->findById((int)$id);
-        $rating = isset($productUpdated['rating']) ? (float)$productUpdated['rating'] : 5;
+        $rating = isset($productUpdated['rating']) ? (float)$productUpdated['rating'] : 0;
         
         $starsHtml = '';
         for ($i = 1; $i <= 5; $i++) {

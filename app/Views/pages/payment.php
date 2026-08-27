@@ -230,17 +230,17 @@
                 let productImg = item.img || item.image || item.image_url || item.imgSrc || item.productImg || item.src || '/images/logos/logo.png';
                 let productTitle = item.title || item.name || item.productName || 'منتج إلكتروني';
 
-                reviewContainer.innerHTML += `
+               reviewContainer.innerHTML += `
                  <div class="checkout-item" style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9; transition: 0.3s;">
-                     <div style="display: flex; align-items: center; gap: 15px;">
-                         <img src="${productImg}" style="width: 65px; height: 65px; object-fit: contain; border-radius: 8px; border: 1px solid #e2e8f0; padding: 5px; background: #fff;">
+                     <a href="${(item.id || item.productId) ? '/product?id=' + (item.id || item.productId) : 'javascript:void(0);'}" style="display: flex; align-items: center; gap: 15px; text-decoration: none; cursor: pointer;">
+                         <img src="${productImg}" style="width: 65px; height: 65px; object-fit: contain; border-radius: 8px; border: 1px solid #e2e8f0; padding: 5px; background: #fff; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="عرض تفاصيل المنتج">
                          <div>
                              <div class="card_title_wrapper" style="margin-bottom: 5px;">
-                                 <p style="margin: 0; font-weight: bold; color: #0f172a; font-size: 16px; position: relative; z-index: 2;">${productTitle}</p>
+                                 <p style="margin: 0; font-weight: bold; color: #0f172a; font-size: 16px; transition: color 0.3s;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#0f172a'">${productTitle}</p>
                              </div>
                              <p style="margin: 0; font-size: 14px; color: #64748b;">الكمية: ${item.number || 1}</p>
                          </div>
-                     </div>
+                     </a>
                      <div style="font-weight: bold; color: #f97316; font-size: 17px;">${item.price}</div>
                  </div>
              `;

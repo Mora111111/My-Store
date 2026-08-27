@@ -28,7 +28,12 @@
        </script>
      </div>
       <div class="card_details" style="text-align: center; margin-top: 20px;">
-        <h2 class="product_details_title card_title" style="font-size: 24px; color: var(--main-color); margin-bottom: 15px;"><?php echo htmlspecialchars($product['title']); ?></h2>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 15px;">
+<div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 15px;">
+    <h2 class="product_details_title card_title" style="font-size: 24px; color: var(--main-color); margin: 0;"><?php echo htmlspecialchars($product['title']); ?></h2>
+    <i class="fa-regular fa-heart favorite-btn" onclick="addToFavorite(<?php echo $product['id']; ?>)" style="font-size: 26px; color: #e74c3c; cursor: pointer; transition: 0.3s;" onmouseover="this.classList.replace('fa-regular', 'fa-solid')" onmouseout="this.classList.replace('fa-solid', 'fa-regular')" title="إضافة للمفضلة"></i>
+</div>    <i class="fa-regular fa-heart favorite-btn" onclick="addToFavorite(<?php echo $product['id']; ?>)" style="font-size: 26px; color: #e74c3c; cursor: pointer; transition: 0.3s;" onmouseover="this.classList.replace('fa-regular', 'fa-solid')" onmouseout="this.classList.replace('fa-solid', 'fa-regular')" title="إضافة للمفضلة"></i>
+</div>
 
         <div class="rating" style="margin-bottom: 15px; font-size: 18px;">
           <?php echo $starsHtml; ?>
