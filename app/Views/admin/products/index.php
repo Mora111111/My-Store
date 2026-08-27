@@ -1,5 +1,3 @@
-<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
-
 <div class="card">
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <h2 style="margin-bottom:0;"><i class="fa-solid fa-plus-circle"></i> إضافة منتج جديد</h2>
@@ -38,7 +36,7 @@
 </div>
 
 <div class="modal-overlay" id="addProductModal">
-  <div class="modal-content" style="max-width: 900px; width: 95%;">
+  <div class="modal-content" style="max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
       <h2 style="margin:0; color:#0f172a;"><i class="fa-solid fa-plus-circle" style="color:#38bdf8; margin-left:8px;"></i>إضافة منتج جديد</h2>
       <button type="button" class="ai-magic-btn" id="openAiModal">
@@ -78,7 +76,7 @@
 
       <div class="form-group">
         <label>الوصف التفصيلي للمنتج:</label>
-        <textarea name="description" rows="4" required placeholder="أدخل وصفاً تسويقياً وتفصيلياً للمنتج..."></textarea>
+        <textarea name="description" rows="6" required placeholder="أدخل وصفاً تسويقياً وتفصيلياً للمنتج..."></textarea>
       </div>
 
       <div class="form-group">
@@ -112,7 +110,6 @@
   </div>
 </div>
 <script>
-CKEDITOR.replace('description');
 function openAddModal() { document.getElementById('addProductModal').style.display = 'flex'; }
 function closeAddModal() { document.getElementById('addProductModal').style.display = 'none'; }
 
@@ -148,7 +145,10 @@ document.getElementById('generateAiData').addEventListener('click', async () => 
             if(data.title) document.querySelector('input[name="title"]').value = data.title;
             if(data.category_class) document.querySelector('select[name="category_class"]').value = data.category_class;
             if(data.price) document.querySelector('input[name="price"]').value = data.price;
-            if(data.description) { CKEDITOR.instances['description'].setData(data.description); }
+            if(data.description) {
+                let cleanText = data.description.replace(/<br\s*[\/]?>/gi, "\n").replace(/<\/p>/gi, "\n\n").replace(/<[^>]+>/ig, "");
+                document.querySelector('textarea[name="description"]').value = cleanText.trim();
+            }
             
             closeAiModal();
         } else {

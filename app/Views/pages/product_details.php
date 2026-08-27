@@ -45,7 +45,7 @@
         <div style="text-align: right; background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.8; color: #555; border: 1px solid #eee;">
             <h3 style="margin-top:0; color:#2c3e50; border-bottom: 2px solid var(--main-color); display: inline-block; padding-bottom: 5px; font-size: 18px;"><i class="fa-solid fa-circle-info"></i> مواصفات وتفاصيل المنتج</h3>
             <div style="margin-top: 15px; font-size: 15px;">
-                <?php echo $product['description']; ?>
+                <?php echo nl2br(strip_tags($product['description'])); ?>
             </div>
         </div>
         <?php endif; ?>

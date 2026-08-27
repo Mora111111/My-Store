@@ -1,4 +1,3 @@
-<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 <style>
   .card { max-width: 950px; margin: auto; }
   .card h2 { text-align: center; }
@@ -39,7 +38,7 @@
 
       <div class="form-group">
         <label>الوصف التفصيلي للمنتج:</label>
-        <textarea name="description" rows="10" required><?php echo htmlspecialchars($product['description'] ?? ''); ?></textarea>
+        <textarea name="description" rows="8" required><?php echo htmlspecialchars($product['description'] ?? ''); ?></textarea>
       </div>
 
      <div class="form-group" style="margin-top: 20px;">
@@ -75,4 +74,3 @@
     <?php endif; ?>
   </div>
 </div>
-<script>CKEDITOR.replace('description');</script>
