@@ -81,6 +81,12 @@
         <label>صورة المنتج:</label>
         <input type="file" name="image" accept="image/png, image/jpeg, image/gif, image/webp" required style="padding: 5px;">
       </div>
+      <div class="form-group">
+        <label>صور إضافية للمنتج (اختياري - حتى 3 صور):</label>
+        <input type="file" name="image_2" accept="image/png, image/jpeg, image/gif, image/webp" style="padding: 5px; margin-bottom: 5px;">
+        <input type="file" name="image_3" accept="image/png, image/jpeg, image/gif, image/webp" style="padding: 5px; margin-bottom: 5px;">
+        <input type="file" name="image_4" accept="image/png, image/jpeg, image/gif, image/webp" style="padding: 5px;">
+      </div>
 
       <div style="display:flex; gap:10px; margin-top:25px;">
         <button type="submit" class="btn-submit" style="flex:2;"><i class="fa-solid fa-plus" style="margin-left: 8px;"></i> حفظ المنتج</button>

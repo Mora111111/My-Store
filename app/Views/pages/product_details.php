@@ -1,8 +1,32 @@
-﻿  <div class="product_details_section container">
+  <div class="product_details_section container">
     <div class="card" style="margin-top: 150px; margin-bottom: 50px; max-width: 600px; margin-left: auto; margin-right: auto; padding: 20px;">
-      <div class="box_img" style="height: 400px; background: transparent;">
-          <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" class="card_image" style="max-height: 100%; object-fit: contain;" />
-      </div>
+     <div class="product-gallery" style="display: flex; flex-direction: column; gap: 15px;">
+       <div class="box_img main-image-container" style="height: 400px; background: #fff; padding: 10px; border-radius: 12px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center;">
+           <img id="mainProductImage" src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" class="card_image" style="max-height: 100%; max-width: 100%; object-fit: contain; transition: 0.3s;" />
+       </div>
+       <div class="thumbnails-container" style="display: flex; gap: 10px; justify-content: center;">
+           <?php 
+           $gallery = array_filter([$product['image_url'],$product['image_2'] ?? '', $product['image_3'] ?? '',$product['image_4'] ?? '']);
+           foreach($gallery as $index =>$imgBase64): 
+               if(!empty($imgBase64)):
+           ?>
+               <div class="thumb-box" onclick="document.getElementById('mainProductImage').src='<?php echo htmlspecialchars($imgBase64); ?>';" style="width: 80px; height: 80px; border: 2px solid <?php echo $index === 0 ? 'var(--main-color)' : '#eee'; ?>; border-radius: 8px; cursor: pointer; padding: 5px; background: #fff; overflow: hidden;">
+                   <img src="<?php echo htmlspecialchars($imgBase64); ?>" style="width: 100%; height: 100%; object-fit: cover;" />
+               </div>
+           <?php 
+               endif;
+           endforeach; 
+           ?>
+       </div>
+       <script>
+           document.querySelectorAll('.thumb-box').forEach(box => {
+               box.addEventListener('click', function() {
+                   document.querySelectorAll('.thumb-box').forEach(b => b.style.borderColor = '#eee');
+                   this.style.borderColor = 'var(--main-color)';
+               });
+           });
+       </script>
+     </div>
       <div class="card_details" style="text-align: center; margin-top: 20px;">
         <h2 class="product_details_title card_title" style="font-size: 24px; color: var(--main-color); margin-bottom: 15px;"><?php echo htmlspecialchars($product['title']); ?></h2>
 

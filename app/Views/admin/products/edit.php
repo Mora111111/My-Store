@@ -49,6 +49,28 @@
         <label>صورة المنتج (اتركها فارغة إذا لم ترد تغييرها):</label>
         <input type="file" name="image" accept="image/png, image/jpeg, image/gif, image/webp" style="padding: 12px;">
       </div>
+      
+      <div class="form-group">
+        <label>صور إضافية للمنتج (اختياري):</label>
+        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+          <?php if (!empty($product['image_2'])): ?>
+            <img src="<?php echo htmlspecialchars($product['image_2']); ?>" width="60" height="60" style="border-radius:8px; object-fit:cover;">
+          <?php endif; ?>
+          <input type="file" name="image_2" accept="image/png, image/jpeg, image/gif, image/webp" style="padding: 5px; flex: 1;">
+        </div>
+        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+          <?php if (!empty($product['image_3'])): ?>
+            <img src="<?php echo htmlspecialchars($product['image_3']); ?>" width="60" height="60" style="border-radius:8px; object-fit:cover;">
+          <?php endif; ?>
+          <input type="file" name="image_3" accept="image/png, image/jpeg, image/gif, image/webp" style="padding: 5px; flex: 1;">
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <?php if (!empty($product['image_4'])): ?>
+            <img src="<?php echo htmlspecialchars($product['image_4']); ?>" width="60" height="60" style="border-radius:8px; object-fit:cover;">
+          <?php endif; ?>
+          <input type="file" name="image_4" accept="image/png, image/jpeg, image/gif, image/webp" style="padding: 5px; flex: 1;">
+        </div>
+      </div>
 
       <button type="submit" class="btn-submit" style="width:100%; display:block; margin-top:10px;"><i class="fa-solid fa-floppy-disk" style="margin-left:8px;"></i> حفظ التعديلات</button>
       <a href="/admin/products" class="cancel-btn"><i class="fa-solid fa-arrow-right" style="margin-left:5px;"></i> إلغاء والعودة للقائمة</a>
