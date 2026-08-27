@@ -50,7 +50,17 @@
         <?php endif; ?>
         <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
             <button class="card_btn" style="flex: 1; margin: 0; padding: 12px 15px; font-size: 16px; position: relative; left: 0; transform: none;">أضافة إلي العربة</button>
-            <i class="fa-regular fa-heart favorite-btn" onclick="addToFavorite(<?php echo $product['id']; ?>)" style="font-size: 26px; color: #e74c3c; cursor: pointer; transition: 0.3s; padding: 10px 15px; border: 1px solid #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #fff;" onmouseover="this.classList.replace('fa-regular', 'fa-solid')" onmouseout="this.classList.replace('fa-solid', 'fa-regular')" title="إضافة للمفضلة"></i>
+            <?php 
+            $favoriteIds = [];
+            if (Session::isLoggedIn()) {
+                $favoriteModel = new Favorite();
+                $favoriteIds = $favoriteModel->getUserFavoriteIds(Session::get('user_id'));
+            }
+            $isFavorited = in_array($product['id'], $favoriteIds);
+            ?>
+            <button class="heart-action-btn" data-product-id="<?php echo $product['id']; ?>" style="font-size: 26px; color: #e74c3c; cursor: pointer; transition: 0.3s; padding: 10px 15px; border: 1px solid #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #fff;" title="إضافة للمفضلة">
+                <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
+            </button>
         </div>
       </div>
     </div>
