@@ -1,3 +1,4 @@
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 
 <div class="card">
   <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -8,6 +9,7 @@
 
 <div class="card">
   <h2><i class="fa-solid fa-list"></i> المنتجات الحالية</h2>
+  <div style="margin-bottom:15px;"><input type="text" id="searchInput" placeholder="بحث ذكي باسم المنتج..." style="padding:12px; width:100%; max-width:400px; border:1px solid #cbd5e1; border-radius:8px; outline:none; font-family:inherit;"></div>
   <table>
     <tr>
       <th>الصورة</th>
@@ -36,7 +38,7 @@
 </div>
 
 <div class="modal-overlay" id="addProductModal">
-  <div class="modal-content">
+  <div class="modal-content" style="max-width: 900px; width: 95%;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
       <h2 style="margin:0; color:#0f172a;"><i class="fa-solid fa-plus-circle" style="color:#38bdf8; margin-left:8px;"></i>إضافة منتج جديد</h2>
       <button type="button" class="ai-magic-btn" id="openAiModal">
@@ -46,6 +48,7 @@
     <form action="/admin/products/store" method="POST" enctype="multipart/form-data">
       <?= CSRF::getField() ?>
       
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
       <div class="form-group">
         <label>اسم المنتج:</label>
         <input type="text" name="title" required placeholder="أدخل اسم المنتج">
@@ -70,6 +73,7 @@
       <div class="form-group">
         <label>السعر (بالجنيه):</label>
         <input type="number" name="price" step="0.01" min="0" required placeholder="مثال: 45000">
+      </div>
       </div>
 
       <div class="form-group">
@@ -108,6 +112,7 @@
   </div>
 </div>
 <script>
+CKEDITOR.replace('description');
 function openAddModal() { document.getElementById('addProductModal').style.display = 'flex'; }
 function closeAddModal() { document.getElementById('addProductModal').style.display = 'none'; }
 
@@ -143,7 +148,7 @@ document.getElementById('generateAiData').addEventListener('click', async () => 
             if(data.title) document.querySelector('input[name="title"]').value = data.title;
             if(data.category_class) document.querySelector('select[name="category_class"]').value = data.category_class;
             if(data.price) document.querySelector('input[name="price"]').value = data.price;
-            if(data.description) document.querySelector('textarea[name="description"]').value = data.description;
+            if(data.description) { CKEDITOR.instances['description'].setData(data.description); }
             
             closeAiModal();
         } else {
@@ -156,4 +161,19 @@ document.getElementById('generateAiData').addEventListener('click', async () => 
         btn.disabled = false;
     }
 });
+
+const searchInput = document.getElementById('searchInput');
+if(searchInput) {
+    searchInput.addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('table tr:not(:first-child)');
+        rows.forEach(row => {
+            let titleCell = row.querySelector('td:nth-child(2)');
+            if(titleCell) {
+                let text = titleCell.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            }
+        });
+    });
+}
 </script>
