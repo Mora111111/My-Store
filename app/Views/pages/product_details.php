@@ -28,9 +28,8 @@
        </script>
      </div>
       <div class="card_details" style="text-align: center; margin-top: 20px;">
-        <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 15px;">
+        <div style="margin-bottom: 15px;">
             <h2 class="product_details_title card_title" style="font-size: 24px; color: var(--main-color); margin: 0;"><?php echo htmlspecialchars($product['title']); ?></h2>
-            <i class="fa-regular fa-heart favorite-btn" onclick="addToFavorite(<?php echo $product['id']; ?>)" style="font-size: 26px; color: #e74c3c; cursor: pointer; transition: 0.3s;" onmouseover="this.classList.replace('fa-regular', 'fa-solid')" onmouseout="this.classList.replace('fa-solid', 'fa-regular')" title="إضافة للمفضلة"></i>
         </div>
 
         <div class="rating" style="margin-bottom: 15px; font-size: 18px;">
@@ -49,7 +48,10 @@
             </div>
         </div>
         <?php endif; ?>
-        <button class="card_btn" style="position: relative; left: 0; transform: none; margin: auto; padding: 12px 50px; font-size: 16px;">أضافة إلي العربة</button>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
+            <button class="card_btn" style="flex: 1; margin: 0; padding: 12px 15px; font-size: 16px; position: relative; left: 0; transform: none;">أضافة إلي العربة</button>
+            <i class="fa-regular fa-heart favorite-btn" onclick="addToFavorite(<?php echo $product['id']; ?>)" style="font-size: 26px; color: #e74c3c; cursor: pointer; transition: 0.3s; padding: 10px 15px; border: 1px solid #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #fff;" onmouseover="this.classList.replace('fa-regular', 'fa-solid')" onmouseout="this.classList.replace('fa-solid', 'fa-regular')" title="إضافة للمفضلة"></i>
+        </div>
       </div>
     </div>
   </div>

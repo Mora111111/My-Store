@@ -1,4 +1,4 @@
-﻿<?php 
+<?php 
 $favoriteIds = [];
 if (Session::isLoggedIn()) {
     $favoriteModel = new Favorite();
@@ -54,8 +54,12 @@ if (Session::isLoggedIn()) {
               <div class="card_title_wrapper" style="margin-bottom:10px;">
                 <a href="/product?id=<?php echo $row['id']; ?>" class="card_title" style="display:block; color:#555; font-weight:normal; font-size:14px; margin:0; position:relative; z-index:2;"><?php echo htmlspecialchars($row['title']); ?></a>
               </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <div style="margin-bottom: 10px;">
                   <div class="rating"><?php echo $stars_html; ?></div>
+              </div>
+              <p class="card_price"><?php echo $price_parts[0]; ?>.<small><?php echo $price_parts[1]; ?></small> <span>جنيه</span></p>
+              <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
+                  <button class="card_btn" style="flex: 1; margin: 0; padding: 10px 15px;">أضافة إلي العربة</button>
                   <?php 
                   $favoriteIds = [];
                   if (Session::isLoggedIn()) {
@@ -64,12 +68,10 @@ if (Session::isLoggedIn()) {
                   }
                   $isFavorited = in_array($row['id'], $favoriteIds);
                   ?>
-                  <button class="heart-action-btn" data-product-id="<?php echo $row['id']; ?>" style="background:transparent; border:none; cursor:pointer; font-size:18px; color:#ff4757; transition: transform 0.2s;">
+                  <button class="heart-action-btn" data-product-id="<?php echo $row['id']; ?>" style="background:transparent; border:1px solid #eee; border-radius:5px; cursor:pointer; font-size:18px; color:#ff4757; transition: transform 0.2s; padding: 8px 12px; display:flex; align-items:center; justify-content:center;">
                       <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
                   </button>
               </div>
-              <p class="card_price"><?php echo $price_parts[0]; ?>.<small><?php echo $price_parts[1]; ?></small> <span>جنيه</span></p>
-              <button class="card_btn">أضافة إلي العربة</button>
             </div>
           </div>
           <?php endforeach; ?>
@@ -96,8 +98,12 @@ if (Session::isLoggedIn()) {
               <div class="card_title_wrapper" style="margin-bottom:10px;">
                 <a href="/product?id=<?php echo $row['id']; ?>" class="card_title" style="display:block; color:#555; font-weight:normal; font-size:14px; margin:0; position:relative; z-index:2;"><?php echo htmlspecialchars($row['title']); ?></a>
               </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <div style="margin-bottom: 10px;">
                   <div class="rating"><?php echo $stars_html; ?></div>
+              </div>
+              <p class="card_price"><?php echo $price_parts[0]; ?>.<small><?php echo $price_parts[1]; ?></small> <span>جنيه</span></p>
+              <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
+                  <button class="card_btn" style="flex: 1; margin: 0; padding: 10px 15px;">أضافة إلي العربة</button>
                   <?php 
                   $favoriteIds = [];
                   if (Session::isLoggedIn()) {
@@ -106,12 +112,10 @@ if (Session::isLoggedIn()) {
                   }
                   $isFavorited = in_array($row['id'], $favoriteIds);
                   ?>
-                  <button class="heart-action-btn" data-product-id="<?php echo $row['id']; ?>" style="background:transparent; border:none; cursor:pointer; font-size:18px; color:#ff4757; transition: transform 0.2s;">
+                  <button class="heart-action-btn" data-product-id="<?php echo $row['id']; ?>" style="background:transparent; border:1px solid #eee; border-radius:5px; cursor:pointer; font-size:18px; color:#ff4757; transition: transform 0.2s; padding: 8px 12px; display:flex; align-items:center; justify-content:center;">
                       <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
                   </button>
               </div>
-              <p class="card_price"><?php echo $price_parts[0]; ?>.<small><?php echo $price_parts[1]; ?></small> <span>جنيه</span></p>
-              <button class="card_btn">أضافة إلي العربة</button>
             </div>
           </div>
           <?php endforeach; ?>

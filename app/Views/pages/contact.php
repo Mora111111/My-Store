@@ -49,19 +49,19 @@
         <h3 class="title">تواصل معنا</h3>
         <div>
           <i class="fa-solid fa-phone footer-icon"></i>
-          <a href="#">رقم التواصل الاول</a>
+          <a href="javascript:void(0);">رقم التواصل الاول</a>
         </div>
         <div>
           <i class="fa-solid fa-phone footer-icon"></i>
-          <a href="#">رقم التواصل الثاني</a>
+          <a href="javascript:void(0);">رقم التواصل الثاني</a>
         </div>
         <div>
           <i class="fa-solid fa-envelope footer-icon"></i>
-          <a href="#">MY-Store@gmail.com</a>
+          <a href="mailto:MY-Store@gmail.com">MY-Store@gmail.com</a>
         </div>
         <div>
           <i class="fa-solid fa-location-dot footer-icon"></i>
-          <a href="#">المحافظات - مصر</a>
+          <a href="javascript:void(0);">المحافظات - مصر</a>
         </div>
       </div>
 

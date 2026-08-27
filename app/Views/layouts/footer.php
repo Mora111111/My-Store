@@ -1,4 +1,4 @@
-﻿<div class="cart">
+<div class="cart">
   <h2 class="cart_title">عربة التسوق</h2>
   <div class="cart_content"></div>
   <div class="total">
@@ -48,10 +48,10 @@
           <a href="/about" class="footer_link">من نحن</a>
         </li>
         <li class="footer_li">
-          <a href="#features" class="footer_link">المنتجات المميزة</a>
+          <a href="/#features" class="footer_link">المنتجات المميزة</a>
         </li>
         <li class="footer_li">
-          <a href="#latest" class="footer_link">أحدث المنتجات</a>
+          <a href="/#latest" class="footer_link">أحدث المنتجات</a>
         </li>
         <li class="footer_li">
           <a href="/contact" class="footer_link">اتصل بنا</a>

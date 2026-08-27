@@ -40,7 +40,7 @@
     <h3 style="margin-bottom:10px;">تأكيد الحذف</h3>
     <p style="color:#64748b; margin-bottom:25px;">هل أنت متأكد من حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.</p>
     <div style="display:flex; gap:10px;">
-      <a href="#" id="confirmDeleteBtn" class="btn-danger" style="flex:1; text-align:center;">نعم، احذف</a>
+      <a href="javascript:void(0);" id="confirmDeleteBtn" class="btn-danger" style="flex:1; text-align:center;">نعم، احذف</a>
       <button onclick="closeDeleteModal()" class="btn" style="flex:1; background:#f1f5f9; color:#1e293b; border:none; border-radius:30px; cursor:pointer; font-weight:600; font-family:Tajawal;">إلغاء</button>
     </div>
   </div>
