@@ -37,30 +37,30 @@ class AdminProductController {
             $category_class = trim($_POST['category_class'] ?? '');
             $price = floatval($_POST['price'] ?? 0);
             $description = trim($_POST['description'] ?? '');
-            $image_url = '';
-
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
-                $check = getimagesize($_FILES['image']['tmp_name']);
-                if ($check !== false && in_array($ext, $allowed)) {
-                    $new_name = time() . '_' . uniqid() . '.' . $ext;
-                    $upload_dir = ROOT_DIR . '/uploads';
-                    if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
-                    $dest = $upload_dir . '/' . $new_name;
-                    if (move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
-                        $image_url = 'uploads/' . $new_name;
-                    } else {
-                        $_SESSION['toast_msg'] = 'حدث خطأ أثناء رفع الصورة.';
-                        $_SESSION['toast_type'] = 'error';
-                        header('Location: /admin/products');
-                        exit;
-                    }
+            $imagePath = '';
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $apiKey = 'e177b4ddf3cf1d337cd1dff5feaff484'; // Replace with actual key
+                $imageTmpName = $_FILES['image']['tmp_name'];
+                $imageData = base64_encode(file_get_contents($imageTmpName));
+                
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload');
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, [
+                    'key' => $apiKey,
+                    'image' => $imageData
+                ]);
+                
+                $response = curl_exec($ch);
+                curl_close($ch);
+                
+                $json = json_decode($response, true);
+                if (isset($json['data']['url'])) {
+                    $imagePath = $json['data']['url'];
                 } else {
-                    $_SESSION['toast_msg'] = 'صيغة الملف غير مدعومة.';
-                    $_SESSION['toast_type'] = 'error';
-                    header('Location: /admin/products');
-                    exit;
+                    // Handle API error silently or set a default placeholder
+                    $imagePath = '/images/logos/logo.png'; 
                 }
             } else {
                 $_SESSION['toast_msg'] = 'يرجى اختيار صورة للمنتج.';
@@ -68,6 +68,8 @@ class AdminProductController {
                 header('Location: /admin/products');
                 exit;
             }
+            
+            $image_url = $imagePath;
 
             if ($productModel->create([
                 'title' => $title,
@@ -119,32 +121,36 @@ class AdminProductController {
                 'description' => trim($_POST['description'] ?? '')
             ];
 
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
-                $check = getimagesize($_FILES['image']['tmp_name']);
-                if ($check !== false && in_array($ext, $allowed)) {
-                    $new_name = time() . '_' . uniqid() . '.' . $ext;
-                    $upload_dir = ROOT_DIR . '/uploads';
-                    if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
-                    $dest = $upload_dir . '/' . $new_name;
-                    if (move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
-                        if (!empty($existing['image_url']) && file_exists(ROOT_DIR . '/' . $existing['image_url'])) {
-                            unlink(ROOT_DIR . '/' . $existing['image_url']);
-                        }
-                        $data['image_url'] = 'uploads/' . $new_name;
-                    } else {
-                        $_SESSION['toast_msg'] = 'خطأ في رفع الصورة الجديدة.';
-                        $_SESSION['toast_type'] = 'error';
-                        header('Location: /admin/products/edit?id=' . $id);
-                        exit;
-                    }
+            $imagePath = '';
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $apiKey = 'e177b4ddf3cf1d337cd1dff5feaff484'; // Replace with actual key
+                $imageTmpName = $_FILES['image']['tmp_name'];
+                $imageData = base64_encode(file_get_contents($imageTmpName));
+                
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload');
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, [
+                    'key' => $apiKey,
+                    'image' => $imageData
+                ]);
+                
+                $response = curl_exec($ch);
+                curl_close($ch);
+                
+                $json = json_decode($response, true);
+                if (isset($json['data']['url'])) {
+                    $imagePath = $json['data']['url'];
                 } else {
-                    $_SESSION['toast_msg'] = 'صيغة الملف غير مدعومة.';
-                    $_SESSION['toast_type'] = 'error';
-                    header('Location: /admin/products/edit?id=' . $id);
-                    exit;
+                    // Handle API error silently or set a default placeholder
+                    $imagePath = '/images/logos/logo.png'; 
                 }
+                
+                if (!empty($existing['image_url']) && file_exists(ROOT_DIR . '/' . $existing['image_url'])) {
+                    unlink(ROOT_DIR . '/' . $existing['image_url']);
+                }
+                $data['image_url'] = $imagePath;
             }
 
             if ($productModel->update($id, $data)) {
