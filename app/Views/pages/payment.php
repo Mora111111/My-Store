@@ -222,6 +222,10 @@
             el.textContent = cartTotal.toFixed(2) + ' جنيه';
         });
         window.cartTotalValue = cartTotal;
+        const hiddenProducts = document.getElementById('hidden-products');
+        const hiddenTotal = document.getElementById('hidden-total-price');
+        if (hiddenProducts) hiddenProducts.value = cartItemsStr;
+        if (hiddenTotal) hiddenTotal.value = cartTotal;
 
         const reviewContainer = document.getElementById('review-products-container');
         if (reviewContainer && cartItemsStr) {
@@ -229,10 +233,11 @@
             cartItems.forEach(item => {
                 let productImg = item.img || item.image || item.image_url || item.imgSrc || item.productImg || item.src || '/images/logos/logo.png';
                 let productTitle = item.title || item.name || item.productName || 'منتج إلكتروني';
+                let productId = item.id || item.productId || item.product_id || item.Id || item.ID;
 
                reviewContainer.innerHTML += `
                  <div class="checkout-item" style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9; transition: 0.3s;">
-                     <a href="${(item.id || item.productId) ? '/product?id=' + (item.id || item.productId) : 'javascript:void(0);'}" style="display: flex; align-items: center; gap: 15px; text-decoration: none; cursor: pointer;">
+                     <a href="${productId ? '/product?id=' + productId : 'javascript:void(0);'}" style="display: flex; align-items: center; gap: 15px; text-decoration: none; cursor: pointer;">
                          <img src="${productImg}" style="width: 65px; height: 65px; object-fit: contain; border-radius: 8px; border: 1px solid #e2e8f0; padding: 5px; background: #fff; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="عرض تفاصيل المنتج">
                          <div>
                              <div class="card_title_wrapper" style="margin-bottom: 5px;">

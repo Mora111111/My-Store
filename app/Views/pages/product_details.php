@@ -111,8 +111,9 @@
             <?php elseif (!isset($hasPurchased) || !$hasPurchased): ?>
                 <div style="text-align: center; padding: 20px; background: #fef2f2; border-radius: 8px; border: 1px dashed #fca5a5;">
                     <i class="fa-solid fa-cart-circle-xmark" style="font-size: 30px; color: #f87171; margin-bottom: 10px;"></i>
-                    <p style="color: #991b1b; font-size: 16px; margin: 0;">عذراً، نظام التقييم متاح فقط للمشترين المؤكدين. يجب إتمام شراء هذا المنتج لتتمكن من تقييمه.</p>
+                    <p style="color: #991b1b; font-size: 16px; margin: 0;">عذراً نظام التقييم متاح فقط للمشترين المؤكدين يجب إتمام شراء هذا المنتج لتتمكن من تقييمه</p>
                 </div>
+            
             <?php else: ?>
                 <style>
                     .star-rating-input { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 5px; margin-bottom: 15px; }

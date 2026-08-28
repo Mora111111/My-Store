@@ -12,7 +12,6 @@ class Product {
     }
 
     public function search(string $keyword): array {
-     // تقسيم جملة البحث لكلمات منفصلة
      $words = array_filter(explode(' ', trim($keyword)));
 
      if (empty($words)) {
@@ -22,14 +21,12 @@ class Product {
      $conditions = [];
      $params = [];
 
-     // بناء شروط تبحث عن كل كلمة في الاسم أو القسم
      foreach ($words as $word) {
          $conditions[] = "(title LIKE ? OR category_class LIKE ?)";
          $params[] = '%' . $word . '%';
          $params[] = '%' . $word . '%';
      }
 
-     // دمج الشروط بحيث يجب توفر كل كلمات البحث
      $sql = "SELECT * FROM products WHERE " . implode(' AND ', $conditions) . " ORDER BY id DESC";
      $stmt = $this->db->prepare($sql);
      $stmt->execute($params);
