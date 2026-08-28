@@ -1,13 +1,82 @@
+=== app/Views/layouts/header.php ===
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/all.min.css" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="/images/icons/shopping-cart_head.png">
+  <title>MY Store - متجر على الإنترنت</title>
+<meta name="csrf-token" content="<?= CSRF::generate() ?>"></head>
+
+<body>
+  <header class="header" id="header">
+    <nav class="nav container">
+      <div class="nav_box">
+        <div class="nav_btns">
+          <div class="nav_toggle" id="nav-toggle">
+            <i class="fa-solid fa-bars"></i>
+          </div>
+
+          <div class="login_toggle profile-dropdown-container">
+            <?php if (isset($_SESSION['user_id'])): ?>
+              <a href="javascript:void(0);" class="login_link profile-trigger" id="profile-btn">
+                <i class="fa-solid fa-circle-user" style="color: var(--main-color); font-size: 26px;"></i>
+              </a>
+              <div class="profile-menu" id="profile-menu">
+                <div class="profile-header">
+                  مرحباً،
+                  <span><?php echo (isset($_SESSION['user_name']) && !empty(trim($_SESSION['user_name']))) ? htmlspecialchars(explode(' ', trim($_SESSION['user_name']))[0]) : 'ضيف'; ?></span>
+                  👋
+                </div>
+                <ul class="profile-links">
+                  <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                    <li><a href="/admin"><i class="fa-solid fa-gauge"></i> لوحة الإدارة</a></li>
+                  <?php else: ?>
+                    <li><a href="/profile"><i class="fa-solid fa-user-gear"></i> الملف الشخصي</a></li>
+                    <li><a href="/my-orders"><i class="fa-solid fa-box-open"></i> طلباتي</a></li>
+                    <li><a href="/my-messages"><i class="fa-solid fa-envelope"></i> رسائلي</a></li>
+                  <?php endif; ?>
+                  <li>
+                    <a href="/logout" class="logout-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل خروج</a>
+                  </li>
+                </ul>
+              </div>
+            <?php else: ?>
+              <a href="/login" class="login_link"><i class="fa-regular fa-user"></i></a>
+            <?php endif; ?>
+          </div>
+
+          <div class="nav_shop" id="cart-shop">
+            <img src="/images/icons/cart.png" alt="">
+            <span class="cart_count">0</span>
+          </div>
+        </div>
+
+        <div class="nav_menu" id="nav-menu">
+          <i class="fa-solid fa-xmark nav_menu_close" id="menu-close"></i>
+          <ul class="nav-list">
+            <?php $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
+            <li class="nav-item"><a href="/" class="nav_link <?= ($currentUri === '/') ? 'active' : '' ?>">الرئيسية</a></li>
+            <li class="nav-item"><a href="/products" class="nav_link <?= ($currentUri === '/products' || $currentUri === '/product') ? 'active' : '' ?>">المنتجات</a></li>
+            <li class="nav-item"><a href="/services" class="nav_link <?= ($currentUri === '/services') ? 'active' : '' ?>">الخدمات</a></li>
+            <li class="nav-item"><a href="/about" class="nav_link <?= ($currentUri === '/about') ? 'active' : '' ?>">من نحن</a></li>
+            <li class="nav-item"><a href="/contact" class="nav_link <?= ($currentUri === '/contact') ? 'active' : '' ?>">اتصل بنا</a></li>
+          </ul>
+        </div>
+      </div>
+      <img src="/images/logos/logo.png" alt="MY Store Logo" class="nav_logo" />
+    </nav>
+  </header>
+
+=== app/Controllers/ProductController.php ===
 <?php
 class ProductController {
     public function index(): void {
         $productModel = new Product();
-        $searchQuery = trim($_GET['search'] ?? '');
-        if (!empty($searchQuery)) {
-            $allProducts = $productModel->search($searchQuery);
-        } else {
-            $allProducts =$productModel->getAll();
-        }
+        $allProducts = $productModel->getAll();
         $categories = $productModel->getCategories();
         $catMap = [];
         $catCounter = 1;
@@ -96,5 +165,81 @@ class ProductController {
         require_once APP_DIR . '/Views/layouts/header.php';
         require_once APP_DIR . '/Views/pages/product_details.php';
         require_once APP_DIR . '/Views/layouts/footer.php';
+    }
+}
+
+=== app/Models/Product.php ===
+<?php
+class Product {
+    private PDO $db;
+
+    public function __construct() {
+        $this->db = Database::getInstance()->getConnection();
+    }
+
+    public function getAll(): array {
+        $stmt = $this->db->query("SELECT * FROM products ORDER BY id DESC");
+        return $stmt->fetchAll();
+    }
+
+    public function countAll(): int {
+        return (int)$this->db->query("SELECT COUNT(*) FROM products")->fetchColumn();
+    }
+
+    public function getFeatured(int $limit = 4): array {
+        $stmt = $this->db->prepare("SELECT * FROM products ORDER BY rating DESC LIMIT ?");
+        $stmt->execute([$limit]);
+        return $stmt->fetchAll();
+    }
+
+    public function getLatest(int $limit = 8): array {
+        $stmt = $this->db->prepare("SELECT * FROM products ORDER BY id DESC LIMIT ?");
+        $stmt->execute([$limit]);
+        return $stmt->fetchAll();
+    }
+
+    public function getCategories(): array {
+        $stmt = $this->db->query("SELECT DISTINCT category_class FROM products WHERE category_class != ''");
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function findById(int $id) {
+        $stmt = $this->db->prepare("SELECT * FROM products WHERE id = ? LIMIT 1");
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
+
+    public function create(array $data): bool {
+        $stmt = $this->db->prepare("INSERT INTO products (title, price, category_class, description, image_url, image_2, image_3, image_4) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        return $stmt->execute([
+            $data['title'],
+            $data['price'],
+            $data['category_class'],
+            $data['description'] ?? '',
+            $data['image_url'] ?? '',
+            $data['image_2'] ?? '',
+            $data['image_3'] ?? '',
+            $data['image_4'] ?? ''
+        ]);
+    }
+
+    public function update(int $id, array $data): bool {
+        $fields = [];
+        $values = [];
+        foreach (['title', 'price', 'category_class', 'description', 'image_url', 'image_2', 'image_3', 'image_4'] as $col) {
+            if (array_key_exists($col, $data)) {
+                $fields[] = "$col = ?";
+                $values[] = $data[$col];
+            }
+        }
+        if (empty($fields)) return false;
+        $values[] = $id;
+        $stmt = $this->db->prepare("UPDATE products SET " . implode(', ', $fields) . " WHERE id = ?");
+        return $stmt->execute($values);
+    }
+
+    public function delete(int $id): bool {
+        $stmt = $this->db->prepare("DELETE FROM products WHERE id = ?");
+        return $stmt->execute([$id]);
     }
 }

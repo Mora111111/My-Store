@@ -11,6 +11,12 @@ class Product {
         return $stmt->fetchAll();
     }
 
+    public function search(string $keyword): array {
+        $stmt =$this->db->prepare("SELECT * FROM products WHERE title LIKE ? ORDER BY id DESC");
+        $stmt->execute(['\%' .$keyword . '%']);
+        return $stmt->fetchAll();
+    }
+
     public function countAll(): int {
         return (int)$this->db->query("SELECT COUNT(*) FROM products")->fetchColumn();
     }

@@ -66,6 +66,12 @@
           </ul>
         </div>
       </div>
+      <div class="header-search-container" style="flex: 1; margin: 0 3vw; max-width: 600px; display: flex; align-items: center;">
+          <form action="/products" method="GET" style="display: flex; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 25px; padding: 5px 20px; width: 100%; transition: all 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);" onfocusin="this.style.borderColor='var(--main-color)'; this.style.boxShadow='0 0 0 3px rgba(14, 165, 233, 0.1)';" onfocusout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.02)';">
+              <button type="submit" style="background: none; border: none; cursor: pointer; color: var(--main-color); font-size: 18px; margin-left: 15px;"><i class="fa-solid fa-magnifying-glass"></i></button>
+              <input type="text" name="search" placeholder="ابحث عن منتجك هنا..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>" style="border: none; background: transparent; outline: none; width: 100%; font-family: inherit; font-size: 15px; padding: 8px 0; color: #334155;">
+          </form>
+      </div>
       <img src="/images/logos/logo.png" alt="MY Store Logo" class="nav_logo" />
     </nav>
   </header>
