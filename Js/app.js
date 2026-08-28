@@ -89,16 +89,17 @@ if (cartContent && total && btnBuy && cartEmpty) {
 
 addCartBtn.forEach((btn) => {
     btn.addEventListener("click", (event) => {
-        const myCard = event.target.closest(".card");
-        const cardImgSrc = myCard.querySelector(".card_image").src;
+        const myCard = event.target.closest(".card") || event.target.closest(".product_details_section");
+        const cardImgSrc = myCard.querySelector(".card_image") ? myCard.querySelector(".card_image").src : (myCard.querySelector("#mainProductImage") ? myCard.querySelector("#mainProductImage").src : "");
         const cardTitle = myCard.querySelector(".card_title").textContent;
         const priceEl = myCard.querySelector(".card_price") || myCard.querySelector("p");
         const cardPrice = priceEl ? priceEl.textContent : "0";
+        const cardId = btn.getAttribute("data-id");
 
         if (btn.classList.contains("done")) {
             return;
         } else {
-            addCardToArray(cardImgSrc, cardTitle, cardPrice);
+            addCardToArray(cardImgSrc, cardTitle, cardPrice, cardId);
         }
         btn.textContent = "تم أضافة";
         btn.classList.add("done");
@@ -119,12 +120,13 @@ addCartBtn.forEach((btn) => {
     });
 });
 
-function addCardToArray(cardImgSrc, cardTitle, cardPrice) {
+function addCardToArray(cardImgSrc, cardTitle, cardPrice, cardId) {
     const cardData = {
-        id: Date.now(),
+        id: cardId,
         src: cardImgSrc,
         title: cardTitle,
         price: cardPrice,
+        number: 1,
         completed: false,
     };
     arrayOfCards.push(cardData);
@@ -152,8 +154,8 @@ function addToCart(arrayOfCards, cardTitle) {
         <span class="cart_price">${card.price}</span>
         <div class="cart_quantity">
             <button id="increment">+</button>
-            <span class="number">1</span>
-            <button id="decrement">-</button>
+            <span class="number">${card.number || 1}</span>
+            <button id="decrement" style="color: ${card.number > 1 ? '#333' : '#999'}">-</button>
         </div>
         <i class="fa-solid fa-trash cart_remove"></i>
         </div>
@@ -163,8 +165,9 @@ function addToCart(arrayOfCards, cardTitle) {
         cartQuantity.addEventListener("click", (e) => {
             const numberElement = cartBox.querySelector(".number");
             const decrementBtn = cartBox.querySelector("#decrement");
-            let quantity = numberElement.textContent;
-            if ((e.target.id === "decrement") & (quantity > 1)) {
+            let quantity = Number(numberElement.textContent);
+            
+            if (e.target.id === "decrement" && quantity > 1) {
                 quantity--;
                 if (quantity === 1) {
                     decrementBtn.style.color = "#999";
@@ -173,7 +176,15 @@ function addToCart(arrayOfCards, cardTitle) {
                 quantity++;
                 decrementBtn.style.color = "#333";
             }
+            
             numberElement.textContent = quantity;
+            
+            const currentCard = arrayOfCards.find(c => c.id == card.id);
+            if(currentCard) {
+                currentCard.number = quantity;
+                addToLocaleStorage(arrayOfCards);
+            }
+            
             updateTotalPrice();
         });
     });

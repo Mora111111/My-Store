@@ -48,7 +48,7 @@ if (Session::isLoggedIn()) {
             </div>
             <p class="card_price"><?php echo $price_parts[0]; ?>.<small><?php echo $price_parts[1]; ?></small> <span>جنيه</span></p>
             <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
-                <button class="card_btn" id="add_to_card" style="flex: 1; margin: 0; padding: 10px 15px;">أضافة إلي العربة</button>
+                <button class="card_btn" id="add_to_card" data-id="<?php echo $row['id']; ?>" style="flex: 1; margin: 0; padding: 10px 15px;">أضافة إلي العربة</button>
                 <?php 
                 $favoriteIds = [];
                 if (Session::isLoggedIn()) {

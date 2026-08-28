@@ -49,7 +49,7 @@
         </div>
         <?php endif; ?>
         <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
-            <button class="card_btn" style="flex: 1; margin: 0; padding: 12px 15px; font-size: 16px; position: relative; left: 0; transform: none;">أضافة إلي العربة</button>
+            <button class="card_btn" data-id="<?php echo $product['id']; ?>" style="flex: 1; margin: 0; padding: 12px 15px; font-size: 16px; position: relative; left: 0; transform: none;">أضافة إلي العربة</button>
             <?php 
             $favoriteIds = [];
             if (Session::isLoggedIn()) {
