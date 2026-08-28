@@ -70,7 +70,10 @@ orderBtn.addEventListener("click", () => {
     formData.append("governorate", document.getElementById("boycott-Address").textContent);
     formData.append("zip_code", document.getElementById("postal-Address").textContent);
     formData.append("total_price", window.cartTotalValue || window.localStorage.getItem("total_Price"));
-    formData.append("products", cartItems);
+    formData.append("products", JSON.stringify(JSON.parse(localStorage.getItem('cards') || '[]').map(item => { 
+        item.number = parseInt(item.number || item.quantity || item.qty || 1); 
+        return item; 
+    })));
 
     orderBtn.disabled = true;
     orderBtn.textContent = "جاري التنفيذ...";
