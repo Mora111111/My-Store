@@ -223,9 +223,9 @@
         });
         window.cartTotalValue = cartTotal;
         const hiddenProducts = document.getElementById('hidden-products');
-        const hiddenTotal = document.getElementById('hidden-total-price');
-        if (hiddenProducts) hiddenProducts.value = cartItemsStr;
-        if (hiddenTotal) hiddenTotal.value = cartTotal;
+     const hiddenTotal = document.getElementById('hidden-total-price');
+     if (hiddenProducts) hiddenProducts.value = cartItemsStr;
+     if (hiddenTotal) hiddenTotal.value = cartTotal;
 
         const reviewContainer = document.getElementById('review-products-container');
         if (reviewContainer && cartItemsStr) {
