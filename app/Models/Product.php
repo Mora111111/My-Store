@@ -12,10 +12,29 @@ class Product {
     }
 
     public function search(string $keyword): array {
-        $stmt =$this->db->prepare("SELECT * FROM products WHERE title LIKE ? ORDER BY id DESC");
-        $stmt->execute(['\%' .$keyword . '%']);
-        return $stmt->fetchAll();
-    }
+     // تقسيم جملة البحث لكلمات منفصلة
+     $words = array_filter(explode(' ', trim($keyword)));
+
+     if (empty($words)) {
+         return $this->getAll();
+     }
+
+     $conditions = [];
+     $params = [];
+
+     // بناء شروط تبحث عن كل كلمة في الاسم أو القسم
+     foreach ($words as $word) {
+         $conditions[] = "(title LIKE ? OR category_class LIKE ?)";
+         $params[] = '%' . $word . '%';
+         $params[] = '%' . $word . '%';
+     }
+
+     // دمج الشروط بحيث يجب توفر كل كلمات البحث
+     $sql = "SELECT * FROM products WHERE " . implode(' AND ', $conditions) . " ORDER BY id DESC";
+     $stmt = $this->db->prepare($sql);
+     $stmt->execute($params);
+     return $stmt->fetchAll();
+ }
 
     public function countAll(): int {
         return (int)$this->db->query("SELECT COUNT(*) FROM products")->fetchColumn();
