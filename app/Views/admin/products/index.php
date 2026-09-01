@@ -7,7 +7,7 @@
 
 <div class="card">
   <h2><i class="fa-solid fa-list"></i> المنتجات الحالية</h2>
-  <div style="margin-bottom:15px;"><input type="text" id="searchInput" placeholder="بحث ذكي باسم المنتج..." style="padding:12px; width:100%; max-width:400px; border:1px solid #cbd5e1; border-radius:8px; outline:none; font-family:inherit;"></div>
+  <div style="margin-bottom:15px;"><input type="text" id="searchInput" placeholder="اسم المنتج" style="padding:12px; width:100%; max-width:400px; border:1px solid #cbd5e1; border-radius:8px; outline:none; font-family:inherit;"></div>
   <table>
     <tr>
       <th>الصورة</th>

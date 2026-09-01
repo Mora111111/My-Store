@@ -28,7 +28,10 @@ class AdminSettingController {
                 'phone1' => trim($_POST['phone1'] ?? ''),
                 'phone2' => trim($_POST['phone2'] ?? ''),
                 'email' => trim($_POST['email'] ?? ''),
-                'address' => trim($_POST['address'] ?? '')
+                'address' => trim($_POST['address'] ?? ''),
+                'shipping_cost' => floatval($_POST['shipping_cost'] ?? 0),
+                'facebook_link' => trim($_POST['facebook_link'] ?? ''),
+                'maintenance_mode' => isset($_POST['maintenance_mode']) ? 1 : 0
             ]);
             $_SESSION['toast_msg'] = 'تم حفظ الإعدادات بنجاح!';
             $_SESSION['toast_type'] = 'success';

@@ -72,13 +72,13 @@
         </div>
         <div class="box_order_total">
           <span>تكاليف الشحن</span>
-          <span>مجاني</span>
+          <span id="display-shipping-cost"><?php echo isset($site_settings['shipping_cost']) && $site_settings['shipping_cost'] > 0 ?$site_settings['shipping_cost'] . ' ج.م' : 'مجاني'; ?></span>
         </div>
       </div>
       <div class="boxs_order_total">
         <div class="box_order_total">
           <span>الإجمالي</span>
-          <span class="order_total cart-total-price"></span>
+          <span class="order_total final-total-price"></span>
         </div>
         <button class="order_btn">تأكيد الطلب</button>
       </div>
@@ -205,6 +205,7 @@
 <script src="/Js/pyment.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const shippingCost = <?php echo floatval($site_settings['shipping_cost'] ?? 0); ?>;
         const cartItemsStr = localStorage.getItem('cards');
         let cartTotal = 0;
         if(cartItemsStr){
@@ -218,14 +219,18 @@
             } catch(e){}
         }
         
+        const finalTotal = cartTotal + shippingCost;
         document.querySelectorAll('.cart-total-price').forEach(el => {
-            el.textContent = cartTotal.toFixed(2) + ' جنيه';
+            el.textContent = cartTotal.toFixed(2) + ' ج.م';
         });
-        window.cartTotalValue = cartTotal;
+        document.querySelectorAll('.final-total-price').forEach(el => {
+            el.textContent = finalTotal.toFixed(2) + ' ج.م';
+        });
+        window.cartTotalValue = finalTotal;
         const hiddenProducts = document.getElementById('hidden-products');
      const hiddenTotal = document.getElementById('hidden-total-price');
      if (hiddenProducts) hiddenProducts.value = cartItemsStr;
-     if (hiddenTotal) hiddenTotal.value = cartTotal;
+     if (hiddenTotal) hiddenTotal.value = finalTotal;
 
         const reviewContainer = document.getElementById('review-products-container');
         if (reviewContainer && cartItemsStr) {

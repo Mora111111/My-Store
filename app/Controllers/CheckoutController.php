@@ -5,6 +5,8 @@ class CheckoutController {
             header('Location: /login');
             exit;
         }
+        $settingModel = new Setting();
+        $site_settings =$settingModel->getSettings();
         require_once APP_DIR . '/Views/layouts/header.php';
         require_once APP_DIR . '/Views/pages/payment.php';
         require_once APP_DIR . '/Views/layouts/footer.php';
