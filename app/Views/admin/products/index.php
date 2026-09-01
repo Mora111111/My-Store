@@ -25,7 +25,11 @@
         <td style="font-weight:700; color:#0f172a;"><?php echo htmlspecialchars($row['price']); ?> ج.م</td>
         <td>
           <a href="/admin/products/edit?id=<?php echo $row['id']; ?>" class="action-btn btn-edit"><i class="fa-solid fa-pen"></i> تعديل</a>
-          <a href="/admin/products/delete?id=<?php echo $row['id']; ?>" class="action-btn btn-delete" onclick="return confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟');"><i class="fa-solid fa-trash"></i> حذف</a>
+          <form method="POST" action="/admin/products/delete" style="display:inline-block;" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟');">
+            <?= CSRF::getField() ?>
+            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+            <button type="submit" class="action-btn btn-delete" style="cursor:pointer;"><i class="fa-solid fa-trash"></i> حذف</button>
+          </form>
         </td>
       </tr>
       <?php endforeach; ?>
@@ -71,6 +75,10 @@
       <div class="form-group">
         <label>السعر (بالجنيه):</label>
         <input type="number" name="price" step="0.01" min="0" required placeholder="مثال: 45000">
+      </div>
+      <div class="form-group">
+        <label>السعر القديم (قبل الخصم - اختياري):</label>
+        <input type="number" name="old_price" step="0.01" min="0" value="0" placeholder="اتركه 0 إذا لم يكن هناك خصم">
       </div>
       </div>
 

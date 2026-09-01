@@ -98,12 +98,17 @@ class AdminUserController {
     }
 
     public function delete(): void {
-        $userModel = new User();
-        $id = intval($_GET['id'] ?? 0);
-        if ($id > 0 && $id !== (int)Session::get('user_id')) {
-            $userModel->delete($id);
-            $_SESSION['toast_msg'] = 'تم حذف المستخدم بنجاح.';
-            $_SESSION['toast_type'] = 'success';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {$_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
+                $_SESSION['toast_type'] = 'error';
+                header('Location: /admin/users');
+                exit;
+            }
+            $userModel = new User();
+            $id = intval($_POST['id'] ?? 0);
+            if ($id > 0 && $id !== (int)Session::get('user_id')) {$userModel->delete($id);$_SESSION['toast_msg'] = 'تم حذف المستخدم بنجاح.';
+                $_SESSION['toast_type'] = 'success';
+            }
         }
         header('Location: /admin/users');
         exit;

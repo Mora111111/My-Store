@@ -28,6 +28,7 @@ class AdminController {
         $stmt = $db->query("SELECT * FROM online_users ORDER BY last_activity DESC");
         $onlineUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $showSearch = false;
         $pageTitle = 'الزوار المتصلين';
         $pageIcon = 'fa-globe';
 

@@ -35,6 +35,10 @@
         <label>السعر (بالجنيه):</label>
         <input type="number" name="price" step="0.01" min="0" value="<?php echo htmlspecialchars($product['price']); ?>" required>
       </div>
+      <div class="form-group">
+        <label>السعر القديم (قبل الخصم - اختياري):</label>
+        <input type="number" name="old_price" step="0.01" min="0" value="<?php echo htmlspecialchars($product['old_price'] ?? '0'); ?>">
+      </div>
 
       <div class="form-group">
         <label>الوصف التفصيلي للمنتج:</label>
@@ -57,7 +61,8 @@
                <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #475569;"><?php echo $f['label']; ?></p>
                <div style="height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; background: #fff; border-radius: 4px; overflow: hidden;">
                    <?php if(!empty($currentImg)): ?>
-                       <img src="<?php echo htmlspecialchars($currentImg); ?>" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                       <?php $displaySrc = strpos($currentImg, 'data:image') === 0 ? $currentImg : '/' . ltrim($currentImg, '/'); ?>
+                       <img src="<?php echo htmlspecialchars($displaySrc); ?>" onerror="this.onerror=null;this.src='/images/logos/logo.png';" style="max-height: 100%; max-width: 100%; object-fit: contain;">
                    <?php else: ?>
                        <span style="color: #cbd5e1; font-size: 12px;">لا توجد صورة</span>
                    <?php endif; ?>

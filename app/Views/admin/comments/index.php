@@ -52,9 +52,11 @@
               <button onclick="openReplyModal(<?php echo $row['id']; ?>, '<?php echo $safe_name; ?>', '<?php echo $escaped_comment_js; ?>', '<?php echo $escaped_reply_js; ?>')" class="btn-reply">
                 <i class="fa-solid fa-pen-to-square"></i> <?php echo !empty($safe_reply) ? 'تعديل الرد' : 'رد'; ?>
               </button>
-              <a href="/admin/comments/delete?id=<?php echo $row['id']; ?>" class="btn-delete" onclick="return confirm('هل أنت متأكد من حذف هذا التعليق؟');">
-                <i class="fa-solid fa-trash"></i> حذف
-              </a>
+              <form method="POST" action="/admin/comments/delete" style="display:inline-block;" onsubmit="return confirm('هل أنت متأكد من حذف هذا التعليق؟');">
+                <?= CSRF::getField() ?>
+                <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                <button type="submit" class="btn-delete" style="border:none; cursor:pointer; font-family:inherit;"><i class="fa-solid fa-trash"></i> حذف</button>
+              </form>
             </div>
           </td>
         </tr>

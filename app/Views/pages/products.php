@@ -46,7 +46,12 @@ if (Session::isLoggedIn()) {
             <div style="margin-bottom: 10px;">
                 <div class="rating"><?php echo $stars_html; ?></div>
             </div>
-            <p class="card_price"><?php echo $price_parts[0]; ?>.<small><?php echo $price_parts[1]; ?></small> <span>جنيه</span></p>
+            <p class="card_price" style="display: inline-flex; align-items: center; gap: 8px;">
+                <span style="font-weight: 700; color: #0f172a;"><?php echo htmlspecialchars($row['price']); ?> ج.م</span>
+                <?php if(!empty($row['old_price']) && $row['old_price'] >$row['price']): ?>
+                    <del style="color: #94a3b8; font-size: 0.85em; font-weight: normal;"><?php echo htmlspecialchars($row['old_price']); ?> ج.م</del>
+                <?php endif; ?>
+            </p>
             <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
                 <button class="card_btn" id="add_to_card" data-id="<?php echo $row['id']; ?>" style="flex: 1; margin: 0; padding: 10px 15px;">أضافة إلي العربة</button>
                 <?php 

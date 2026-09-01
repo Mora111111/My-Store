@@ -40,6 +40,7 @@ class AdminProductController {
             $data = [
                 'title' => $title,
                 'price' => $price,
+                'old_price' => floatval($_POST['old_price'] ?? 0),
                 'category_class' => $category_class,
                 'description' => $description,
             ];
@@ -105,6 +106,7 @@ class AdminProductController {
                 'title' => trim($_POST['title'] ?? ''),
                 'category_class' => trim($_POST['category_class'] ?? ''),
                 'price' => floatval($_POST['price'] ?? 0),
+                'old_price' => floatval($_POST['old_price'] ?? 0),
                 'description' => trim($_POST['description'] ?? '')
             ];
 
@@ -133,14 +135,20 @@ class AdminProductController {
     }
 
     public function delete(): void {
-        $productModel = new Product();
-        $id = intval($_GET['id'] ?? 0);
-        $product = $productModel->findById($id);
-        if ($product) {
-            if (!empty($product['image_url']) && file_exists(ROOT_DIR . '/' . $product['image_url'])) {
-                unlink(ROOT_DIR . '/' . $product['image_url']);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {$_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
+                $_SESSION['toast_type'] = 'error';
+                header('Location: /admin/products');
+                exit;
             }
-            $productModel->delete($id);
+            $productModel = new Product();$id = intval($_POST['id'] ?? 0);$product = $productModel->findById($id);
+            if ($product) {
+                if (!empty($product['image_url']) && file_exists(ROOT_DIR . '/' .$product['image_url'])) {
+                    unlink(ROOT_DIR . '/' . $product['image_url']);
+                }
+                $productModel->delete($id);$_SESSION['toast_msg'] = 'تم حذف المنتج بنجاح.';
+                $_SESSION['toast_type'] = 'success';
+            }
         }
         header('Location: /admin/products');
         exit;

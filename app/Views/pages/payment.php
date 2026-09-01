@@ -74,6 +74,12 @@
           <span>تكاليف الشحن</span>
           <span id="display-shipping-cost"><?php echo isset($site_settings['shipping_cost']) && $site_settings['shipping_cost'] > 0 ?$site_settings['shipping_cost'] . ' ج.م' : 'مجاني'; ?></span>
         </div>
+        <?php if(isset($site_settings['global_discount']) &&$site_settings['global_discount'] > 0): ?>
+        <div class="box_order_total" style="color: #ef4444; font-weight: bold;">
+          <span>خصم المتجر (<?php echo floatval($site_settings['global_discount']); ?>%)</span>
+          <span id="display-discount-amount">- 0 ج.م</span>
+        </div>
+        <?php endif; ?>
       </div>
       <div class="boxs_order_total">
         <div class="box_order_total">
@@ -206,6 +212,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const shippingCost = <?php echo floatval($site_settings['shipping_cost'] ?? 0); ?>;
+        const globalDiscountPct = <?php echo floatval($site_settings['global_discount'] ?? 0); ?>;
         const cartItemsStr = localStorage.getItem('cards');
         let cartTotal = 0;
         if(cartItemsStr){
@@ -219,10 +226,16 @@
             } catch(e){}
         }
         
-        const finalTotal = cartTotal + shippingCost;
+        const discountAmount = (cartTotal * globalDiscountPct) / 100;
+        const finalTotal = cartTotal - discountAmount + shippingCost;
+        
         document.querySelectorAll('.cart-total-price').forEach(el => {
             el.textContent = cartTotal.toFixed(2) + ' ج.م';
         });
+        const discountDisplay = document.getElementById('display-discount-amount');
+        if (discountDisplay) {
+            discountDisplay.textContent = '- ' + discountAmount.toFixed(2) + ' ج.م';
+        }
         document.querySelectorAll('.final-total-price').forEach(el => {
             el.textContent = finalTotal.toFixed(2) + ' ج.م';
         });

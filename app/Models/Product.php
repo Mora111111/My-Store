@@ -61,10 +61,11 @@ class Product {
     }
 
     public function create(array $data): bool {
-        $stmt = $this->db->prepare("INSERT INTO products (title, price, category_class, description, image_url, image_2, image_3, image_4) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO products (title, price, old_price, category_class, description, image_url, image_2, image_3, image_4) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
             $data['title'],
             $data['price'],
+            $data['old_price'] ?? 0,
             $data['category_class'],
             $data['description'] ?? '',
             $data['image_url'] ?? '',
@@ -77,7 +78,7 @@ class Product {
     public function update(int $id, array $data): bool {
         $fields = [];
         $values = [];
-        foreach (['title', 'price', 'category_class', 'description', 'image_url', 'image_2', 'image_3', 'image_4'] as $col) {
+        foreach (['title', 'price', 'old_price', 'category_class', 'description', 'image_url', 'image_2', 'image_3', 'image_4'] as $col) {
             if (array_key_exists($col, $data)) {
                 $fields[] = "$col = ?";
                 $values[] = $data[$col];

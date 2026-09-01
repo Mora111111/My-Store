@@ -36,8 +36,11 @@
           <?php echo $starsHtml; ?>
         </div>
 
-        <p class="product_details_price card_price" style="font-size: 28px; font-weight: bold; margin-bottom: 30px;">
-          <?php echo $mainPrice; ?>.<small><?php echo $decimals; ?></small> <span>جنيه</span>
+        <p class="product_details_price card_price" style="font-size: 28px; font-weight: bold; margin-bottom: 30px; display: inline-flex; align-items: center; gap: 12px;">
+            <span><?php echo htmlspecialchars($product['price']); ?> ج.م</span>
+            <?php if(!empty($product['old_price']) && $product['old_price'] > $product['price']): ?>
+                <del style="color: #94a3b8; font-size: 0.7em; font-weight: normal;"><?php echo htmlspecialchars($product['old_price']); ?> ج.م</del>
+            <?php endif; ?>
         </p>
 
         <?php if (!empty($product['description'])): ?>

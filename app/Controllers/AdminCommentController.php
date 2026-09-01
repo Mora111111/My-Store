@@ -39,11 +39,18 @@ class AdminCommentController {
     }
 
     public function delete(): void {
-        $commentModel = new Comment();
-        $id = intval($_GET['id'] ?? 0);
-        $commentModel->delete($id);
-        $_SESSION['toast_msg'] = 'تم حذف التعليق بنجاح.';
-        $_SESSION['toast_type'] = 'success';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {$_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
+                $_SESSION['toast_type'] = 'error';
+                header('Location: /admin/comments');
+                exit;
+            }
+            $commentModel = new Comment();
+            $id = intval($_POST['id'] ?? 0);
+            if ($id > 0) {$commentModel->delete($id);$_SESSION['toast_msg'] = 'تم حذف التعليق بنجاح.';
+                $_SESSION['toast_type'] = 'success';
+            }
+        }
         header('Location: /admin/comments');
         exit;
     }

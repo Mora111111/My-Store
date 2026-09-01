@@ -40,7 +40,11 @@
     <h3 style="margin-bottom:10px;">تأكيد الحذف</h3>
     <p style="color:#64748b; margin-bottom:25px;">هل أنت متأكد من حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.</p>
     <div style="display:flex; gap:10px;">
-      <a href="javascript:void(0);" id="confirmDeleteBtn" class="btn-danger" style="flex:1; text-align:center;">نعم، احذف</a>
+      <form method="POST" action="/admin/users/delete" style="flex:1; display:flex; margin:0;">
+        <?= CSRF::getField() ?>
+        <input type="hidden" name="id" id="deleteUserId">
+        <button type="submit" class="btn-danger" style="width:100%; justify-content:center; border:none; cursor:pointer; font-family:inherit;">نعم، احذف</button>
+      </form>
       <button onclick="closeDeleteModal()" class="btn" style="flex:1; background:#f1f5f9; color:#1e293b; border:none; border-radius:30px; cursor:pointer; font-weight:600; font-family:Tajawal;">إلغاء</button>
     </div>
   </div>
@@ -127,9 +131,8 @@
   function openAddModal() { addModal.style.display = 'flex'; }
   function closeAddModal() { addModal.style.display = 'none'; }
   const deleteModal = document.getElementById('deleteConfirmModal');
-  const confirmBtn = document.getElementById('confirmDeleteBtn');
   function openDeleteModal(userId) {
-    confirmBtn.href = '/admin/users/delete?id=' + userId;
+    document.getElementById('deleteUserId').value = userId;
     deleteModal.style.display = 'flex';
   }
   function closeDeleteModal() { deleteModal.style.display = 'none'; }
