@@ -13,11 +13,11 @@
       <?= CSRF::getField() ?>
       <div class="form_row">
         <label>نص "معلومات عنا" (يظهر في الفوتر):</label>
-        <textarea name="about_text" rows="4" required><?php echo htmlspecialchars($site_settings['about_text'] ?? ''); ?></textarea>
+        <textarea name="about_text" rows="4"><?php echo htmlspecialchars($site_settings['about_text'] ?? ''); ?></textarea>
       </div>
       <div class="form_row">
         <label>رقم الهاتف الأول:</label>
-        <input type="text" name="phone1" value="<?php echo htmlspecialchars($site_settings['phone1'] ?? ''); ?>" required>
+        <input type="text" name="phone1" value="<?php echo htmlspecialchars($site_settings['phone1'] ?? ''); ?>">
       </div>
       <div class="form_row">
         <label>رقم الهاتف الثاني:</label>
@@ -25,17 +25,17 @@
       </div>
       <div class="form_row">
         <label>البريد الإلكتروني للتواصل:</label>
-        <input type="email" name="email" value="<?php echo htmlspecialchars($site_settings['email'] ?? ''); ?>" required>
+        <input type="email" name="email" value="<?php echo htmlspecialchars($site_settings['email'] ?? ''); ?>">
       </div>
       <div class="form_row">
         <label>عنوان المتجر:</label>
-        <input type="text" name="address" value="<?php echo htmlspecialchars($site_settings['address'] ?? ''); ?>" required>
+        <input type="text" name="address" value="<?php echo htmlspecialchars($site_settings['address'] ?? ''); ?>">
       </div>
       <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
       <h3 style="color:#0f172a; margin-bottom: 15px;"><i class="fa-solid fa-truck-fast" style="color:#38bdf8;"></i> إعدادات الشحن</h3>
       <div class="form_row">
         <label>تكلفة الشحن (بالجنيه) - ضع 0 للشحن المجاني:</label>
-        <input type="number" name="shipping_cost" step="0.01" min="0" value="<?php echo htmlspecialchars($site_settings['shipping_cost'] ?? '0'); ?>" required>
+        <input type="number" name="shipping_cost" step="0.01" min="0" value="<?php echo htmlspecialchars($site_settings['shipping_cost'] ?? '0'); ?>">
       </div>
 
       <h3 style="color:#0f172a; margin-bottom: 15px;"><i class="fa-solid fa-link" style="color:#38bdf8;"></i> روابط التواصل</h3>
