@@ -74,12 +74,10 @@
           <span>تكاليف الشحن</span>
           <span id="display-shipping-cost"><?php echo isset($site_settings['shipping_cost']) && $site_settings['shipping_cost'] > 0 ?$site_settings['shipping_cost'] . ' ج.م' : 'مجاني'; ?></span>
         </div>
-        <?php if(isset($site_settings['global_discount']) &&$site_settings['global_discount'] > 0): ?>
-        <div class="box_order_total" style="color: #ef4444; font-weight: bold;">
-          <span>خصم المتجر (<?php echo floatval($site_settings['global_discount']); ?>%)</span>
+        <div class="box_order_total" id="discount-row" style="color: #10b981; font-weight: bold; display: none;">
+          <span id="discount-title">كوبون الخصم</span>
           <span id="display-discount-amount">- 0 ج.م</span>
         </div>
-        <?php endif; ?>
       </div>
       <div class="boxs_order_total">
         <div class="box_order_total">
@@ -105,6 +103,7 @@
         <?= CSRF::getField() ?>
         <input type="hidden" name="products" id="hidden-products" value="[]">
         <input type="hidden" name="total_price" id="hidden-total-price" value="0">
+        <input type="hidden" name="applied_promo_code" id="hidden-promo-code" value="">
         <div class="form_body">
           <div class="form_title">البيانات الشخصية</div>
           <div class="form_box_modal">
@@ -212,38 +211,70 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const shippingCost = <?php echo floatval($site_settings['shipping_cost'] ?? 0); ?>;
-        const globalDiscountPct = <?php echo floatval($site_settings['global_discount'] ?? 0); ?>;
         const cartItemsStr = localStorage.getItem('cards');
+        const activeCouponStr = localStorage.getItem('activeCoupon');
+        let activeCoupon = activeCouponStr ? JSON.parse(activeCouponStr) : null;
+        
         let cartTotal = 0;
+        let discountAmount = 0;
+
         if(cartItemsStr){
             try {
                 const cartItems = JSON.parse(cartItemsStr);
-                cartTotal = cartItems.reduce((sum, item) => {
+                cartItems.forEach(item => {
                     let price = parseFloat(item.price.replace(/[^\d.]/g, ''));
                     let qty = parseInt(item.number || 1);
-                    return sum + (price * qty);
-                }, 0);
+                    let itemTotal = price * qty;
+                    cartTotal += itemTotal;
+
+                    if (activeCoupon) {
+                        if (activeCoupon.target === 'all' || (activeCoupon.target === 'specific_product' && activeCoupon.product_id == item.id)) {
+                            if (activeCoupon.type === 'percentage') {
+                                discountAmount += itemTotal * (activeCoupon.value / 100);
+                            } else if (activeCoupon.type === 'fixed') {
+                                discountAmount += activeCoupon.value * qty;
+                            }
+                        }
+                    }
+                });
             } catch(e){}
         }
         
-        const discountAmount = (cartTotal * globalDiscountPct) / 100;
-        const finalTotal = cartTotal - discountAmount + shippingCost;
+        let subtotalAfterDiscount = cartTotal - discountAmount;
+        if (subtotalAfterDiscount < 0) subtotalAfterDiscount = 0;
+        const finalTotal = subtotalAfterDiscount + shippingCost;
         
         document.querySelectorAll('.cart-total-price').forEach(el => {
             el.textContent = cartTotal.toFixed(2) + ' ج.م';
         });
+
+        const discountRow = document.getElementById('discount-row');
         const discountDisplay = document.getElementById('display-discount-amount');
-        if (discountDisplay) {
-            discountDisplay.textContent = '- ' + discountAmount.toFixed(2) + ' ج.م';
+        const discountTitle = document.getElementById('discount-title');
+
+        if (discountRow && discountDisplay && discountTitle) {
+            if (discountAmount > 0) {
+                discountRow.style.display = 'flex';
+                discountTitle.textContent = 'كوبون الخصم (' + activeCoupon.code + ')';
+                discountDisplay.textContent = '- ' + discountAmount.toFixed(2) + ' ج.م';
+            } else {
+                discountRow.style.display = 'none';
+            }
         }
+
         document.querySelectorAll('.final-total-price').forEach(el => {
             el.textContent = finalTotal.toFixed(2) + ' ج.م';
         });
+
         window.cartTotalValue = finalTotal;
+        
         const hiddenProducts = document.getElementById('hidden-products');
-     const hiddenTotal = document.getElementById('hidden-total-price');
-     if (hiddenProducts) hiddenProducts.value = cartItemsStr;
-     if (hiddenTotal) hiddenTotal.value = finalTotal;
+        const hiddenTotal = document.getElementById('hidden-total-price');
+        const hiddenPromo = document.getElementById('hidden-promo-code');
+
+        if (hiddenProducts) hiddenProducts.value = cartItemsStr;
+        if (hiddenTotal) hiddenTotal.value = finalTotal;
+        if (hiddenPromo && activeCoupon) hiddenPromo.value = activeCoupon.code;
 
         const reviewContainer = document.getElementById('review-products-container');
         if (reviewContainer && cartItemsStr) {

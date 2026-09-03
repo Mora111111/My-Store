@@ -3,18 +3,26 @@ class ProductController {
     public function index(): void {
         $productModel = new Product();
         $searchQuery = trim($_GET['search'] ?? '');
-        if (!empty($searchQuery)) {
-            $allProducts = $productModel->search($searchQuery);
+        if (!empty($searchQuery)) {$allProducts = $productModel->search($searchQuery);
         } else {
             $allProducts =$productModel->getAll();
         }
-        $categories = $productModel->getCategories();
-        $catMap = [];
-        $catCounter = 1;
-        foreach ($categories as $catName) {
-            $catMap[$catName] = 'cat_' . $catCounter;
+        $categories =$productModel->getCategories();
+        $catMap = [];$catCounter = 1;
+        foreach ($categories as $catName) {$catMap[$catName] = 'cat_' .$catCounter;
             $catCounter++;
         }
+        
+        $globalCouponModel = new Coupon();
+        $activeCouponsRaw =$globalCouponModel->getActiveStrikethroughCoupons();
+        
+        // Sort percentage first, then fixed, descending value
+        usort($activeCouponsRaw, function($a,$b) {
+            if ($a['discount_type'] ===$b['discount_type']) return $b['discount_value'] <=>$a['discount_value'];
+            return $a['discount_type'] === 'percentage' ? -1 : 1;
+        });
+        $activeCoupons =$activeCouponsRaw;
+        
         require_once APP_DIR . '/Views/layouts/header.php';
         require_once APP_DIR . '/Views/pages/products.php';
         require_once APP_DIR . '/Views/layouts/footer.php';
