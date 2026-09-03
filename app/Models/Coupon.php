@@ -23,5 +23,9 @@ class Coupon {
         $stmt =$this->db->prepare("UPDATE coupons SET status = ? WHERE id = ?");
         return $stmt->execute([$new_status,$id]);
     }
+    public function getActiveStrikethroughCoupons() {
+        $stmt =$this->db->query("SELECT * FROM coupons WHERE status = 1 AND show_strikethrough = 1 ORDER BY discount_value DESC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>

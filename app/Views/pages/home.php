@@ -37,6 +37,31 @@ if (Session::isLoggedIn()) {
         <h2 class="main_title">المنتجات المميزة</h2>
         <div class="cards grid_content">
           <?php foreach ($featuredProducts as $row):
+             // Dynamic Strikethrough Logic
+             $final_price = $row['price'];$has_coupon_discount = false;
+             $discount_pct_badge = 0;
+             $couponModel = new Coupon();
+             $activeCoupons =$couponModel->getActiveStrikethroughCoupons();
+             
+             foreach($activeCoupons as $c) {
+                 if($c['target_type'] === 'all' || ($c['target_type'] === 'specific_product' &&$c['target_product_id'] == $row['id'])) {$has_coupon_discount = true;
+                     if($c['discount_type'] === 'percentage') {
+                         $discount_amount = ($row['price'] * ($c['discount_value'] / 100));$final_price = $row['price'] -$discount_amount;
+                         $discount_pct_badge = round($c['discount_value']);
+                     } else {
+                         $final_price =$row['price'] - $c['discount_value'];$discount_pct_badge = round(($c['discount_value'] /$row['price']) * 100);
+                     }
+                     $final_price = max(0,$final_price);
+                     break; // Apply the highest value coupon available
+                 }
+             }
+             
+             // Fallback to manual old_price if no coupon is active
+             if(!$has_coupon_discount && !empty($row['old_price']) &&$row['old_price'] > $row['price']) {$has_coupon_discount = true;
+                 $final_price =$row['price'];
+                 $row['price'] =$row['old_price']; // Swap for display
+                 $discount_pct_badge = round((($row['price'] - $final_price) /$row['price']) * 100);
+             }
               $rating = isset($row['rating']) ? (float)$row['rating'] : 5;
               $stars_html = '';
               for ($i = 1; $i <= 5; $i++) {
@@ -47,11 +72,9 @@ if (Session::isLoggedIn()) {
               $price_parts = explode('.', number_format($row['price'], 2, '.', ''));
           ?>
           <div class="card" style="position: relative;">
-            <?php if(!empty($row['old_price']) && $row['old_price'] >$row['price']): 
-                $discountPct = round((($row['old_price'] - $row['price']) /$row['old_price']) * 100);
-            ?>
+            <?php if($has_coupon_discount): ?>
             <div style="position: absolute; top: 15px; right: 15px; background: #ef4444; color: #fff; padding: 5px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                خصم <?php echo $discountPct; ?>%
+                خصم <?php echo $discount_pct_badge; ?>%
             </div>
             <?php endif; ?>
             <div class="box_img">
@@ -65,9 +88,9 @@ if (Session::isLoggedIn()) {
                   <div class="rating"><?php echo $stars_html; ?></div>
               </div>
               <p class="card_price" style="display: inline-flex; align-items: center; gap: 8px;">
-                  <span style="font-weight: 700; color: #0f172a;"><?php echo htmlspecialchars($row['price']); ?> ج.م</span>
-                  <?php if(!empty($row['old_price']) && $row['old_price'] >$row['price']): ?>
-                      <del style="color: #94a3b8; font-size: 0.85em; font-weight: normal;"><?php echo htmlspecialchars($row['old_price']); ?> ج.م</del>
+                  <span style="font-weight: 700; color: #0f172a;"><?php echo number_format($final_price, 2); ?> ج.م</span>
+                  <?php if($has_coupon_discount): ?>
+                      <del style="color: #ef4444; font-size: 0.85em; font-weight: normal;"><?php echo htmlspecialchars($row['price']); ?> ج.م</del>
                   <?php endif; ?>
               </p>
               <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
@@ -93,6 +116,31 @@ if (Session::isLoggedIn()) {
         <h2 class="main_title">أحدث المنتجات</h2>
         <div class="cards grid_content">
           <?php foreach ($latestProducts as $row):
+             // Dynamic Strikethrough Logic
+             $final_price = $row['price'];$has_coupon_discount = false;
+             $discount_pct_badge = 0;
+             $couponModel = new Coupon();
+             $activeCoupons =$couponModel->getActiveStrikethroughCoupons();
+             
+             foreach($activeCoupons as $c) {
+                 if($c['target_type'] === 'all' || ($c['target_type'] === 'specific_product' &&$c['target_product_id'] == $row['id'])) {$has_coupon_discount = true;
+                     if($c['discount_type'] === 'percentage') {
+                         $discount_amount = ($row['price'] * ($c['discount_value'] / 100));$final_price = $row['price'] -$discount_amount;
+                         $discount_pct_badge = round($c['discount_value']);
+                     } else {
+                         $final_price =$row['price'] - $c['discount_value'];$discount_pct_badge = round(($c['discount_value'] /$row['price']) * 100);
+                     }
+                     $final_price = max(0,$final_price);
+                     break; // Apply the highest value coupon available
+                 }
+             }
+             
+             // Fallback to manual old_price if no coupon is active
+             if(!$has_coupon_discount && !empty($row['old_price']) &&$row['old_price'] > $row['price']) {$has_coupon_discount = true;
+                 $final_price =$row['price'];
+                 $row['price'] =$row['old_price']; // Swap for display
+                 $discount_pct_badge = round((($row['price'] - $final_price) /$row['price']) * 100);
+             }
               $rating = isset($row['rating']) ? (float)$row['rating'] : 5;
               $stars_html = '';
               for ($i = 1; $i <= 5; $i++) {
@@ -103,11 +151,9 @@ if (Session::isLoggedIn()) {
               $price_parts = explode('.', number_format($row['price'], 2, '.', ''));
           ?>
           <div class="card" style="position: relative;">
-            <?php if(!empty($row['old_price']) && $row['old_price'] >$row['price']): 
-                $discountPct = round((($row['old_price'] - $row['price']) /$row['old_price']) * 100);
-            ?>
+            <?php if($has_coupon_discount): ?>
             <div style="position: absolute; top: 15px; right: 15px; background: #ef4444; color: #fff; padding: 5px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                خصم <?php echo $discountPct; ?>%
+                خصم <?php echo $discount_pct_badge; ?>%
             </div>
             <?php endif; ?>
             <div class="box_img">
@@ -121,9 +167,9 @@ if (Session::isLoggedIn()) {
                   <div class="rating"><?php echo $stars_html; ?></div>
               </div>
               <p class="card_price" style="display: inline-flex; align-items: center; gap: 8px;">
-                  <span style="font-weight: 700; color: #0f172a;"><?php echo htmlspecialchars($row['price']); ?> ج.م</span>
-                  <?php if(!empty($row['old_price']) && $row['old_price'] >$row['price']): ?>
-                      <del style="color: #94a3b8; font-size: 0.85em; font-weight: normal;"><?php echo htmlspecialchars($row['old_price']); ?> ج.م</del>
+                  <span style="font-weight: 700; color: #0f172a;"><?php echo number_format($final_price, 2); ?> ج.م</span>
+                  <?php if($has_coupon_discount): ?>
+                      <del style="color: #ef4444; font-size: 0.85em; font-weight: normal;"><?php echo htmlspecialchars($row['price']); ?> ج.م</del>
                   <?php endif; ?>
               </p>
               <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
