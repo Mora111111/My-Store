@@ -210,73 +210,12 @@
 <script src="/Js/pyment.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const shippingCost = <?php echo floatval($site_settings['shipping_cost'] ?? 0); ?>;
-        const cartItemsStr = localStorage.getItem('cards');
-        const activeCouponStr = localStorage.getItem('activeCoupon');
-        let activeCoupon = activeCouponStr ? JSON.parse(activeCouponStr) : null;
-        
-        let cartTotal = 0;
-        let discountAmount = 0;
-
-        if(cartItemsStr){
-            try {
-                const cartItems = JSON.parse(cartItemsStr);
-                cartItems.forEach(item => {
-                    let price = parseFloat(item.price.replace(/[^\d.]/g, ''));
-                    let qty = parseInt(item.number || 1);
-                    let itemTotal = price * qty;
-                    cartTotal += itemTotal;
-
-                    if (activeCoupon) {
-                        if (activeCoupon.target === 'all' || (activeCoupon.target === 'specific_product' && activeCoupon.product_id == item.id)) {
-                            if (activeCoupon.type === 'percentage') {
-                                discountAmount += itemTotal * (activeCoupon.value / 100);
-                            } else if (activeCoupon.type === 'fixed') {
-                                discountAmount += activeCoupon.value * qty;
-                            }
-                        }
-                    }
-                });
-            } catch(e){}
+        if (typeof updateTotalPrice === 'function') {
+            updateTotalPrice();
         }
         
-        let subtotalAfterDiscount = cartTotal - discountAmount;
-        if (subtotalAfterDiscount < 0) subtotalAfterDiscount = 0;
-        const finalTotal = subtotalAfterDiscount + shippingCost;
-        
-        document.querySelectorAll('.cart-total-price').forEach(el => {
-            el.textContent = cartTotal.toFixed(2) + ' ج.م';
-        });
-
-        const discountRow = document.getElementById('discount-row');
-        const discountDisplay = document.getElementById('display-discount-amount');
-        const discountTitle = document.getElementById('discount-title');
-
-        if (discountRow && discountDisplay && discountTitle) {
-            if (discountAmount > 0) {
-                discountRow.style.display = 'flex';
-                discountTitle.textContent = 'كوبون الخصم (' + activeCoupon.code + ')';
-                discountDisplay.textContent = '- ' + discountAmount.toFixed(2) + ' ج.م';
-            } else {
-                discountRow.style.display = 'none';
-            }
-        }
-
-        document.querySelectorAll('.final-total-price').forEach(el => {
-            el.textContent = finalTotal.toFixed(2) + ' ج.م';
-        });
-
-        window.cartTotalValue = finalTotal;
-        
-        const hiddenProducts = document.getElementById('hidden-products');
-        const hiddenTotal = document.getElementById('hidden-total-price');
-        const hiddenPromo = document.getElementById('hidden-promo-code');
-
-        if (hiddenProducts) hiddenProducts.value = cartItemsStr;
-        if (hiddenTotal) hiddenTotal.value = finalTotal;
-        if (hiddenPromo && activeCoupon) hiddenPromo.value = activeCoupon.code;
-
         const reviewContainer = document.getElementById('review-products-container');
+        const cartItemsStr = localStorage.getItem('cards');
         if (reviewContainer && cartItemsStr) {
             const cartItems = JSON.parse(cartItemsStr);
             cartItems.forEach(item => {
@@ -287,10 +226,10 @@
                reviewContainer.innerHTML += `
                  <div class="checkout-item" style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9; transition: 0.3s;">
                      <a href="${productId ? '/product?id=' + productId : 'javascript:void(0);'}" style="display: flex; align-items: center; gap: 15px; text-decoration: none; cursor: pointer;">
-                         <img src="${productImg}" style="width: 65px; height: 65px; object-fit: contain; border-radius: 8px; border: 1px solid #e2e8f0; padding: 5px; background: #fff; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="عرض تفاصيل المنتج">
+                         <img src="${productImg}" style="width: 65px; height: 65px; object-fit: contain; border-radius: 8px; border: 1px solid #e2e8f0; padding: 5px; background: #fff; transition: 0.3s;">
                          <div>
                              <div class="card_title_wrapper" style="margin-bottom: 5px;">
-                                 <p style="margin: 0; font-weight: bold; color: #0f172a; font-size: 16px; transition: color 0.3s;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#0f172a'">${productTitle}</p>
+                                 <p style="margin: 0; font-weight: bold; color: #0f172a; font-size: 16px;">${productTitle}</p>
                              </div>
                              <p style="margin: 0; font-size: 14px; color: #64748b;">الكمية: ${item.number || 1}</p>
                          </div>

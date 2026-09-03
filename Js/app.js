@@ -28,6 +28,9 @@ const cartContent = document.querySelector(".cart_content");
 const total = document.querySelector(".total");
 const btnBuy = document.querySelector(".btn_buy");
 const cartEmpty = document.querySelector(".cart_empty");
+const promoSection = document.getElementById("promo-section");
+let activeCoupon = null;
+try { activeCoupon = JSON.parse(localStorage.getItem('activeCoupon')) || null; } catch(e) { localStorage.removeItem('activeCoupon'); }
 
 if (cartIcon && cart) {
     cartIcon.addEventListener("click", () => {
@@ -57,6 +60,7 @@ if (cartContent && total && btnBuy && cartEmpty) {
         total.style.display = "flex";
         btnBuy.style.display = "block";
         cartEmpty.style.display = "none";
+        if(promoSection) promoSection.style.display = "block";
     }
     
     cartContent.addEventListener("click", (e) => {
@@ -80,6 +84,7 @@ if (cartContent && total && btnBuy && cartEmpty) {
                 total.style.display = "none";
                 btnBuy.style.display = "none";
                 cartEmpty.style.display = "block";
+                if(promoSection) promoSection.style.display = "none";
             }
             updateCartCount(arrayOfCards);
             updateTotalPrice();
@@ -111,6 +116,7 @@ addCartBtn.forEach((btn) => {
             total.style.display = "flex";
             btnBuy.style.display = "block";
             cartEmpty.style.display = "none";
+            if(promoSection) promoSection.style.display = "block";
         }
     });
     arrayOfCards.forEach((e) => {
@@ -224,15 +230,7 @@ function updateTotalPrice() {
 
     const cartBoxes = document.querySelectorAll(".cart_box");
     let subtotal = 0;
-    let discountTotal = 0;
-
-    if (activeCoupon) {
-        const msgEl = document.getElementById('promo_message');
-        if (msgEl && !msgEl.textContent) {
-            msgEl.textContent = 'تم تطبيق كود: ' + activeCoupon.code;
-            msgEl.style.color = '#10b981';
-        }
-    }
+    let specificProductSubtotal = 0;
 
     cartBoxes.forEach((cartBox) => {
         const priceText = cartBox.querySelector(".cart_price").textContent;
@@ -242,19 +240,39 @@ function updateTotalPrice() {
         const quantity = quantityElement ? parseInt(quantityElement.textContent) : 1;
         const itemId = cartBox.getAttribute('data-id');
         const itemTotal = price * quantity;
-
+        
         subtotal += itemTotal;
-
-        if (activeCoupon) {
-            if (activeCoupon.target === 'all' || (activeCoupon.target === 'specific_product' && activeCoupon.product_id == itemId)) {
-                if (activeCoupon.type === 'percentage') {
-                    discountTotal += itemTotal * (activeCoupon.value / 100);
-                } else if (activeCoupon.type === 'fixed') {
-                    discountTotal += activeCoupon.value * quantity; 
-                }
-            }
+        
+        if (activeCoupon && activeCoupon.target === 'specific_product' && activeCoupon.product_id == itemId) {
+            specificProductSubtotal += itemTotal;
         }
     });
+
+    let discountTotal = 0;
+    if (activeCoupon) {
+        if (activeCoupon.target === 'all') {
+            if (activeCoupon.type === 'percentage') {
+                discountTotal = subtotal * (activeCoupon.value / 100);
+            } else {
+                discountTotal = parseFloat(activeCoupon.value); 
+            }
+        } else if (activeCoupon.target === 'specific_product' && specificProductSubtotal > 0) {
+            if (activeCoupon.type === 'percentage') {
+                discountTotal = specificProductSubtotal * (activeCoupon.value / 100);
+            } else {
+                discountTotal = parseFloat(activeCoupon.value); 
+            }
+            if (discountTotal > specificProductSubtotal) discountTotal = specificProductSubtotal;
+        } else if (activeCoupon.target === 'specific_product' && specificProductSubtotal === 0) {
+            activeCoupon = null;
+            localStorage.removeItem('activeCoupon');
+            const msgEl = document.getElementById('promo_message');
+            if (msgEl) {
+                msgEl.textContent = 'المنتج المشمول بالخصم غير موجود بالسلة.';
+                msgEl.style.color = '#ef4444';
+            }
+        }
+    }
 
     if (isNaN(subtotal)) subtotal = 0;
     let finalTotal = subtotal - discountTotal;
@@ -264,9 +282,41 @@ function updateTotalPrice() {
     if (discountTotal > 0) {
         html += `<br><span style="color:#10b981; font-size:14px; font-weight:bold;">(تم خصم ${discountTotal.toFixed(2)} ج.م)</span>`;
     }
-
     totalPriceElement.innerHTML = html;
     window.localStorage.setItem("total_Price", `${finalTotal.toFixed(2)} ج.م`);
+
+    const checkoutTotalElements = document.querySelectorAll('.cart-total-price');
+    const checkoutFinalElements = document.querySelectorAll('.final-total-price');
+    const discountRow = document.getElementById('discount-row');
+    const discountDisplay = document.getElementById('display-discount-amount');
+    const discountTitle = document.getElementById('discount-title');
+    const hiddenPromo = document.getElementById('hidden-promo-code');
+    const hiddenTotal = document.getElementById('hidden-total-price');
+    const shippingCostEl = document.getElementById('display-shipping-cost');
+    
+    if (checkoutTotalElements.length > 0) {
+        checkoutTotalElements.forEach(el => el.textContent = subtotal.toFixed(2) + ' ج.م');
+        
+        let shippingCost = 0;
+        if (shippingCostEl) {
+            const shipMatch = shippingCostEl.textContent.match(/[\d.]+/);
+            shippingCost = shipMatch ? parseFloat(shipMatch[0]) : 0;
+        }
+        
+        if (discountTotal > 0 && activeCoupon) {
+            if(discountRow) discountRow.style.display = 'flex';
+            if(discountTitle) discountTitle.textContent = 'كوبون الخصم (' + activeCoupon.code + ')';
+            if(discountDisplay) discountDisplay.textContent = '- ' + discountTotal.toFixed(2) + ' ج.م';
+        } else {
+            if(discountRow) discountRow.style.display = 'none';
+        }
+        
+        const checkoutFinal = finalTotal + shippingCost;
+        checkoutFinalElements.forEach(el => el.textContent = checkoutFinal.toFixed(2) + ' ج.م');
+        
+        if(hiddenTotal) hiddenTotal.value = checkoutFinal;
+        if(hiddenPromo) hiddenPromo.value = activeCoupon ? activeCoupon.code : '';
+    }
 }
 
 function updateCartCount(arrayOfCards) {
@@ -354,7 +404,7 @@ navLinks.forEach(link => {
     });
 });
 
-let activeCoupon = JSON.parse(localStorage.getItem('activeCoupon')) || null;
+
 
 document.addEventListener('click', async (e) => {
     if(e.target.id === 'apply_promo_btn') {
