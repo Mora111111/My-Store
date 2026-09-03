@@ -93,7 +93,11 @@ addCartBtn.forEach((btn) => {
         const cardImgSrc = myCard.querySelector(".card_image") ? myCard.querySelector(".card_image").src : (myCard.querySelector("#mainProductImage") ? myCard.querySelector("#mainProductImage").src : "");
         const cardTitle = myCard.querySelector(".card_title").textContent;
         const priceEl = myCard.querySelector(".card_price") || myCard.querySelector("p");
-        const cardPrice = priceEl ? priceEl.textContent : "0";
+        let cardPrice = "0";
+        if (priceEl) {
+            const spanEl = priceEl.querySelector("span:first-child");
+            cardPrice = spanEl ? spanEl.textContent : priceEl.textContent;
+        }
         const cardId = btn.getAttribute("data-id");
 
         if (btn.classList.contains("done")) {
@@ -226,8 +230,17 @@ function updateTotalPrice() {
         const quantity = Number(quantityElement.textContent);
         total += price * quantity;
     });
-    totalPriceElement.textContent = `${total.toFixed(2)} جنيه`;
-    window.localStorage.setItem("total_Price", `${total.toFixed(2)} جنيه`);
+
+    let displayTotal = total;
+    let discountHtml = '';
+    if (typeof window.GLOBAL_DISCOUNT !== 'undefined' && window.GLOBAL_DISCOUNT > 0) {
+        const discountAmount = (total * window.GLOBAL_DISCOUNT) / 100;
+        displayTotal = total - discountAmount;
+        discountHtml = `<br><span style="color:#ef4444; font-size:14px; font-weight:bold;">(شامل خصم ${window.GLOBAL_DISCOUNT}%)</span>`;
+    }
+
+    totalPriceElement.innerHTML = `${displayTotal.toFixed(2)} ج.م ${discountHtml}`;
+    window.localStorage.setItem("total_Price", `${displayTotal.toFixed(2)} ج.م`);
 }
 
 function updateCartCount(arrayOfCards) {

@@ -46,7 +46,14 @@ if (Session::isLoggedIn()) {
               }
               $price_parts = explode('.', number_format($row['price'], 2, '.', ''));
           ?>
-          <div class="card">
+          <div class="card" style="position: relative;">
+            <?php if(!empty($row['old_price']) && $row['old_price'] >$row['price']): 
+                $discountPct = round((($row['old_price'] - $row['price']) /$row['old_price']) * 100);
+            ?>
+            <div style="position: absolute; top: 15px; right: 15px; background: #ef4444; color: #fff; padding: 5px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                خصم <?php echo $discountPct; ?>%
+            </div>
+            <?php endif; ?>
             <div class="box_img">
               <img src="<?php echo htmlspecialchars($row['image_url']); ?>" alt="" class="card_image" />
             </div>
@@ -95,7 +102,14 @@ if (Session::isLoggedIn()) {
               }
               $price_parts = explode('.', number_format($row['price'], 2, '.', ''));
           ?>
-          <div class="card">
+          <div class="card" style="position: relative;">
+            <?php if(!empty($row['old_price']) && $row['old_price'] >$row['price']): 
+                $discountPct = round((($row['old_price'] - $row['price']) /$row['old_price']) * 100);
+            ?>
+            <div style="position: absolute; top: 15px; right: 15px; background: #ef4444; color: #fff; padding: 5px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                خصم <?php echo $discountPct; ?>%
+            </div>
+            <?php endif; ?>
             <div class="box_img">
               <img src="<?php echo htmlspecialchars($row['image_url']); ?>" alt="" class="card_image" />
             </div>

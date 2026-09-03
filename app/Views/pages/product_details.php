@@ -1,7 +1,12 @@
   <div class="product_details_section container">
     <div class="card" style="margin-top: 150px; margin-bottom: 50px; max-width: 600px; margin-left: auto; margin-right: auto; padding: 20px;">
      <div class="product-gallery" style="display: flex; flex-direction: column; gap: 15px;">
-       <div class="box_img main-image-container" style="height: 400px; background: #fff; padding: 10px; border-radius: 12px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center;">
+       <div class="box_img main-image-container" style="height: 400px; background: #fff; padding: 10px; border-radius: 12px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; position: relative;">
+           <?php if(!empty($product['old_price']) && $product['old_price'] >$product['price']): 
+               $pct = round((($product['old_price'] - $product['price']) /$product['old_price']) * 100);
+           ?>
+           <div style="position: absolute; top: 20px; right: 20px; background: #ef4444; color: #fff; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">خصم <?php echo $pct; ?>%</div>
+           <?php endif; ?>
            <img id="mainProductImage" src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" class="card_image" style="max-height: 100%; max-width: 100%; object-fit: contain; transition: 0.3s;" />
        </div>
        <div class="thumbnails-container" style="display: flex; gap: 10px; justify-content: center;">
