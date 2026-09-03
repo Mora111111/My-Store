@@ -28,7 +28,7 @@ class AdminSettingController {
                 
                 // Check if row id=1 exists, if not, create it
                 $check =$db->query("SELECT id FROM settings WHERE id = 1")->fetch();
-                if (!$check) {$db->query("INSERT INTO settings (id, about_text, phone1, email, address) VALUES (1, 'متجرنا', '010', 'email@test.com', 'مصر')");
+                if (!$check) {$db->query("INSERT INTO settings (id, about_text, phone1, phone2, email, address, shipping_cost, facebook_link, maintenance_mode, global_discount) VALUES (1, 'متجرنا', '010', '', 'email@test.com', 'مصر', 0, '', 0, 0)");
                 }
                 
                 $settingModel = new Setting();
