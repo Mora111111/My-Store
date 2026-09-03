@@ -221,25 +221,44 @@ function deleteCardWith(cardId) {
 function updateTotalPrice() {
     let totalPriceElement = document.querySelector(".total_price");
     if(!totalPriceElement) return;
-    
+
     const cartBoxes = document.querySelectorAll(".cart_box");
-    let total = 0;
-    
+    let subtotal = 0;
+    let discountTotal = 0;
+
     cartBoxes.forEach((cartBox) => {
         const priceText = cartBox.querySelector(".cart_price").textContent;
         const match = priceText.match(/[\d.]+/);
         const price = match ? parseFloat(match[0]) : 0;
-        
         const quantityElement = cartBox.querySelector(".number");
         const quantity = quantityElement ? parseInt(quantityElement.textContent) : 1;
-        
-        total += (price * quantity);
+        const itemId = cartBox.getAttribute('data-id');
+        const itemTotal = price * quantity;
+
+        subtotal += itemTotal;
+
+        if (activeCoupon) {
+            if (activeCoupon.target === 'all' || (activeCoupon.target === 'specific_product' && activeCoupon.product_id == itemId)) {
+                if (activeCoupon.type === 'percentage') {
+                    discountTotal += itemTotal * (activeCoupon.value / 100);
+                } else if (activeCoupon.type === 'fixed') {
+                    discountTotal += activeCoupon.value * quantity; 
+                }
+            }
+        }
     });
 
-    if (isNaN(total)) total = 0;
+    if (isNaN(subtotal)) subtotal = 0;
+    let finalTotal = subtotal - discountTotal;
+    if (finalTotal < 0) finalTotal = 0;
 
-    totalPriceElement.innerHTML = `${total.toFixed(2)} ج.م`;
-    window.localStorage.setItem("total_Price", `${total.toFixed(2)} ج.م`);
+    let html = `${finalTotal.toFixed(2)} ج.م`;
+    if (discountTotal > 0) {
+        html += `<br><span style="color:#10b981; font-size:14px; font-weight:bold;">(تم خصم ${discountTotal.toFixed(2)} ج.م)</span>`;
+    }
+
+    totalPriceElement.innerHTML = html;
+    window.localStorage.setItem("total_Price", `${finalTotal.toFixed(2)} ج.م`);
 }
 
 function updateCartCount(arrayOfCards) {
@@ -325,4 +344,45 @@ navLinks.forEach(link => {
             navMenu.classList.remove('show_menu');
         }
     });
+});
+
+let activeCoupon = null;
+
+document.addEventListener('click', async (e) => {
+    if(e.target.id === 'apply_promo_btn') {
+        const codeInput = document.getElementById('promo_code_input');
+        const code = codeInput.value.trim();
+        const msgEl = document.getElementById('promo_message');
+
+        if(!code) {
+            msgEl.textContent = 'أدخل الكود أولاً';
+            msgEl.style.color = '#ef4444';
+            return;
+        }
+
+        e.target.textContent = '...';
+        try {
+            const res = await fetch('/api/validate-coupon', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: code })
+            });
+            const data = await res.json();
+
+            if(data.success) {
+                activeCoupon = data.coupon;
+                msgEl.textContent = data.message;
+                msgEl.style.color = '#10b981';
+            } else {
+                activeCoupon = null;
+                msgEl.textContent = data.message;
+                msgEl.style.color = '#ef4444';
+            }
+            updateTotalPrice();
+        } catch (err) {
+            msgEl.textContent = 'حدث خطأ في الشبكة.';
+            msgEl.style.color = '#ef4444';
+        }
+        e.target.textContent = 'تطبيق';
+    }
 });

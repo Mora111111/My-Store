@@ -87,6 +87,8 @@ $router->add('GET', '/admin/coupons', 'AdminCouponController@index');
 $router->add('POST', '/admin/coupons/store', 'AdminCouponController@store');
 $router->add('POST', '/admin/coupons/delete', 'AdminCouponController@delete');
 $router->add('POST', '/admin/coupons/toggle', 'AdminCouponController@toggle');
+
+$router->add('POST', '/api/validate-coupon', 'CouponApiController@validate');
 $router->add('GET', '/admin/messages', 'AdminMessageController@index');
 $router->add('POST', '/admin/messages/reply', 'AdminMessageController@reply');
 $router->add('POST', '/admin/messages/delete', 'AdminMessageController@delete');$router->add('GET', '/admin/comments', 'AdminCommentController@index');

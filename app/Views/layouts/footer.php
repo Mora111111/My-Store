@@ -5,9 +5,16 @@ $footerSettings =$footerSettingModel->getSettings();
 <div class="cart">
   <h2 class="cart_title">عربة التسوق</h2>
   <div class="cart_content"></div>
+  <div class="promo-code-section" style="padding: 15px 20px; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; margin-bottom: 15px; background: #f8fafc;">
+      <div style="display: flex; gap: 8px;">
+          <input type="text" id="promo_code_input" placeholder="لديك كود خصم؟" style="flex: 1; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-family: inherit; font-size: 14px; text-transform: uppercase;">
+          <button id="apply_promo_btn" style="background: #0f172a; color: #fff; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.3s;">تطبيق</button>
+      </div>
+      <p id="promo_message" style="margin: 8px 0 0 0; font-size: 13px; font-weight: bold;"></p>
+  </div>
   <div class="total">
     <div class="total_title">الاجمالي</div>
-    <div class="total_price">. جنية</div>
+    <div class="total_price">0.00 ج.م</div>
   </div>
   <a href="/checkout" class="btn_buy">شراء</a>
   <div class="cart_empty">
