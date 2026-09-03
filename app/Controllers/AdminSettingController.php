@@ -40,8 +40,7 @@ class AdminSettingController {
                     'address' => trim($_POST['address'] ?? ''),
                     'shipping_cost' => floatval($_POST['shipping_cost'] ?? 0),
                     'facebook_link' => trim($_POST['facebook_link'] ?? ''),
-                    'maintenance_mode' => isset($_POST['maintenance_mode']) ? 1 : 0,
-                    'global_discount' => floatval($_POST['global_discount'] ?? 0)                  ]);$_SESSION['toast_msg'] = 'تم حفظ الإعدادات بنجاح!';
+                    'maintenance_mode' => isset($_POST['maintenance_mode']) ? 1 : 0                  ]);$_SESSION['toast_msg'] = 'تم حفظ الإعدادات بنجاح!';
                 $_SESSION['toast_type'] = 'success';
                 header('Location: /admin/settings');
                 exit;

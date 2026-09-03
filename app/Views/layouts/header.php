@@ -19,16 +19,10 @@ if (!empty($sysSettings['maintenance_mode'])) {$isAdmin = isset($_SESSION['user_
   <link rel="icon" href="/images/icons/shopping-cart_head.png">
   <title>MY Store - متجر على الإنترنت</title>
 <meta name="csrf-token" content="<?= CSRF::generate() ?>">
-<script>window.GLOBAL_DISCOUNT = <?php echo !empty($sysSettings['global_discount']) ? floatval($sysSettings['global_discount']) : 0; ?>;</script>
 </head>
 
 <body>
   <header class="header" id="header" style="flex-direction: column; align-items: stretch; padding: 0;">
-    <?php if(!empty($sysSettings['global_discount']) &&$sysSettings['global_discount'] > 0): ?>
-    <div id="global-discount-banner" style="background: linear-gradient(90deg, #ef4444, #f59e0b); color: white; text-align: center; padding: 10px; font-weight: bold; font-size: 15px; width: 100%;">
-       🔥 عرض حصري: خصم <?php echo floatval($sysSettings['global_discount']); ?>% على جميع المنتجات! (يُطبق تلقائياً في السلة) 🔥
-    </div>
-    <?php endif; ?>
     <div style="width: 100%; padding: 20px 40px; box-sizing: border-box;">
     <nav class="nav container">
       <div class="nav_box">

@@ -37,11 +37,6 @@
         <label>تكلفة الشحن (بالجنيه) - ضع 0 للشحن المجاني:</label>
         <input type="number" name="shipping_cost" step="0.01" min="0" value="<?php echo htmlspecialchars($site_settings['shipping_cost'] ?? '0'); ?>">
       </div>
-      <h3 style="color:#0f172a; margin-bottom: 15px; margin-top:25px;"><i class="fa-solid fa-tags" style="color:#38bdf8;"></i> الخصم العام للمتجر</h3>
-      <div class="form_row">
-        <label>نسبة الخصم المئوية % (تُطبق تلقائياً على إجمالي السلة - ضع 0 لإلغاء الخصم):</label>
-        <input type="number" name="global_discount" step="0.01" min="0" max="100" value="<?php echo htmlspecialchars($site_settings['global_discount'] ?? '0'); ?>">
-      </div>
 
       <h3 style="color:#0f172a; margin-bottom: 15px;"><i class="fa-solid fa-link" style="color:#38bdf8;"></i> روابط التواصل</h3>
       <div class="form_row">

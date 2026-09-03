@@ -140,6 +140,9 @@ function isActive($path) {
     <a href="/admin/online-visitors" class="<?= isActive('/admin/online-visitors') ?>">
         <i class="fa-solid fa-globe"></i><span>الزوار المتصلين</span>
     </a>
+    <a href="/admin/coupons" class="<?= isActive('/admin/coupons') ?>">
+        <i class="fa-solid fa-tags"></i><span>الخصومات</span>
+    </a>
     <a href="/admin/settings" class="<?= isActive('/admin/settings') ?>">
         <i class="fa-solid fa-gear"></i><span>الإعدادات</span>
     </a>
