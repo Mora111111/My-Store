@@ -4,6 +4,8 @@ if (Session::isLoggedIn()) {
     $favoriteModel = new Favorite();
     $favoriteIds = $favoriteModel->getUserFavoriteIds(Session::get('user_id'));
 }
+$globalCouponModel = new Coupon();
+$activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
 ?>
   <div class="all_products container">
     <div class="category_filter">
@@ -23,8 +25,6 @@ if (Session::isLoggedIn()) {
              // Dynamic Strikethrough Logic
              $final_price = $row['price'];$has_coupon_discount = false;
              $discount_pct_badge = 0;
-             $couponModel = new Coupon();
-             $activeCoupons =$couponModel->getActiveStrikethroughCoupons();
              
              foreach($activeCoupons as $c) {
                  if($c['target_type'] === 'all' || ($c['target_type'] === 'specific_product' &&$c['target_product_id'] == $row['id'])) {$has_coupon_discount = true;

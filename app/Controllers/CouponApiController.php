@@ -22,6 +22,10 @@ class CouponApiController {
             echo json_encode(['success' => false, 'message' => 'الكود غير صالح أو منتهي الصلاحية.']); exit;
         }
 
+        if ($coupon['show_strikethrough'] == 1) {
+            echo json_encode(['success' => false, 'message' => 'هذا العرض مطبق بالفعل تلقائياً على أسعار المنتجات ولا يحتاج لإدخال الكود.']); exit;
+        }
+
         echo json_encode([
             'success' => true,
             'coupon' => [

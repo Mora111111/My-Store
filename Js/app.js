@@ -226,6 +226,14 @@ function updateTotalPrice() {
     let subtotal = 0;
     let discountTotal = 0;
 
+    if (activeCoupon) {
+        const msgEl = document.getElementById('promo_message');
+        if (msgEl && !msgEl.textContent) {
+            msgEl.textContent = 'تم تطبيق كود: ' + activeCoupon.code;
+            msgEl.style.color = '#10b981';
+        }
+    }
+
     cartBoxes.forEach((cartBox) => {
         const priceText = cartBox.querySelector(".cart_price").textContent;
         const match = priceText.match(/[\d.]+/);
@@ -346,7 +354,7 @@ navLinks.forEach(link => {
     });
 });
 
-let activeCoupon = null;
+let activeCoupon = JSON.parse(localStorage.getItem('activeCoupon')) || null;
 
 document.addEventListener('click', async (e) => {
     if(e.target.id === 'apply_promo_btn') {
@@ -371,10 +379,12 @@ document.addEventListener('click', async (e) => {
 
             if(data.success) {
                 activeCoupon = data.coupon;
+                localStorage.setItem('activeCoupon', JSON.stringify(activeCoupon));
                 msgEl.textContent = data.message;
                 msgEl.style.color = '#10b981';
             } else {
                 activeCoupon = null;
+                localStorage.removeItem('activeCoupon');
                 msgEl.textContent = data.message;
                 msgEl.style.color = '#ef4444';
             }
