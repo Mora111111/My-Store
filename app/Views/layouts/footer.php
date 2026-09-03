@@ -1,3 +1,7 @@
+<?php
+$footerSettingModel = new Setting();
+$footerSettings =$footerSettingModel->getSettings();
+?>
 <div class="cart">
   <h2 class="cart_title">عربة التسوق</h2>
   <div class="cart_content"></div>
@@ -18,7 +22,7 @@
   <div class="footer_container container grid_content">
     <div class="footer_item">
       <h3 class="footer_title">معلومات عنا</h3>
-      <p class="footer_p">نحن متجر على الإنترنت نقدم أفضل المنتجات ذات الجودة العالية والتسليم السريع</p>
+      <p class="footer_p"><?php echo !empty($footerSettings['about_text']) ? htmlspecialchars($footerSettings['about_text']) : 'نحن متجر على الإنترنت نقدم أفضل المنتجات ذات الجودة العالية والتسليم السريع'; ?></p>
       <img src="/images/logos/logo-white.png" alt="" class="footer_img">
     </div>
     <div class="footer_item">
@@ -63,19 +67,21 @@
       <ul class="footer_list">
         <li class="footer_li">
           <i class="fa-solid fa-phone footer-icon"></i>
-          <span>رقم التواصل الاول</span>
+          <span style="direction: ltr; display: inline-block;"><?php echo !empty($footerSettings['phone1']) ? htmlspecialchars($footerSettings['phone1']) : 'رقم التواصل الاول'; ?></span>
         </li>
+        <?php if(!empty($footerSettings['phone2'])): ?>
         <li class="footer_li">
           <i class="fa-solid fa-phone footer-icon"></i>
-          <span>رقم التواصل الثاني</span>
+          <span style="direction: ltr; display: inline-block;"><?php echo htmlspecialchars($footerSettings['phone2']); ?></span>
         </li>
+        <?php endif; ?>
         <li class="footer_li">
           <i class="fa-solid fa-envelope footer-icon"></i>
-          <span>MY-Store@gmail.com</span>
+          <span><?php echo !empty($footerSettings['email']) ? htmlspecialchars($footerSettings['email']) : 'MY-Store@gmail.com'; ?></span>
         </li>
         <li class="footer_li">
           <i class="fa-solid fa-location-dot footer-icon"></i>
-          <span>المحافظات - مصر</span>
+          <span><?php echo !empty($footerSettings['address']) ? htmlspecialchars($footerSettings['address']) : 'المحافظات - مصر'; ?></span>
         </li>
       </ul>
     </div>
