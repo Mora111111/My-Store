@@ -221,23 +221,32 @@ function deleteCardWith(cardId) {
 function updateTotalPrice() {
     let totalPriceElement = document.querySelector(".total_price");
     if(!totalPriceElement) return;
+    
     const cartBoxes = document.querySelectorAll(".cart_box");
     let total = 0;
+    
     cartBoxes.forEach((cartBox) => {
-        const priceElement = cartBox.querySelector(".cart_price").textContent;
+        const priceText = cartBox.querySelector(".cart_price").textContent;
+        // Extract only numbers and decimals to prevent NaN
+        const match = priceText.match(/[\d.]+/);
+        const price = match ? parseFloat(match[0]) : 0;
+        
         const quantityElement = cartBox.querySelector(".number");
-        const price = Number(priceElement.replace(/[^\d.]/g, ""));
-        const quantity = Number(quantityElement.textContent);
-        total += price * quantity;
+        const quantity = quantityElement ? parseInt(quantityElement.textContent) : 1;
+        
+        total += (price * quantity);
     });
 
-    let displayTotal = total;
+    let displayTotal = isNaN(total) ? 0 : total;
     let discountHtml = '';
-    if (typeof window.GLOBAL_DISCOUNT !== 'undefined' && window.GLOBAL_DISCOUNT > 0) {
-        const discountAmount = (total * window.GLOBAL_DISCOUNT) / 100;
-        displayTotal = total - discountAmount;
+    
+    if (typeof window.GLOBAL_DISCOUNT !== 'undefined' && window.GLOBAL_DISCOUNT > 0 && displayTotal > 0) {
+        const discountAmount = (displayTotal * window.GLOBAL_DISCOUNT) / 100;
+        displayTotal = displayTotal - discountAmount;
         discountHtml = `<br><span style="color:#ef4444; font-size:14px; font-weight:bold;">(شامل خصم ${window.GLOBAL_DISCOUNT}%)</span>`;
     }
+
+    if (isNaN(displayTotal)) displayTotal = 0;
 
     totalPriceElement.innerHTML = `${displayTotal.toFixed(2)} ج.م ${discountHtml}`;
     window.localStorage.setItem("total_Price", `${displayTotal.toFixed(2)} ج.م`);
