@@ -1,216 +1,283 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
-    let itemPayment = document.getElementById("item-payment");
-    let layer = document.querySelector(".layer");
-    
-    let cartItems = JSON.parse(localStorage.getItem("cards")) || [];
-    let totalPriceSum = 0;
+    const orderBtn = document.querySelector(".order_btn");
+    const modal = document.querySelector(".container_modal"); 
+    const layer = document.querySelector(".layer");
+    const closeModal = document.querySelector(".close_modal");
+    const addressDiv = document.querySelector(".address");
+    const sendBtn = document.querySelector(".send_btn");
 
-    if (cartItems.length > 0 && itemPayment) {
-        let productsContainer = document.createElement('div');
-        
-        cartItems.forEach((item) => {
-            let itemPrice = parseFloat(item.price) || 0;
-            let itemQty = item.quantty || 1;
-            totalPriceSum += (itemPrice * itemQty);
-            
-            productsContainer.innerHTML += `
-            <div class="boxs_order_total" style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
-                <div class="box_order_total" style="display:flex; align-items:center; gap:10px;">
-                    <img src="${item.src}" alt="" class="order_img" style="width:50px; height:50px; object-fit:contain;">
-                    <span class="order_name">${item.title} <small>(x${itemQty})</small></span>
-                </div>
-                <div class="box_order_total">
-                    <span class="order_price">${(itemPrice * itemQty).toFixed(2)} جنيه</span>
-                </div>
-            </div>
-            `;
+    // Address Inputs
+    const userInput = document.querySelector(".input_user");
+    const phoneInput = document.querySelector(".input_tel");
+    const streetInput = document.querySelector(".input_address_street");
+    const unityInput = document.querySelector(".input_address_unit");
+    const cityInput = document.querySelector(".input_address_city");
+    const boycottInput = document.querySelector(".input_address_boycott");
+    const postalInput = document.querySelector(".input_address_postal");
+    const inputs = [userInput, phoneInput, streetInput, unityInput, cityInput, boycottInput, postalInput];
+
+    // Edit Address Modals & Inputs
+    const modalChange = document.querySelector(".modal_change");
+    const userChange = document.querySelector(".input_user_change");
+    const phoneChange = document.querySelector(".input_tel_change");
+    const streetChange = document.querySelector(".input_address_street_change");
+    const unityChange = document.querySelector(".input_address_unit_change");
+    const cityChange = document.querySelector(".input_address_city_change");
+    const boycottChange = document.querySelector(".input_address_boycott_change");
+    const postalChange = document.querySelector(".input_address_postal_change");
+    const inputsChange = [userChange, phoneChange, streetChange, unityChange, cityChange, boycottChange, postalChange];
+
+    // Payment Method Modal
+    const paymentCard = document.getElementById("card-payment");
+    const closeCardBtn = document.getElementById("close_visa_card");
+    const modalCard = document.querySelector(".modal_card");
+    const visaCardBtn = document.querySelector(".visa_card_btn");
+
+    // --- SAFE JSON PARSING FOR CART ---
+    let cartItems = [];
+    try {
+        const stored = localStorage.getItem("cards");
+        if (stored) {
+            cartItems = JSON.parse(stored);
+        }
+    } catch (error) {
+        console.error("Failed to parse cart items from localStorage:", error);
+        cartItems = [];
+    }
+
+    // Setup Total Price display
+    const orderTotals = document.querySelectorAll(".order_total");
+    const localTotal = window.localStorage.getItem("total_Price");
+    orderTotals.forEach(el => el.textContent = localTotal ? localTotal : "0 جنيه");
+
+    // --- Payment Modal Handlers ---
+    if (paymentCard) {
+        paymentCard.addEventListener("click", () => {
+            modalCard.classList.add("modal_active");
+            layer.classList.add("layer_active");
         });
-        
-        itemPayment.insertBefore(productsContainer, itemPayment.querySelector('.boxs_order_total'));
-        
-        let totalElements = document.querySelectorAll('.order_total');
-        totalElements.forEach(el => {
-            el.textContent = totalPriceSum.toFixed(2) + ' جنيه';
+    }
+    if (closeCardBtn) {
+        closeCardBtn.addEventListener("click", () => {
+            modalCard.classList.remove("modal_active");
+            layer.classList.remove("layer_active");
+        });
+    }
+    if (visaCardBtn) {
+        visaCardBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            modalCard.classList.remove("modal_active");
+            layer.classList.remove("layer_active");
         });
     }
 
-    let address = document.querySelector(".address");
-    let modal = document.querySelector(".container_modal");
-    let modalChange = document.querySelector(".modal_change");
-
-    if (address) {
-        address.innerHTML = `
+    // --- Address Modal Handlers ---
+    if (addressDiv && addressDiv.innerHTML.trim() === "") {
+        addressDiv.innerHTML = `
           <h4 class="title_payment">عنوان الشحن</h4>
-          <div class="box_address">
-            <img src="images/payment/payment_location.png" alt="" class="address_img">
-            <span>إضافة عنوان الشحن</span>
+          <div class="box_address" style="cursor:pointer; background:#f8fafc; padding:15px; border-radius:8px; border:2px dashed #cbd5e1; text-align:center;">
+            <span style="color:#3b82f6; font-weight:bold;"><i class="fa-solid fa-plus"></i> إضافة عنوان الشحن</span>
           </div>
         `;
-
-        let boxAddress = document.querySelector(".box_address");
-        if(boxAddress) {
+        const boxAddress = document.querySelector(".box_address");
+        if (boxAddress) {
             boxAddress.addEventListener("click", () => {
-              modal.classList.add("modal_active");
-              layer.classList.add("layer_active");
+                modal.classList.add("modal_active");
+                layer.classList.add("layer_active");
             });
         }
     }
 
-    let closeModal = document.querySelector(".close_modal");
     if (closeModal) {
         closeModal.addEventListener("click", () => {
-          modal.classList.remove("modal_active");
-          layer.classList.remove("layer_active");
-        });
-    }
-
-    let sendBtn = document.querySelector(".send_btn");
-    let inputUser = document.querySelector(".input_user");
-    let inputTel = document.querySelector(".input_tel");
-    let inputAddressStreet = document.querySelector(".input_address_street");
-    let inputAddressUnit = document.querySelector(".input_address_unit");
-    let inputAddressCity = document.querySelector(".input_address_city");
-    let inputAddressBoycott = document.querySelector(".input_address_boycott");
-    let inputAddressPostal = document.querySelector(".input_address_postal");
-
-    let inputs = [inputUser, inputTel, inputAddressStreet, inputAddressUnit, inputAddressCity, inputAddressBoycott, inputAddressPostal];
-
-    if (sendBtn && inputUser) {
-        sendBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          
-          let isEmpty = inputs.some(input => input.value.trim() === "");
-          
-          if (isEmpty) {
-            chickInputs(inputs);
-          } else {
             modal.classList.remove("modal_active");
             layer.classList.remove("layer_active");
-
-            address.innerHTML = `
-                <div class="address_details" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h4 class="title_payment">عنوان الشحن</h4>
-                    <span class="change_address" style="color:var(--main-color); cursor:pointer; font-weight:bold;">تعديل</span>
-                </div>
-                <div class="content_address" style="background:#f9f9f9; padding:15px; border-radius:8px; line-height:1.8;">
-                    <h5 id="user-Address" style="margin:0; font-size:16px; color:#333;">${inputUser.value}</h5>
-                    <span id="phone-Address" style="display:block; color:#666;">${inputTel.value}</span>
-                    <hr style="border:0; border-top:1px solid #ddd; margin:10px 0;">
-                    <span id="street-Address">${inputAddressStreet.value}</span>، 
-                    <span id="unity-Address">${inputAddressUnit.value}</span><br>
-                    <span id="city-Address">${inputAddressCity.value}</span>، 
-                    <span id="boycott-Address">${inputAddressBoycott.value}</span><br>
-                    <span>الرمز البريدي: </span><span id="postal-Address">${inputAddressPostal.value}</span>
-                </div>
-            `;
-
-            let changeAddressBtn = document.querySelector(".change_address");
-            if (changeAddressBtn) {
-                changeAddressBtn.addEventListener("click", () => {
-                  modalChange.classList.add("modal_active");
-                  layer.classList.add("layer_active");
-                  changeInputs();
-                });
-            }
-          }
+            inputs.forEach(input => { if (input) input.style.borderColor = "#e2e8f0"; });
         });
     }
 
-    let closeChangeBtn = document.querySelector(".close_change_btn");
-    let doneChangeBtn = document.querySelector(".done_change_btn");
+    function checkInputs(inputElements) {
+        inputElements.forEach(input => {
+            if (!input) return;
+            input.style.borderColor = input.value.trim() === "" ? "#ef4444" : "#e2e8f0";
+            input.addEventListener("keyup", () => {
+                input.style.borderColor = input.value.trim() === "" ? "#ef4444" : "#e2e8f0";
+            });
+        });
+    }
+
+    if (sendBtn) {
+        sendBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const isEmpty = inputs.some(input => !input || input.value.trim() === "");
+            
+            if (isEmpty) {
+                checkInputs(inputs);
+            } else {
+                modal.classList.remove("modal_active");
+                layer.classList.remove("layer_active");
+
+                addressDiv.innerHTML = `
+                    <div class="address_details" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h4 class="title_payment">عنوان الشحن</h4>
+                        <span class="change_address" style="color:var(--main-color); cursor:pointer; font-weight:bold;"><i class="fa-solid fa-pen"></i> تعديل</span>
+                    </div>
+                    <div class="content_address" style="background:#f8fafc; padding:15px; border-radius:8px; line-height:1.8; border:1px solid #e2e8f0;">
+                        <h5 id="user-Address" style="margin:0; font-size:16px; color:#0f172a;">${userInput.value}</h5>
+                        <span id="phone-Address" style="display:block; color:#64748b;">${phoneInput.value}</span>
+                        <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
+                        <span id="street-Address">${streetInput.value}</span>، 
+                        <span id="unity-Address">${unityInput.value}</span><br>
+                        <span id="city-Address">${cityInput.value}</span> - 
+                        <span id="boycott-Address">${boycottInput.value}</span><br>
+                        <span style="color:#64748b;">الرمز البريدي: </span><span id="postal-Address">${postalInput.value}</span>
+                    </div>
+                `;
+
+                const changeAddressBtn = document.querySelector(".change_address");
+                if (changeAddressBtn) {
+                    changeAddressBtn.addEventListener("click", () => {
+                        modalChange.classList.add("modal_active");
+                        layer.classList.add("layer_active");
+                        
+                        userChange.value = document.getElementById("user-Address").textContent;
+                        phoneChange.value = document.getElementById("phone-Address").textContent;
+                        streetChange.value = document.getElementById("street-Address").textContent;
+                        unityChange.value = document.getElementById("unity-Address").textContent;
+                        cityChange.value = document.getElementById("city-Address").textContent;
+                        boycottChange.value = document.getElementById("boycott-Address").textContent;
+                        postalChange.value = document.getElementById("postal-Address").textContent;
+                    });
+                }
+            }
+        });
+    }
+
+    const closeChangeBtn = document.querySelector(".close_change_btn");
+    const doneChangeBtn = document.querySelector(".done_change_btn");
 
     if (closeChangeBtn) {
         closeChangeBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          modalChange.classList.remove("modal_active");
-          layer.classList.remove("layer_active");
-        });
-    }
-
-    let userChange = document.querySelector(".input_user_change");
-    let telChange = document.querySelector(".input_tel_change");
-    let streetChange = document.querySelector(".input_address_street_change");
-    let unitChange = document.querySelector(".input_address_unit_change");
-    let cityChange = document.querySelector(".input_address_city_change");
-    let boycottChange = document.querySelector(".input_address_boycott_change");
-    let postalChange = document.querySelector(".input_address_postal_change");
-
-    let inputsChange = [userChange, telChange, streetChange, unitChange, cityChange, boycottChange, postalChange];
-
-    if (doneChangeBtn && userChange) {
-        doneChangeBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          let isEmpty = inputsChange.some(input => input.value.trim() === "");
-          
-          if (isEmpty) {
-            chickInputs(inputsChange);
-          } else {
+            e.preventDefault();
             modalChange.classList.remove("modal_active");
             layer.classList.remove("layer_active");
-
-            document.getElementById("user-Address").textContent = userChange.value;
-            document.getElementById("street-Address").textContent = streetChange.value;
-            document.getElementById("unity-Address").textContent = unitChange.value;
-            document.getElementById("city-Address").textContent = cityChange.value;
-            document.getElementById("boycott-Address").textContent = boycottChange.value;
-            document.getElementById("postal-Address").textContent = postalChange.value;
-            document.getElementById("phone-Address").textContent = telChange.value;
-          }
         });
     }
 
-    let cardPayment = document.getElementById("card-payment");
-    let modalCard = document.querySelector(".modal_card");
-    let closeVisaCard = document.getElementById("close_visa_card");
-    let visaCardBtn = document.querySelector(".visa_card_btn");
+    if (doneChangeBtn) {
+        doneChangeBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const isEmpty = inputsChange.some(input => !input || input.value.trim() === "");
+            
+            if (isEmpty) {
+                checkInputs(inputsChange);
+            } else {
+                modalChange.classList.remove("modal_active");
+                layer.classList.remove("layer_active");
 
-    if (cardPayment && modalCard) {
-        cardPayment.addEventListener("click", () => {
-          modalCard.classList.add("modal_active");
-          layer.classList.add("layer_active");
+                document.getElementById("user-Address").textContent = userChange.value;
+                document.getElementById("phone-Address").textContent = phoneChange.value;
+                document.getElementById("street-Address").textContent = streetChange.value;
+                document.getElementById("unity-Address").textContent = unityChange.value;
+                document.getElementById("city-Address").textContent = cityChange.value;
+                document.getElementById("boycott-Address").textContent = boycottChange.value;
+                document.getElementById("postal-Address").textContent = postalChange.value;
+            }
         });
     }
 
-    if (closeVisaCard) {
-        closeVisaCard.addEventListener("click", () => {
-          modalCard.classList.remove("modal_active");
-          layer.classList.remove("layer_active");
-        });
-    }
+    // --- CHECKOUT SUBMISSION LOGIC ---
+    if (orderBtn) {
+        orderBtn.addEventListener("click", () => {
+            let userAddressEl = document.getElementById("user-Address");
+            if (!userAddressEl || userAddressEl.textContent.trim() === "") {
+                if (modal && layer) {
+                    modal.classList.add("modal_active");
+                    layer.classList.add("layer_active");
+                }
+                return;
+            }
 
-    if (visaCardBtn) {
-        visaCardBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          modalCard.classList.remove("modal_active");
-          layer.classList.remove("layer_active");
-        });
-    }
+            if (!cartItems || cartItems.length === 0) {
+                alert("عربة التسوق فارغة!");
+                window.location.href = "/products";
+                return;
+            }
 
-    function changeInputs() {
-      if(userChange && document.getElementById("user-Address")){
-          userChange.value = document.getElementById("user-Address").textContent;
-          telChange.value = document.getElementById("phone-Address").textContent;
-          streetChange.value = document.getElementById("street-Address").textContent;
-          unitChange.value = document.getElementById("unity-Address").textContent;
-          postalChange.value = document.getElementById("postal-Address").textContent;
-          cityChange.value = document.getElementById("city-Address").textContent;
-          boycottChange.value = document.getElementById("boycott-Address").textContent;
-      }
-    }
+            const formData = new FormData();
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            
+            formData.append("csrf_token", csrfToken);
+            formData.append("ajax_checkout", "1");
+            formData.append("full_name", document.getElementById("user-Address").textContent);
+            formData.append("phone", document.getElementById("phone-Address").textContent);
+            formData.append("address_line1", document.getElementById("street-Address").textContent);
+            formData.append("address_line2", document.getElementById("unity-Address").textContent);
+            formData.append("city", document.getElementById("city-Address").textContent);
+            formData.append("governorate", document.getElementById("boycott-Address").textContent);
+            formData.append("zip_code", document.getElementById("postal-Address").textContent);
+            
+            const hiddenPromo = document.getElementById('hidden-promo-code');
+            if (hiddenPromo && hiddenPromo.value) {
+                formData.append("applied_promo_code", hiddenPromo.value);
+            }
 
-    function chickInputs(inputsArray) {
-      inputsArray.forEach((input) => {
-        if (!input) return;
-        if (input.value.trim() === "") {
-          input.style.borderColor = "#d9534f";
-        } else {
-          input.style.borderColor = "#a9a9a9";
-        }
-        input.addEventListener("keyup", () => {
-          if (input.value.length > 0) {
-            input.style.borderColor = "#a9a9a9";
-          }
+            const rawTotal = document.getElementById('hidden-total-price')?.value || window.localStorage.getItem("total_Price") || 0;
+            let finalPrice = rawTotal;
+            if (typeof finalPrice === 'string') {
+                finalPrice = finalPrice.replace(/[^\d.]/g, '');
+            }
+            formData.append("total_price", finalPrice || 0);
+
+            formData.append("products", JSON.stringify(cartItems.map(item => {
+                item.number = parseInt(item.number || item.quantity || item.qty || 1);
+                return item;
+            })));
+
+            orderBtn.disabled = true;
+            orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التنفيذ...';
+
+            fetch("/checkout/process", {
+                method: "POST",
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: formData
+            })
+            .then(async res => {
+                const text = await res.text();
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        localStorage.removeItem("cards");
+                        localStorage.removeItem("total_Price");
+                        localStorage.removeItem("activeCoupon");
+                        
+                        const popup = document.querySelector(".popup");
+                        if (popup) {
+                            popup.classList.add("modal_active");
+                            layer.classList.add("layer_active");
+                        } else {
+                            window.location.href = data.redirect || "/my-orders";
+                        }
+                    } else {
+                        alert("حدث خطأ أثناء تسجيل الطلب: " + (data.error || ""));
+                        orderBtn.disabled = false;
+                        orderBtn.textContent = "تأكيد الطلب";
+                    }
+                } catch (e) {
+                    console.error("Server response:", text);
+                    alert("فشل استجابة السيرفر. برجاء المحاولة مرة أخرى.");
+                    orderBtn.disabled = false;
+                    orderBtn.textContent = "تأكيد الطلب";
+                }
+            })
+            .catch(err => {
+                alert("حدث خطأ في الاتصال: " + err.message);
+                orderBtn.disabled = false;
+                orderBtn.textContent = "تأكيد الطلب";
+            });
         });
-      });
     }
 });
