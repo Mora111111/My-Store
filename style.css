@@ -10,7 +10,7 @@
   --white-color: #fff;
   --black-color: #000;
   --main-transition: 0.3s;
-  --index-fixed: 100;
+  --index-fixed: 1005;
 }
 
 * {
@@ -1569,7 +1569,7 @@ input[type="checkbox"] {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 99;
+  z-index: 1004;
 }
 
 .layer_active {
@@ -2041,7 +2041,7 @@ input[type="checkbox"] {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 99;
+  z-index: 1004;
 }
 
 .layer_active {

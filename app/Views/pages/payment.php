@@ -27,12 +27,23 @@
     .send_btn:hover { background: #ea580c; }
     .done_change_btn { background: #10b981; color: white; }
     
-    .container_modal { border-radius: 25px !important; padding: 35px !important; }
-    
-    .item_payment.address:empty {
-        display: none !important;
+    .container_modal { 
+        border-radius: 25px !important; 
+        padding: 20px !important; 
+        z-index: 1005 !important;
     }
+
+    .item_payment.address:empty { 
+        display: none !important; 
+    }
+
+    .layer {
+        z-index: 1004 !important;
+        position: fixed !important; 
+    }
+
 </style>
+
 
 <div class="container_payment">
   <div class="content_payment">
