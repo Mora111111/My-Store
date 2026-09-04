@@ -33,32 +33,33 @@ class AdminProductController {
         $productModel = new Product();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $title = trim($_POST['title'] ?? '');
-            $category_class = trim($_POST['category_class'] ?? '');
-            $price = floatval($_POST['price'] ?? 0);
-            $description = trim($_POST['description'] ?? '');
             $data = [
-                'title' => $title,
-                'price' => $price,
+                'title' => trim($_POST['title'] ?? ''),
+                'price' => floatval($_POST['price'] ?? 0),
                 'old_price' => floatval($_POST['old_price'] ?? 0),
-                'category_class' => $category_class,
-                'description' => $description,
+                'category_class' => trim($_POST['category_class'] ?? ''),
+                'description' => trim($_POST['description'] ?? ''),
             ];
 
             $imageFields = ['image' => 'image_url', 'image_2' => 'image_2', 'image_3' => 'image_3', 'image_4' => 'image_4'];
-            $image_url = '';
+            $uploadDir = ROOT_DIR . '/uploads/';
+            
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
             foreach ($imageFields as $fileKey => $dbField) {
                 if (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] === UPLOAD_ERR_OK) {
-                    $mime = $_FILES[$fileKey]['type'];
-                    $base64 = base64_encode(file_get_contents($_FILES[$fileKey]['tmp_name']));
-                    $data[$dbField] = 'data:' . $mime . ';base64,' . $base64;
-                    if ($fileKey === 'image') {
-                        $image_url = $data[$dbField];
+                    $fileName = time() . '_' . uniqid() . '.' . pathinfo($_FILES[$fileKey]['name'], PATHINFO_EXTENSION);
+                    $targetPath = $uploadDir . $fileName;
+                    
+                    if (move_uploaded_file($_FILES[$fileKey]['tmp_name'], $targetPath)) {
+                        $data[$dbField] = 'uploads/' . $fileName;
                     }
                 }
             }
 
-            if (empty($image_url)) {
+            if (empty($data['image_url'])) {
                 $_SESSION['toast_msg'] = 'يرجى اختيار صورة للمنتج.';
                 $_SESSION['toast_type'] = 'error';
                 header('Location: /admin/products');
@@ -82,13 +83,16 @@ class AdminProductController {
         $productModel = new Product();
         $id = intval($_GET['id'] ?? 0);
         $product = $productModel->findById($id);
+        
         if (!$product) {
             header('Location: /admin/products');
             exit;
         }
+        
         $toast_msg = $_SESSION['toast_msg'] ?? '';
         $toast_type = $_SESSION['toast_type'] ?? '';
         unset($_SESSION['toast_msg'], $_SESSION['toast_type']);
+        
         $pageIcon = 'fa-pen-to-square';
         $pageTitle = 'تعديل المنتج';
         require_once APP_DIR . '/Views/admin/layout_start.php';
@@ -111,11 +115,24 @@ class AdminProductController {
             ];
 
             $imageFields = ['image' => 'image_url', 'image_2' => 'image_2', 'image_3' => 'image_3', 'image_4' => 'image_4'];
+            $uploadDir = ROOT_DIR . '/uploads/';
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
             foreach ($imageFields as $fileKey => $dbField) {
                 if (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] === UPLOAD_ERR_OK) {
-                    $mime = $_FILES[$fileKey]['type'];
-                    $base64 = base64_encode(file_get_contents($_FILES[$fileKey]['tmp_name']));
-                    $data[$dbField] = 'data:' . $mime . ';base64,' . $base64;
+                    $fileName = time() . '_' . uniqid() . '.' . pathinfo($_FILES[$fileKey]['name'], PATHINFO_EXTENSION);
+                    $targetPath = $uploadDir . $fileName;
+                    
+                    if (move_uploaded_file($_FILES[$fileKey]['tmp_name'], $targetPath)) {
+                        $data[$dbField] = 'uploads/' . $fileName;
+                        
+                        if (!empty($existing[$dbField]) && file_exists(ROOT_DIR . '/' . $existing[$dbField])) {
+                            unlink(ROOT_DIR . '/' . $existing[$dbField]);
+                        }
+                    }
                 }
             }
 
@@ -136,17 +153,27 @@ class AdminProductController {
 
     public function delete(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {$_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
+            if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {
+                $_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
                 $_SESSION['toast_type'] = 'error';
                 header('Location: /admin/products');
                 exit;
             }
-            $productModel = new Product();$id = intval($_POST['id'] ?? 0);$product = $productModel->findById($id);
+            
+            $productModel = new Product();
+            $id = intval($_POST['id'] ?? 0);
+            $product = $productModel->findById($id);
+            
             if ($product) {
-                if (!empty($product['image_url']) && file_exists(ROOT_DIR . '/' .$product['image_url'])) {
-                    unlink(ROOT_DIR . '/' . $product['image_url']);
+                $imageFields = ['image_url', 'image_2', 'image_3', 'image_4'];
+                foreach ($imageFields as $field) {
+                    if (!empty($product[$field]) && file_exists(ROOT_DIR . '/' . $product[$field])) {
+                        unlink(ROOT_DIR . '/' . $product[$field]);
+                    }
                 }
-                $productModel->delete($id);$_SESSION['toast_msg'] = 'تم حذف المنتج بنجاح.';
+                
+                $productModel->delete($id);
+                $_SESSION['toast_msg'] = 'تم حذف المنتج بنجاح.';
                 $_SESSION['toast_type'] = 'success';
             }
         }

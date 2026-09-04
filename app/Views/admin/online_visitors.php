@@ -1,8 +1,3 @@
-<style>
-  .date-badge { color: #64748b; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; padding: 6px 12px; border-radius: 8px; border: 1px solid #e2e8f0; white-space: nowrap; }
-  .user-badge { background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-  .guest-badge { background: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-</style>
 
 <div class="card">
   <h2 style="margin-top:0;"><i class="fa-solid fa-globe"></i> الزوار المتصلين حالياً</h2>

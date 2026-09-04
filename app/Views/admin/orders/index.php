@@ -57,8 +57,12 @@
               <i class="fa-solid fa-eye"></i> عرض
             </button>
             <?php if ($status === 'ملغي'): ?>
-              <a href="/admin/orders/delete?id=<?php echo $row['id']; ?>" class="btn-delete-order" onclick="return confirm('هل أنت متأكد من حذف هذا الطلب نهائياً من قاعدة البيانات؟');"><i class="fa-solid fa-trash"></i> حذف</a>
-            <?php endif; ?>
+  <form method="POST" action="/admin/orders/delete" style="display:inline-block;" onsubmit="return confirm('هل أنت متأكد من حذف هذا الطلب نهائياً من قاعدة البيانات؟');">
+    <?= CSRF::getField() ?>
+    <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+    <button type="submit" class="btn-delete-order" style="border:none; cursor:pointer; font-family:inherit;"><i class="fa-solid fa-trash"></i> حذف</button>
+  </form>
+<?php endif; ?>
           </td>
         </tr>
         <?php endforeach; ?>

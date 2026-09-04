@@ -5,23 +5,23 @@
       <?= CSRF::getField() ?>
       <div class="form-group">
         <label>الاسم الأول</label>
-        <input type="text" name="fname" class="form-group input" required style="width:100%; padding:12px 16px; border:2px solid #e2e8f0; border-radius:16px; font-family:Tajawal; font-size:15px;">
+        <input type="text" name="fname" required>
       </div>
       <div class="form-group">
         <label>الاسم الأخير</label>
-        <input type="text" name="lname" class="form-group input" required style="width:100%; padding:12px 16px; border:2px solid #e2e8f0; border-radius:16px; font-family:Tajawal; font-size:15px;">
+        <input type="text" name="lname" required>
       </div>
       <div class="form-group">
         <label>البريد الإلكتروني</label>
-        <input type="email" name="email" required style="width:100%; padding:12px 16px; border:2px solid #e2e8f0; border-radius:16px; font-family:Tajawal; font-size:15px;">
+        <input type="email" name="email" required>
       </div>
       <div class="form-group">
         <label>كلمة المرور</label>
-        <input type="password" name="password" required style="width:100%; padding:12px 16px; border:2px solid #e2e8f0; border-radius:16px; font-family:Tajawal; font-size:15px;">
+        <input type="password" name="password" required>
       </div>
       <div class="form-group">
         <label>الصلاحية</label>
-        <select name="role" style="width:100%; padding:12px 16px; border:2px solid #e2e8f0; border-radius:16px; font-family:Tajawal; font-size:15px;">
+        <select name="role">
           <option value="user">مستخدم</option>
           <option value="admin">مدير</option>
         </select>

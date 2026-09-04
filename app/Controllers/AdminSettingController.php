@@ -23,16 +23,24 @@ class AdminSettingController {
 
     public function update(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {
+                $_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
+                $_SESSION['toast_type'] = 'error';
+                header('Location: /admin/settings');
+                exit;
+            }
+
             try {
-                $db = Database::getInstance()->getConnection();$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $db = Database::getInstance()->getConnection();
+                $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 
-                // Check if row id=1 exists, if not, create it
-                $check =$db->query("SELECT id FROM settings WHERE id = 1")->fetch();
-                if (!$check) {$db->query("INSERT INTO settings (id, about_text, phone1, phone2, email, address, shipping_cost, facebook_link, maintenance_mode, global_discount) VALUES (1, 'متجرنا', '010', '', 'email@test.com', 'مصر', 0, '', 0, 0)");
+                $check = $db->query("SELECT id FROM settings WHERE id = 1")->fetch();
+                if (!$check) {
+                    $db->query("INSERT INTO settings (id, about_text, phone1, phone2, email, address, shipping_cost, facebook_link, maintenance_mode, global_discount) VALUES (1, 'متجرنا', '010', '', 'email@test.com', 'مصر', 0, '', 0, 0)");
                 }
                 
                 $settingModel = new Setting();
-                $success =$settingModel->update([
+                $success = $settingModel->update([
                     'about_text' => trim($_POST['about_text'] ?? ''),
                     'phone1' => trim($_POST['phone1'] ?? ''),
                     'phone2' => trim($_POST['phone2'] ?? ''),
@@ -40,7 +48,11 @@ class AdminSettingController {
                     'address' => trim($_POST['address'] ?? ''),
                     'shipping_cost' => floatval($_POST['shipping_cost'] ?? 0),
                     'facebook_link' => trim($_POST['facebook_link'] ?? ''),
-                    'maintenance_mode' => isset($_POST['maintenance_mode']) ? 1 : 0                  ]);$_SESSION['toast_msg'] = 'تم حفظ الإعدادات بنجاح!';
+                    'maintenance_mode' => isset($_POST['maintenance_mode']) ? 1 : 0,
+                    'global_discount' => floatval($check['global_discount'] ?? 0)
+                ]);
+                
+                $_SESSION['toast_msg'] = 'تم حفظ الإعدادات بنجاح!';
                 $_SESSION['toast_type'] = 'success';
                 header('Location: /admin/settings');
                 exit;

@@ -34,8 +34,6 @@
     }
 </style>
 
-
-
 <div class="container_payment">
   <div class="content_payment">
     <div class="item_payment address"></div>
@@ -162,7 +160,7 @@
 
   <div class="container_modal modal_card">
     <div class="modal_header">
-      <h4 class="modal_title_card">قدِّم مزيدًا من المعلومات</h4>
+      <h4 class="modal_title_card">قدِّم مزيدًا من المعلومات</h4>
       <div class="description_visa_card">
         <img src="/images/payment/payment_s.png" alt="">
         <span>معلومات الدفع الخاصة بك في أمان معنا</span>
@@ -207,7 +205,7 @@
 
 <div class="layer"></div>
 
-<script src="/Js/pyment.js"></script>
+<script src="/Js/payment.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof updateTotalPrice === 'function') {

@@ -114,6 +114,44 @@ function isActive($path) {
     
     .btn-unban, .btn-success { background: #10b981; box-shadow: 0 4px 8px rgba(16,185,129,0.15); }
     .btn-unban:hover, .btn-success:hover { background: #059669; transform: translateY(-1px); }
+    /* التنسيقات الموحدة (DRY) */
+    .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; margin-bottom: 40px; }
+    .stat-card { background: #ffffff; padding: 28px 20px; border-radius: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; transition: all 0.3s; border: 1px solid #f1f5f9; position: relative; overflow: hidden; }
+    .stat-card::after { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; background: currentColor; opacity: 0.7; border-radius: 6px 0 0 6px; }
+    .stat-card:nth-child(1) { color: #10b981; } .stat-card:nth-child(2) { color: #3b82f6; } .stat-card:nth-child(3) { color: #f59e0b; } .stat-card:nth-child(4) { color: #ef4444; } .stat-card:nth-child(5) { color: #8b5cf6; }
+    .stat-card:hover { transform: translateY(-6px); box-shadow: 0 25px 30px -12px rgba(0,0,0,0.15); border-color: #e2e8f0; }
+    .stat-info h3 { margin: 0 0 10px 0; color: #64748b; font-size: 16px; font-weight: 600; }
+    .stat-info p { margin: 0; font-size: 42px; font-weight: 800; color: #0f172a; }
+    .stat-icon { font-size: 48px; opacity: 0.85; transition: 0.3s; color: currentColor; }
+    .stat-card:hover .stat-icon { transform: scale(1.05); opacity: 1; }
+    .welcome-card { background: #ffffff; padding: 35px 40px; border-radius: 28px; box-shadow: 0 15px 30px -10px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; }
+    .welcome-card h2 { margin-top: 0; color: #0f172a; font-size: 30px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .welcome-card h2::after { content: ''; flex: 1; height: 3px; background: linear-gradient(90deg, #38bdf8, transparent); border-radius: 10px; }
+    .welcome-card p { color: #334155; font-size: 18px; margin-bottom: 25px; line-height: 1.7; font-weight: 500; }
+    .welcome-card ul { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px 25px; }
+    .welcome-card li { color: #1e293b; font-size: 17px; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; display: flex; align-items: center; }
+    .welcome-card li::before { content: "\2728"; margin-left: 12px; font-size: 18px; }
+    .welcome-card li strong { color: #0f172a; font-weight: 700; margin-left: 5px; }
+    .user-badge { background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .guest-badge { background: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .cancel-btn { display: block; text-align: center; margin-top: 20px; color: #64748b; text-decoration: none; font-weight: 600; transition: 0.3s; }
+    .cancel-btn:hover { color: #ef4444; }
+    .modal-content-modern { background: #ffffff; width: 92%; max-width: 550px; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); animation: slideUpModal 0.3s forwards; overflow: hidden; direction: rtl; }
+    .modal-header-modern { padding: 20px 24px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+    .modal-title-modern { margin: 0; font-size: 18px; color: #0f172a; display: flex; align-items: center; gap: 12px; font-weight: 700; }
+    .icon-wrapper-modern { background: #e0f2fe; color: #0284c7; width: 38px; height: 38px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; }
+    .close-btn-modern { color: #64748b; font-size: 20px; cursor: pointer; transition: all 0.2s; padding: 5px; }
+    .close-btn-modern:hover { color: #ef4444; transform: rotate(90deg); }
+    .modal-body-modern { padding: 24px; }
+    .modal-desc-modern { color: #475569; font-size: 14px; margin-top: 0; margin-bottom: 20px; }
+    .textarea-modern { width: 100%; min-height: 150px; padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 14px; color: #1e293b; background: #f8fafc; resize: vertical; outline: none; transition: 0.2s; box-sizing: border-box; }
+    .textarea-modern:focus { border-color: #38bdf8; background: #ffffff; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15); }
+    .modal-footer-modern { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+    .btn-cancel-modern { padding: 12px 24px; background: #f1f5f9; color: #475569; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .btn-cancel-modern:hover { background: #e2e8f0; color: #0f172a; }
+    .btn-save-modern { padding: 12px 24px; background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #ffffff; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3); }
+    .btn-save-modern:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(2, 132, 199, 0.4); }
+    @keyframes slideUpModal { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
   </style>
 </head>
 <body>

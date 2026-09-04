@@ -1,9 +1,3 @@
-<style>
-  .card { max-width: 950px; margin: auto; }
-  .card h2 { text-align: center; }
-  .cancel-btn { display: block; text-align: center; margin-top: 20px; color: #64748b; text-decoration: none; font-weight: 600; }
-  .cancel-btn:hover { color: #ef4444; }
-</style>
   <div class="card">
     <h2><i class="fa-solid fa-pen-to-square" style="color:#38bdf8; margin-left:8px;"></i>تعديل بيانات المنتج</h2>
 
