@@ -1,8 +1,12 @@
 <?php
 $maintenanceSetting = new Setting();
-$sysSettings =$maintenanceSetting->getSettings();
-if (!empty($sysSettings['maintenance_mode'])) {$isAdmin = isset($_SESSION['user_role']) &&$_SESSION['user_role'] === 'admin';
-    if (!$isAdmin) {
+$sysSettings = $maintenanceSetting->getSettings();
+if (!empty($sysSettings['maintenance_mode'])) {
+    $isAdmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+    $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $isLoginRoute = ($currentUri === '/login');
+
+    if (!$isAdmin && !$isLoginRoute) {
         echo '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>الموقع تحت الصيانة</title><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet"><style>body{font-family: "Tajawal", sans-serif; background:#f8fafc; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; padding:20px;} .box{text-align:center; background:#fff; padding:50px 30px; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.05); max-width:500px;} h1{color:#0f172a; font-size:28px; margin-bottom:15px;} p{color:#64748b; font-size:18px; line-height:1.6;}</style></head><body><div class="box"><img src="/images/logos/logo.png" alt="Logo" style="max-height:80px; margin-bottom:20px;"><h1>نعود إليكم قريباً 🛠️</h1><p>المتجر مغلق حالياً لإجراء بعض التحديثات وأعمال الصيانة لتقديم تجربة تسوق أفضل.<br>شكراً لتفهمكم!</p></div></body></html>';
         exit;
     }
