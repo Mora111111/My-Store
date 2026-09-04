@@ -77,7 +77,7 @@
         <input type="number" name="price" step="0.01" min="0" required placeholder="مثال: 45000">
       </div>
       <div class="form-group">
-        <label>السعر القديم (قبل الخصم - اختياري):</label>
+        <label>سعر المنتج قبل الشطب </label>
         <input type="number" name="old_price" step="0.01" min="0" value="0" placeholder="اتركه 0 إذا لم يكن هناك خصم">
       </div>
       </div>

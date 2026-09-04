@@ -30,10 +30,9 @@
         <input type="number" name="price" step="0.01" min="0" value="<?php echo htmlspecialchars($product['price']); ?>" required>
       </div>
       <div class="form-group">
-        <label>السعر القديم (قبل الخصم - اختياري):</label>
+        <label>سعر المنتج قبل الشطب </label>
         <input type="number" name="old_price" step="0.01" min="0" value="<?php echo htmlspecialchars($product['old_price'] ?? '0'); ?>">
       </div>
-
       <div class="form-group">
         <label>الوصف التفصيلي للمنتج:</label>
         <textarea name="description" rows="8" required><?php echo htmlspecialchars($product['description'] ?? ''); ?></textarea>
