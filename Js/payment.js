@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const orderBtn = document.querySelector(".order_btn");
     const modal = document.querySelector(".container_modal"); 
     const layer = document.querySelector(".layer");
@@ -45,10 +45,10 @@
         cartItems = [];
     }
 
-    // Setup Total Price display
-    const orderTotals = document.querySelectorAll(".order_total");
+    // Allow updateTotalPrice() from app.js to control the rendering of final-total-price
+    const orderTotals = document.querySelectorAll(".cart-total-price");
     const localTotal = window.localStorage.getItem("total_Price");
-    orderTotals.forEach(el => el.textContent = localTotal ? localTotal : "0 جنيه");
+    orderTotals.forEach(el => el.textContent = localTotal ? localTotal : "0 ج.م");
 
     // --- Payment Modal Handlers ---
     if (paymentCard) {

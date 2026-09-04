@@ -243,27 +243,34 @@ function updateTotalPrice() {
         
         subtotal += itemTotal;
         
-        if (activeCoupon && activeCoupon.target === 'specific_product' && activeCoupon.product_id == itemId) {
+        const tType = activeCoupon ? (activeCoupon.target_type || activeCoupon.target) : null;
+        const targetId = activeCoupon ? (activeCoupon.target_product_id || activeCoupon.product_id) : null;
+
+        if (activeCoupon && tType === 'specific_product' && targetId == itemId) {
             specificProductSubtotal += itemTotal;
         }
     });
 
     let discountTotal = 0;
     if (activeCoupon) {
-        if (activeCoupon.target === 'all') {
-            if (activeCoupon.type === 'percentage') {
-                discountTotal = subtotal * (activeCoupon.value / 100);
+        const tType = activeCoupon.target_type || activeCoupon.target;
+        const dType = activeCoupon.discount_type || activeCoupon.type;
+        const dValue = parseFloat(activeCoupon.discount_value || activeCoupon.value || 0);
+
+        if (tType === 'all') {
+            if (dType === 'percentage') {
+                discountTotal = subtotal * (dValue / 100);
             } else {
-                discountTotal = parseFloat(activeCoupon.value); 
+                discountTotal = dValue; 
             }
-        } else if (activeCoupon.target === 'specific_product' && specificProductSubtotal > 0) {
-            if (activeCoupon.type === 'percentage') {
-                discountTotal = specificProductSubtotal * (activeCoupon.value / 100);
+        } else if (tType === 'specific_product' && specificProductSubtotal > 0) {
+            if (dType === 'percentage') {
+                discountTotal = specificProductSubtotal * (dValue / 100);
             } else {
-                discountTotal = parseFloat(activeCoupon.value); 
+                discountTotal = dValue; 
             }
             if (discountTotal > specificProductSubtotal) discountTotal = specificProductSubtotal;
-        } else if (activeCoupon.target === 'specific_product' && specificProductSubtotal === 0) {
+        } else if (tType === 'specific_product' && specificProductSubtotal === 0) {
             activeCoupon = null;
             localStorage.removeItem('activeCoupon');
             const msgEl = document.getElementById('promo_message');
