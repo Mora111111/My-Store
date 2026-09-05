@@ -238,15 +238,15 @@ function updateTotalPrice() {
         const price = parseFloat(cleanPrice) || 0;
         const quantityElement = cartBox.querySelector(".number");
         const quantity = quantityElement ? parseInt(quantityElement.textContent) : 1;
-        const itemId = cartBox.getAttribute('data-id');
+        const itemId = parseInt(cartBox.getAttribute('data-id')) || 0;
         const itemTotal = price * quantity;
         
         subtotal += itemTotal;
         
         const tType = activeCoupon ? (activeCoupon.target_type || activeCoupon.target) : null;
-        const targetId = activeCoupon ? (activeCoupon.target_product_id || activeCoupon.product_id) : null;
+        const targetId = activeCoupon ? parseInt(activeCoupon.target_product_id || activeCoupon.product_id) : 0;
 
-        if (activeCoupon && tType === 'specific_product' && targetId == itemId) {
+        if (activeCoupon && tType === 'specific_product' && targetId === itemId) {
             specificProductSubtotal += itemTotal;
         }
     });
@@ -425,12 +425,18 @@ document.addEventListener('click', async (e) => {
             return;
         }
 
+        let cartIds = [];
+        try {
+            const cards = JSON.parse(localStorage.getItem("cards")) || [];
+            cartIds = cards.map(c => parseInt(c.id));
+        } catch(err) {}
+
         e.target.textContent = '...';
         try {
             const res = await fetch('/api/validate-coupon', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: code })
+                body: JSON.stringify({ code: code, cart_ids: cartIds })
             });
             const data = await res.json();
 

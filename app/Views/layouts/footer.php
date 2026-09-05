@@ -160,6 +160,12 @@ document.getElementById('apply_promo_btn')?.addEventListener('click', async func
         msgEl.style.color = '#ef4444';
         return;
     }
+    
+    let cartIds = [];
+    try {
+        const cards = JSON.parse(localStorage.getItem("cards")) || [];
+        cartIds = cards.map(c => parseInt(c.id));
+    } catch(e) {}
 
     this.disabled = true;
     this.textContent = '...';
@@ -168,7 +174,7 @@ document.getElementById('apply_promo_btn')?.addEventListener('click', async func
         const response = await fetch('/api/validate-coupon', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: code })
+            body: JSON.stringify({ code: code, cart_ids: cartIds })
         });
         const data = await response.json();
 

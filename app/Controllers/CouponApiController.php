@@ -4,6 +4,7 @@ class CouponApiController {
     header('Content-Type: application/json');
     $data = json_decode(file_get_contents('php://input'), true);
     $code = strtoupper(trim($data['code'] ?? ''));
+    $cartIds = $data['cart_ids'] ?? [];
 
     if (empty($code)) {
         echo json_encode(['success' => false, 'message' => 'الرجاء إدخال كود الخصم.']); exit;
@@ -16,6 +17,24 @@ class CouponApiController {
 
     if (!$coupon) {
         echo json_encode(['success' => false, 'message' => 'الكود غير صالح أو منتهي الصلاحية.']); exit;
+    }
+
+    if ($coupon['target_type'] === 'specific_product') {
+        $targetId = (int)$coupon['target_product_id'];
+        $foundInCart = false;
+        
+        if (is_array($cartIds)) {
+            foreach ($cartIds as $cartId) {
+                if ((int)$cartId === $targetId) {
+                    $foundInCart = true;
+                    break;
+                }
+            }
+        }
+        
+        if (!$foundInCart) {
+            echo json_encode(['success' => false, 'message' => 'هذا الكود مخصص لمنتج غير موجود في عربة التسوق الخاصة بك.']); exit;
+        }
     }
 
     echo json_encode([
