@@ -76,13 +76,13 @@
                             
                             <?php if ($status === 'قيد المراجعة'): ?>
                                 <form action="/my-orders/cancel" method="POST" style="display:inline;">
-                                    <input type="hidden" name="csrf_token" value="<?php echo CSRF::getToken(); ?>">
+                                    <input type="hidden" name="csrf_token" value="<?php echo CSRF::generate(); ?>">
                                     <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
                                     <button type="submit" class="btn-delete-order" onclick="return confirm('هل أنت متأكد من إلغاء هذا الطلب؟');"><i class="fa-solid fa-xmark"></i> إلغاء الطلب</button>
                                 </form>
                             <?php elseif ($status === 'ملغي' || $status === 'مكتمل'): ?>
                                 <form action="/my-orders/hide" method="POST" style="display:inline;">
-                                    <input type="hidden" name="csrf_token" value="<?php echo CSRF::getToken(); ?>">
+                                    <input type="hidden" name="csrf_token" value="<?php echo CSRF::generate(); ?>">
                                     <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
                                     <button type="submit" class="btn-hide-order" onclick="return confirm('هل أنت متأكد من مسح هذا الطلب من السجل؟');"><i class="fa-solid fa-trash-can"></i> مسح السجل</button>
                                 </form>
