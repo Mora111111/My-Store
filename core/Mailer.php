@@ -5,7 +5,7 @@ class Mailer {
         $host = 'ssl://smtp.gmail.com';
         $port = 465;
         $username = 'amr.mansour.mohamed1@gmail.com';
-        $password = 'faqu twlh lpqq hbps';
+        $password = 'faqutwlhlpqqhbps';
         $timeout = 30;
 
         $socket = @stream_socket_client($host . ':' . $port, $errno, $errstr, $timeout);
