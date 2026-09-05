@@ -63,7 +63,7 @@ class Mailer {
             return self::closeAndReturn($socket, false, "DATA error: $serverRes");
         }
 
-        $headers = "From: security@mystore.com\r\n";
+        $headers = "From: MY Store <$username>\r\n";
         $headers .= "To: $to\r\n";
         $headers .= "Subject: $subject\r\n";
         $headers .= "MIME-Version: 1.0\r\n";
