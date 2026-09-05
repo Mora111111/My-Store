@@ -234,8 +234,8 @@ function updateTotalPrice() {
 
     cartBoxes.forEach((cartBox) => {
         const priceText = cartBox.querySelector(".cart_price").textContent;
-        const match = priceText.match(/[\d.]+/);
-        const price = match ? parseFloat(match[0]) : 0;
+        const cleanPrice = priceText.toString().replace(/,/g, '').replace(/[^\d.]/g, '');
+        const price = parseFloat(cleanPrice) || 0;
         const quantityElement = cartBox.querySelector(".number");
         const quantity = quantityElement ? parseInt(quantityElement.textContent) : 1;
         const itemId = cartBox.getAttribute('data-id');
@@ -306,8 +306,8 @@ function updateTotalPrice() {
         
         let shippingCost = 0;
         if (shippingCostEl) {
-            const shipMatch = shippingCostEl.textContent.match(/[\d.]+/);
-            shippingCost = shipMatch ? parseFloat(shipMatch[0]) : 0;
+            const cleanShip = shippingCostEl.textContent.toString().replace(/,/g, '').replace(/[^\d.]/g, '');
+            shippingCost = parseFloat(cleanShip) || 0;
         }
         
         if (discountTotal > 0 && activeCoupon) {
