@@ -114,10 +114,11 @@ public function requestOtp(): void {
     $to = "amr.mansour.mohamed1@gmail.com";
     $subject = "Security Alert: Admin Role Request";
     $message = "A request has been made to grant Admin privileges. Your OTP is: " . $otp;
-    $headers = "From: security@mystore.com\r\nContent-Type: text/plain; charset=UTF-8";
     
-    @mail($to, $subject, $message, $headers);
-    echo json_encode(['success' => true]);
+    require_once CORE_DIR . '/Mailer.php';
+    $mailSent = Mailer::sendMail($to, $subject, $message);
+    
+    echo json_encode(['success' => $mailSent]);
     exit;
 }
 
