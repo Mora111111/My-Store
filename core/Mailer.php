@@ -8,10 +8,10 @@ class Mailer {
         $password = 'faqutwlhlpqqhbps';
         $timeout = 30;
 
-        $socket = @stream_socket_client($host . ':' . $port, $errno, $errstr, $timeout);
+        $context = stream_context_create(['ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]);
+        $socket = @stream_socket_client($host . ':' . $port, $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $context);
         if (!$socket) {
-            error_log("SMTP Error: Could not connect to $host:$port - $errstr ($errno)");
-            return false;
+            throw new Exception("SMTP Error: Could not connect to $host:$port - $errstr ($errno)");
         }
 
         stream_set_timeout($socket, $timeout);
@@ -96,10 +96,10 @@ class Mailer {
     }
 
     private static function closeAndReturn($socket, bool $success, string $errorLog = null): bool {
-        if ($errorLog !== null) {
-            error_log("SMTP Error: $errorLog");
-        }
         fclose($socket);
-        return $success;
+        if (!$success) {
+            throw new Exception("SMTP Error: " . ($errorLog ?? 'Unknown error'));
+        }
+        return true;
     }
 }

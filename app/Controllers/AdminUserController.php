@@ -116,9 +116,13 @@ public function requestOtp(): void {
     $message = "A request has been made to grant Admin privileges. Your OTP is: " . $otp;
     
     require_once CORE_DIR . '/Mailer.php';
-    $mailSent = Mailer::sendMail($to, $subject, $message);
     
-    echo json_encode(['success' => $mailSent]);
+    try {
+        $mailSent = Mailer::sendMail($to, $subject, $message);
+        echo json_encode(['success' => true]);
+    } catch (\Exception $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    }
     exit;
 }
 
