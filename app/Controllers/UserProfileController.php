@@ -33,6 +33,40 @@ class UserProfileController {
         require_once APP_DIR . '/Views/pages/my_orders.php';
         require_once APP_DIR . '/Views/layouts/footer.php';
     }
+
+    public function cancelOrder(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!CSRF::validate($_POST['csrf_token'] ?? '')) {
+                header('Location: /my-orders?cancel_error=Invalid CSRF Token');
+                exit;
+            }
+            $orderId = (int)($_POST['order_id'] ?? 0);
+            $userId = Session::get('user_id');
+            if ($orderId && $userId) {
+                $orderModel = new Order();
+                $orderModel->cancelUserOrder($orderId, $userId);
+            }
+            header('Location: /my-orders');
+            exit;
+        }
+    }
+
+    public function hideOrder(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!CSRF::validate($_POST['csrf_token'] ?? '')) {
+                header('Location: /my-orders?cancel_error=Invalid CSRF Token');
+                exit;
+            }
+            $orderId = (int)($_POST['order_id'] ?? 0);
+            $userId = Session::get('user_id');
+            if ($orderId && $userId) {
+                $orderModel = new Order();
+                $orderModel->hideUserOrder($orderId, $userId);
+            }
+            header('Location: /my-orders');
+            exit;
+        }
+    }
     public function messages(): void {
         $messageModel = new Message();
         $messages = $messageModel->getByUserId(Session::get('user_id'));

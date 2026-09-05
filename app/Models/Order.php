@@ -41,8 +41,18 @@ class Order {
         return $stmt->execute([$id]);
     }
 
+    public function cancelUserOrder(int $id, int $userId): bool {
+        $stmt = $this->db->prepare("UPDATE orders SET status = 'ملغي' WHERE id = ? AND user_id = ? AND status = 'قيد المراجعة'");
+        return $stmt->execute([$id, $userId]);
+    }
+
+    public function hideUserOrder(int $id, int $userId): bool {
+        $stmt = $this->db->prepare("UPDATE orders SET user_hidden = 1 WHERE id = ? AND user_id = ?");
+        return $stmt->execute([$id, $userId]);
+    }
+
     public function getByUserId(int $userId): array {
-        $stmt = $this->db->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
+        $stmt = $this->db->prepare("SELECT * FROM orders WHERE user_id = ? AND user_hidden = 0 ORDER BY created_at DESC");
         $stmt->execute([$userId]);
         return $stmt->fetchAll();
     }
