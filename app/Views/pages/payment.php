@@ -228,7 +228,8 @@
         if (reviewContainer && cartItemsStr) {
             const cartItems = JSON.parse(cartItemsStr);
             cartItems.forEach(item => {
-                let productImg = item.img || item.image || item.image_url || item.imgSrc || item.productImg || item.src || '/images/logos/logo.png';
+                let rawImg = item.img || item.image || item.image_url || item.imgSrc || item.productImg || item.src || 'images/logos/logo.png';
+                let productImg = (rawImg.startsWith('http') || rawImg.startsWith('/')) ? rawImg : '/' + rawImg;
                 let productTitle = item.title || item.name || item.productName || 'منتج إلكتروني';
                 let productId = item.id || item.productId || item.product_id || item.Id || item.ID;
 

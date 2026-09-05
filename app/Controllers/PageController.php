@@ -1,30 +1,29 @@
 <?php
-class PageController {
-    public function about(): void {
-        require_once APP_DIR . '/Views/layouts/header.php';
-        require_once APP_DIR . '/Views/pages/about.php';
-        require_once APP_DIR . '/Views/layouts/footer.php';
-    }
-
-    public function contact(): void {
-        require_once APP_DIR . '/Views/layouts/header.php';
-        require_once APP_DIR . '/Views/pages/contact.php';
-        require_once APP_DIR . '/Views/layouts/footer.php';
-    }
-
-    public function sendMessage(): void {
+class PageController {public function sendMessage(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'first_name' => trim($_POST['first_name'] ?? ''),
-                'last_name' => trim($_POST['last_name'] ?? ''),
-                'phone' => trim($_POST['phone'] ?? ''),
-                'email' => trim($_POST['email'] ?? ''),
-                'message' => trim($_POST['message'] ?? '')
-            ];
             $messageModel = new Message();
-            $messageModel->createContactMessage($data);
-            $redirect = Session::isLoggedIn() ? '/my-messages' : '/contact';
-            echo "<script>alert('شكراً لتواصلك معنا! تم إرسال رسالتك بنجاح.'); window.location.href='{$redirect}';</script>";
+            
+            if (Session::isLoggedIn()) {
+                $data = [
+                    'user_id' => Session::get('user_id'),
+                    'subject' => 'رسالة من صفحة اتصل بنا',
+                    'message' => trim($_POST['message'] ?? '')
+                ];
+                $messageModel->create($data);
+                $redirect = '/my-messages?success=1';
+            } else {
+                $data = [
+                    'first_name' => trim($_POST['first_name'] ?? ''),
+                    'last_name' => trim($_POST['last_name'] ?? ''),
+                    'phone' => trim($_POST['phone'] ?? ''),
+                    'email' => trim($_POST['email'] ?? ''),
+                    'message' => trim($_POST['message'] ?? '')
+                ];
+                $messageModel->createContactMessage($data);
+                $redirect = '/contact?success=1';
+            }
+            
+            header("Location: {$redirect}");
             exit();
         }
         header("Location: /contact");

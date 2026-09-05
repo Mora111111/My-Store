@@ -67,7 +67,7 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
           </div>
           <?php endif; ?>
           <div class="box_img">
-            <img src="<?php echo htmlspecialchars($row['image_url']); ?>" alt="" class="card_image" />
+            <img src="/<?php echo ltrim($row['image_url'], '/'); ?>" alt="" class="card_image" />
           </div>
           <div class="card_details">
             <div class="card_title_wrapper" style="margin-bottom:10px;">

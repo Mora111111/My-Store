@@ -49,6 +49,7 @@
     </div>
   </div>
 </div>
+
 <div class="stats-container">
     <div class="stat-card">
       <i class="fa-solid fa-user-group" style="font-size:40px; color:#38bdf8;"></i>
@@ -88,15 +89,15 @@
           </td>
           <td>
             <?php if($row['id'] != Session::get('user_id')): ?>
-            <form method="POST" action="/admin/users/update-role" style="display:inline;">
-              <?= CSRF::getField() ?>
-              <input type="hidden" name="user_id" value="<?php echo $row['id']; ?>">
-              <select name="new_role" style="padding:6px; border-radius:8px; border:1px solid #cbd5e1;">
-                <option value="user" <?php echo (isset($row['role']) && $row['role']=='user' ? 'selected' : ''); ?>>مستخدم</option>
-                <option value="admin" <?php echo (isset($row['role']) && $row['role']=='admin' ? 'selected' : ''); ?>>مدير</option>
-              </select>
-              <button type="submit" name="update_role" class="btn-primary"><i class="fa-solid fa-pen"></i> تأكيد</button>
-            </form>
+            <form method="POST" action="/admin/users/update-role" class="role-update-form" style="display:inline;">
+  <?= CSRF::getField() ?>
+  <input type="hidden" name="user_id" value="<?php echo $row['id']; ?>">
+  <select name="new_role" style="padding:6px; border-radius:8px; border:1px solid #cbd5e1;">
+    <option value="user" <?php echo (isset($row['role']) && $row['role']=='user' ? 'selected' : ''); ?>>مستخدم</option>
+    <option value="admin" <?php echo (isset($row['role']) && $row['role']=='admin' ? 'selected' : ''); ?>>مدير</option>
+  </select>
+  <button type="submit" name="update_role" class="btn-primary"><i class="fa-solid fa-pen"></i> تأكيد</button>
+</form>
             <?php else: ?>
               <span style="color:#94a3b8;">______</span>
             <?php endif; ?>
@@ -126,6 +127,32 @@
     </table>
   </div>
 
+<div id="otpModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content-modern" style="max-width:400px; background: white; padding: 25px; border-radius: 15px; text-align: center; position: relative;">
+    <div class="modal-header-modern" style="margin-bottom: 20px;">
+      <h3 class="modal-title-modern" style="margin: 0; color: #0f172a; display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <div class="icon-wrapper-modern" style="color: #38bdf8; font-size: 24px;"><i class="fa-solid fa-shield-halved"></i></div>
+        تأكيد الهوية
+      </h3>
+      <i class="fa-solid fa-xmark close-btn-modern" onclick="document.getElementById('otpModal').style.display='none'" style="position: absolute; top: 15px; left: 15px; cursor: pointer; font-size: 20px; color: #64748b;"></i>
+    </div>
+    <div class="modal-body-modern">
+      <p class="modal-desc-modern" style="color: #64748b; margin-bottom: 20px;">تم إرسال رمز التحقق إلى بريد المطور. يرجى إدخال الرمز للمتابعة.</p>
+      <form action="/admin/users/verify-role-otp" method="POST">
+        <?= CSRF::getField() ?>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <input type="text" name="otp_code" maxlength="6" placeholder="000000" 
+                 style="text-align:center; font-size:28px; letter-spacing:8px; font-weight:800; border-radius:12px; border:2px solid #e2e8f0; width: 100%; padding: 15px; box-sizing: border-box;" required>
+        </div>
+        <div class="modal-footer-modern" style="display: flex; gap: 10px;">
+          <button type="button" class="btn-cancel-modern" onclick="document.getElementById('otpModal').style.display='none'" style="flex: 1; padding: 12px; border: none; border-radius: 8px; background: #f1f5f9; color: #475569; font-weight: bold; cursor: pointer;">إلغاء</button>
+          <button type="submit" class="btn-save-modern" style="flex: 1; padding: 12px; border: none; border-radius: 8px; background: #38bdf8; color: white; font-weight: bold; cursor: pointer; display: flex; justify-content:center;">تأكيد الترقية</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
   const addModal = document.getElementById('addUserModal');
   function openAddModal() { addModal.style.display = 'flex'; }
@@ -136,8 +163,49 @@
     deleteModal.style.display = 'flex';
   }
   function closeDeleteModal() { deleteModal.style.display = 'none'; }
+  const otpModal = document.getElementById('otpModal');
+  
   window.onclick = (e) => {
     if(e.target === addModal) closeAddModal();
     if(e.target === deleteModal) closeDeleteModal();
+    if(e.target === otpModal) otpModal.style.display = 'none';
   }
+
+  document.querySelectorAll('.role-update-form').forEach(form => {
+    form.addEventListener('submit', async function(e) {
+        const roleSelect = this.querySelector('select[name="new_role"]');
+        if (roleSelect.value === 'admin') {
+            e.preventDefault();
+            const userId = this.querySelector('input[name="user_id"]').value;
+            // Handle cases where CSRF token might be dynamically named or missing
+            const csrfInput = this.querySelector('input[name^="csrf"]');
+            const csrfToken = csrfInput ? csrfInput.value : '';
+            
+            const btn = this.querySelector('button');
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+            try {
+                const formData = new FormData();
+                formData.append('user_id', userId);
+                if (csrfToken) formData.append(csrfInput.name, csrfToken);
+
+                const res = await fetch('/admin/users/request-otp', { method: 'POST', body: formData });
+                const data = await res.json();
+
+                if (data.success) {
+                    otpModal.style.display = 'flex';
+                } else {
+                    alert('فشل إرسال رمز التحقق');
+                }
+            } catch (err) {
+                alert('خطأ في الاتصال بالسيرفر');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        }
+    });
+});
 </script>

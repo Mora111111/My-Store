@@ -7,7 +7,7 @@
            ?>
            <div style="position: absolute; top: 20px; right: 20px; background: #ef4444; color: #fff; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">خصم <?php echo $pct; ?>%</div>
            <?php endif; ?>
-           <img id="mainProductImage" src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" class="card_image" style="max-height: 100%; max-width: 100%; object-fit: contain; transition: 0.3s;" />
+           <img id="mainProductImage" src="/<?php echo ltrim($product['image_url'], '/'); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" class="card_image" style="max-height: 100%; max-width: 100%; object-fit: contain; transition: 0.3s;" />
        </div>
        <div class="thumbnails-container" style="display: flex; gap: 10px; justify-content: center;">
            <?php 
@@ -15,9 +15,9 @@
            foreach($gallery as $index =>$imgBase64): 
                if(!empty($imgBase64)):
            ?>
-               <div class="thumb-box" onclick="document.getElementById('mainProductImage').src='<?php echo htmlspecialchars($imgBase64); ?>';" style="width: 80px; height: 80px; border: 2px solid <?php echo $index === 0 ? 'var(--main-color)' : '#eee'; ?>; border-radius: 8px; cursor: pointer; padding: 5px; background: #fff; overflow: hidden;">
-                   <img src="<?php echo htmlspecialchars($imgBase64); ?>" style="width: 100%; height: 100%; object-fit: cover;" />
-               </div>
+               <div class="thumb-box" onclick="document.getElementById('mainProductImage').src='/<?php echo ltrim($imgBase64, '/'); ?>';" style="width: 80px; height: 80px; border: 2px solid <?php echo $index === 0 ? 'var(--main-color)' : '#eee'; ?>; border-radius: 8px; cursor: pointer; padding: 5px; background: #fff; overflow: hidden;">
+    <img src="/<?php echo ltrim($imgBase64, '/'); ?>" style="width: 100%; height: 100%; object-fit: cover;" />
+</div>
            <?php 
                endif;
            endforeach; 

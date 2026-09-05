@@ -74,26 +74,80 @@ class AdminUserController {
     }
 
     public function updateRole(): void {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {
-                $_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
-                $_SESSION['toast_type'] = 'error';
-                header('Location: /admin/users');
-                exit;
-            }
-
-            $userModel = new User();
-            $id = intval($_POST['user_id'] ?? 0);
-            $new_role = $_POST['new_role'] ?? 'user';
-            if ($id > 0 && $id !== (int)Session::get('user_id')) {
-                $userModel->updateRole($id, $new_role);
-                $_SESSION['toast_msg'] = 'تم تحديث صلاحية المستخدم بنجاح.';
-                $_SESSION['toast_type'] = 'success';
-            }
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {
+            $_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
+            $_SESSION['toast_type'] = 'error';
+            header('Location: /admin/users');
+            exit;
         }
-        header('Location: /admin/users');
-        exit;
+        $userModel = new User();
+        $id = intval($_POST['user_id'] ?? 0);
+        $new_role = $_POST['new_role'] ?? 'user';
+        
+        // منع الترقية المباشرة لمدير (يجب المرور بالـ OTP)
+        if ($new_role === 'admin') {
+            $_SESSION['toast_msg'] = 'الترقية لمدير تتطلب التحقق من الرمز.';
+            $_SESSION['toast_type'] = 'error';
+            header('Location: /admin/users');
+            exit;
+        }
+        
+        if ($id > 0 && $id !== (int)Session::get('user_id')) {
+            $userModel->updateRole($id, $new_role);
+            $_SESSION['toast_msg'] = 'تم تحديث صلاحية المستخدم بنجاح.';
+            $_SESSION['toast_type'] = 'success';
+        }
     }
+    header('Location: /admin/users');
+    exit;
+}
+public function requestOtp(): void {
+    header('Content-Type: application/json');
+    $id = intval($_POST['user_id'] ?? 0);
+    if ($id <= 0) { echo json_encode(['success' => false]); exit; }
+    
+    $otp = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+    $_SESSION['admin_otp_code'] = $otp;
+    $_SESSION['admin_otp_user_id'] = $id;
+    
+    $to = "amr.mansour.mohamed1@gmail.com";
+    $subject = "Security Alert: Admin Role Request";
+    $message = "A request has been made to grant Admin privileges. Your OTP is: " . $otp;
+    $headers = "From: security@mystore.com\r\nContent-Type: text/plain; charset=UTF-8";
+    
+    @mail($to, $subject, $message, $headers);
+    echo json_encode(['success' => true]);
+    exit;
+}
+
+public function verifyRoleOtp(): void {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {
+            $_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
+            $_SESSION['toast_type'] = 'error';
+            header('Location: /admin/users');
+            exit;
+        }
+
+        $inputOtp = $_POST['otp_code'] ?? '';
+        $sessionOtp = $_SESSION['admin_otp_code'] ?? '';
+        $userId = $_SESSION['admin_otp_user_id'] ?? 0;
+        
+        if (!empty($inputOtp) && $inputOtp === $sessionOtp && $userId > 0) {
+            $userModel = new User();
+            $userModel->updateRole($userId, 'admin');
+            unset($_SESSION['admin_otp_code'], $_SESSION['admin_otp_user_id']);
+            $_SESSION['toast_msg'] = 'تم منح صلاحيات المدير بنجاح.';
+            $_SESSION['toast_type'] = 'success';
+        } else {
+            $_SESSION['toast_msg'] = 'رمز التحقق غير صحيح أو منتهي.';
+            $_SESSION['toast_type'] = 'error';
+        }
+    }
+    header('Location: /admin/users');
+    exit;
+}
 
     public function ban(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

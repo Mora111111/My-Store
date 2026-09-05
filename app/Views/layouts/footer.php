@@ -149,5 +149,47 @@ document.addEventListener('click', async function(e) {
     }
 });
 </script>
+<script>
+document.getElementById('apply_promo_btn')?.addEventListener('click', async function() {
+    const codeInput = document.getElementById('promo_code_input');
+    const msgEl = document.getElementById('promo_message');
+    const code = codeInput.value.trim();
+
+    if (!code) {
+        msgEl.textContent = 'يرجى إدخال الكود';
+        msgEl.style.color = '#ef4444';
+        return;
+    }
+
+    this.disabled = true;
+    this.textContent = '...';
+
+    try {
+        const response = await fetch('/api/validate-coupon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: code })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            localStorage.setItem('activeCoupon', JSON.stringify(data.coupon));
+            msgEl.textContent = data.message;
+            msgEl.style.color = '#10b981';
+            if (typeof updateTotalPrice === 'function') updateTotalPrice();
+        } else {
+            localStorage.removeItem('activeCoupon');
+            msgEl.textContent = data.message;
+            msgEl.style.color = '#ef4444';
+            if (typeof updateTotalPrice === 'function') updateTotalPrice();
+        }
+    } catch (error) {
+        msgEl.textContent = 'خطأ في الاتصال';
+    } finally {
+        this.disabled = false;
+        this.textContent = 'تطبيق';
+    }
+});
+</script>
 </body>
 </html>

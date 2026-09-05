@@ -80,6 +80,8 @@ $router->add('POST', '/admin/users/add', 'AdminUserController@add');
 $router->add('POST', '/admin/users/update-role', 'AdminUserController@updateRole');
 $router->add('POST', '/admin/users/ban', 'AdminUserController@ban');
 $router->add('POST', '/admin/users/delete', 'AdminUserController@delete');
+$router->add('POST', '/admin/users/request-otp', 'AdminUserController@requestOtp');
+$router->add('POST', '/admin/users/verify-role-otp', 'AdminUserController@verifyRoleOtp');
 $router->add('GET', '/admin/settings', 'AdminSettingController@index');
 $router->add('POST', '/admin/settings/update', 'AdminSettingController@update');
 

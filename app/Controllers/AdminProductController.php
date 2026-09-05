@@ -129,8 +129,8 @@ class AdminProductController {
                     if (move_uploaded_file($_FILES[$fileKey]['tmp_name'], $targetPath)) {
                         $data[$dbField] = 'uploads/' . $fileName;
                         
-                        if (!empty($existing[$dbField]) && file_exists(ROOT_DIR . '/' . $existing[$dbField])) {
-                            unlink(ROOT_DIR . '/' . $existing[$dbField]);
+                        if (!empty($existing[$dbField]) && file_exists(ROOT_DIR . '/' . ltrim($existing[$dbField], '/'))) {
+                            unlink(ROOT_DIR . '/' . ltrim($existing[$dbField], '/'));
                         }
                     }
                 }
@@ -167,8 +167,8 @@ class AdminProductController {
             if ($product) {
                 $imageFields = ['image_url', 'image_2', 'image_3', 'image_4'];
                 foreach ($imageFields as $field) {
-                    if (!empty($product[$field]) && file_exists(ROOT_DIR . '/' . $product[$field])) {
-                        unlink(ROOT_DIR . '/' . $product[$field]);
+                    if (!empty($product[$field]) && file_exists(ROOT_DIR . '/' . ltrim($product[$field], '/'))) {
+                        unlink(ROOT_DIR . '/' . ltrim($product[$field], '/'));
                     }
                 }
                 

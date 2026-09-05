@@ -217,26 +217,22 @@ document.addEventListener("DOMContentLoaded", () => {
             formData.append("governorate", document.getElementById("boycott-Address").textContent);
             formData.append("zip_code", document.getElementById("postal-Address").textContent);
             
-            const hiddenPromo = document.getElementById('hidden-promo-code');
-            if (hiddenPromo && hiddenPromo.value) {
-                formData.append("applied_promo_code", hiddenPromo.value);
-            }
+           const activeCoupon = JSON.parse(localStorage.getItem('activeCoupon') || 'null');
+if (activeCoupon) {
+    formData.append("applied_promo_code", activeCoupon.code);
+}
 
-            const rawTotal = document.getElementById('hidden-total-price')?.value || window.localStorage.getItem("total_Price") || 0;
-            let finalPrice = rawTotal;
-            if (typeof finalPrice === 'string') {
-                finalPrice = finalPrice.replace(/[^\d.]/g, '');
-            }
-            formData.append("total_price", finalPrice || 0);
+const finalTotalText = document.querySelector('.final-total-price')?.textContent || window.localStorage.getItem("total_Price") || "0";
+const finalTotalNumeric = finalTotalText.replace(/[^\d.]/g, '');
+formData.append("total_price", finalTotalNumeric || 0);
 
-            formData.append("products", JSON.stringify(cartItems.map(item => {
-                item.number = parseInt(item.number || item.quantity || item.qty || 1);
-                return item;
-            })));
+formData.append("products", JSON.stringify(cartItems.map(item => {
+    item.number = parseInt(item.number || item.quantity || item.qty || 1);
+    return item;
+})));
 
-            orderBtn.disabled = true;
-            orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التنفيذ...';
-
+orderBtn.disabled = true;
+orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التنفيذ...';
             fetch("/checkout/process", {
                 method: "POST",
                 headers: {

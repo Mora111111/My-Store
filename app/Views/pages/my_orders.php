@@ -103,7 +103,7 @@
                     <button class="heart-action-btn" data-product-id="<?= $row['id'] ?>" style="position:absolute; top:10px; right:10px; background:transparent; border:none; cursor:pointer; font-size:1.5rem; color:#ff4757;">
                         <i class="fa-solid fa-heart"></i>
                     </button>
-                    <img src="<?= htmlspecialchars($row['image_url'] ?? '') ?>" alt="<?= htmlspecialchars($row['title']) ?>" style="width: 100%; max-height: 200px; object-fit: contain;">
+                    <img src="/<?= ltrim($row['image_url'] ?? '', '/') ?>" alt="<?= htmlspecialchars($row['title']) ?>" style="width: 100%; max-height: 200px; object-fit: contain;">
                     <div class="card_title_wrapper" style="margin: 10px 0;">
                       <h3 style="font-size: 1.1rem; margin: 0; position:relative; z-index:2;"><?= htmlspecialchars($row['title']) ?></h3>
                     </div>
@@ -141,12 +141,11 @@ document.querySelectorAll('.details-btn').forEach(btn => {
             if(products.length === 0) {
                 productsList.innerHTML = '<p>لا توجد تفاصيل.</p>';
             } else {
-                products.forEach(product => {
-                    const imgUrl = product.src || 'images/logos/logo.png';
-                    const title = product.title || 'منتج غير معروف';
-                    const price = product.price || '0';
-                    const qty = product.quantity || product.quantty || product.number || 1; 
-                    
+                products.forEach(product => {const rawSrc = product.src || 'images/logos/logo.png';
+const imgUrl = (rawSrc.startsWith('http') || rawSrc.startsWith('/')) ? rawSrc : '/' + rawSrc;
+const title = product.title || 'منتج غير معروف';
+const price = product.price || '0';
+const qty = product.quantity || product.quantty || product.number || 1;
                     productsList.innerHTML += `
                         <div class="product-item">
                             <img src="${imgUrl}" alt="">
