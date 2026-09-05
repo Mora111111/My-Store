@@ -150,7 +150,8 @@ document.addEventListener('click', async function(e) {
 });
 </script>
 <script>
-document.getElementById('apply_promo_btn')?.addEventListener('click', async function() {
+document.getElementById('apply_promo_btn')?.addEventListener('click', async function(e) {
+    e.preventDefault();
     const codeInput = document.getElementById('promo_code_input');
     const msgEl = document.getElementById('promo_message');
     const code = codeInput.value.trim();
@@ -165,17 +166,25 @@ document.getElementById('apply_promo_btn')?.addEventListener('click', async func
     try {
         const cards = JSON.parse(localStorage.getItem("cards")) || [];
         cartIds = cards.map(c => parseInt(c.id));
-    } catch(e) {}
+    } catch(err) {}
 
     this.disabled = true;
     this.textContent = '...';
 
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
     try {
         const response = await fetch('/api/validate-coupon', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken 
+            },
             body: JSON.stringify({ code: code, cart_ids: cartIds })
         });
+        
+        if (!response.ok) throw new Error('HTTP Error: ' + response.status);
+        
         const data = await response.json();
 
         if (data.success) {

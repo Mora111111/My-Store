@@ -415,6 +415,7 @@ navLinks.forEach(link => {
 
 document.addEventListener('click', async (e) => {
     if(e.target.id === 'apply_promo_btn') {
+        e.preventDefault();
         const codeInput = document.getElementById('promo_code_input');
         const code = codeInput.value.trim();
         const msgEl = document.getElementById('promo_message');
@@ -432,12 +433,21 @@ document.addEventListener('click', async (e) => {
         } catch(err) {}
 
         e.target.textContent = '...';
+        
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        
         try {
             const res = await fetch('/api/validate-coupon', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 body: JSON.stringify({ code: code, cart_ids: cartIds })
             });
+            
+            if (!res.ok) throw new Error('HTTP Error: ' + res.status);
+            
             const data = await res.json();
 
             if(data.success) {
