@@ -53,6 +53,7 @@
                   data-city="<?php echo htmlspecialchars($row['city'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                   data-gov="<?php echo htmlspecialchars($row['governorate'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                   data-zip="<?php echo htmlspecialchars($row['zip_code'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                  data-phone="<?php echo htmlspecialchars($row['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                   data-date="<?php echo isset($row['created_at']) ? date('Y-m-d H:i', strtotime($row['created_at'])) : ''; ?>">
                   <i class="fa-solid fa-eye"></i> عرض
                 </button>
@@ -86,6 +87,7 @@
         <p style="margin:6px 0; font-size: 14px;"><strong>العنوان 1:</strong> <span id="modalAddr1" style="color: #475569;"></span></p>
         <p style="margin:6px 0; font-size: 14px;"><strong>العنوان 2:</strong> <span id="modalAddr2" style="color: #475569;"></span></p>
         <p style="margin:6px 0; font-size: 14px;"><strong>المدينة:</strong> <span id="modalCityGov" style="color: #475569;"></span></p>
+      <p style="margin:6px 0; font-size: 14px;"><strong>رقم الهاتف:</strong> <span id="modalPhone" style="color: #0ea5e9; font-weight: bold; direction: ltr; display: inline-block;"></span></p>
       </div>
       <div style="border-right: 1px solid #e2e8f0; padding-right: 20px;">
         <h4 style="margin:0 0 12px 0; color:#0f172a; font-size: 15px;"><i class="fa-solid fa-calendar-day" style="margin-left:8px; color: #38bdf8;"></i>معلومات إضافية:</h4>
@@ -110,6 +112,7 @@ document.querySelectorAll('.details-btn').forEach(btn => {
     document.getElementById('modalAddr1').innerText = this.getAttribute('data-address1');
     document.getElementById('modalAddr2').innerText = this.getAttribute('data-address2');
     document.getElementById('modalCityGov').innerText = this.getAttribute('data-city') + ' - ' + this.getAttribute('data-gov');
+    document.getElementById('modalPhone').innerText = this.getAttribute('data-phone');
     document.getElementById('modalZip').innerText = this.getAttribute('data-zip');
 
     const productsList = document.getElementById('modalProductsList');

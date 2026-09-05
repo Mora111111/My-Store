@@ -218,13 +218,12 @@
 
 <script src="/Js/payment.js"></script>
 <script>
+    <script>
     document.addEventListener('DOMContentLoaded', () => {
-        if (typeof updateTotalPrice === 'function') {
-            updateTotalPrice();
-        }
-        
         const reviewContainer = document.getElementById('review-products-container');
         const cartItemsStr = localStorage.getItem('cards');
+        let calculatedSubTotal = 0;
+
         if (reviewContainer && cartItemsStr) {
             const cartItems = JSON.parse(cartItemsStr);
             cartItems.forEach(item => {
@@ -232,6 +231,12 @@
                 let productImg = (rawImg.startsWith('http') || rawImg.startsWith('/')) ? rawImg : '/' + rawImg;
                 let productTitle = item.title || item.name || item.productName || 'منتج إلكتروني';
                 let productId = item.id || item.productId || item.product_id || item.Id || item.ID;
+                let qty = parseInt(item.number || item.quantity || item.qty || 1);
+
+                // المعالجة الدقيقة للسعر: إزالة الفواصل أولاً ثم الأرقام
+                let cleanPriceString = (item.price || "0").toString().replace(/,/g, '');
+                let numericPrice = parseFloat(cleanPriceString.replace(/[^\d.]/g, '')) || 0;
+                calculatedSubTotal += (numericPrice * qty);
 
                reviewContainer.innerHTML += `
                  <div class="checkout-item" style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9; transition: 0.3s;">
@@ -241,12 +246,26 @@
                              <div class="card_title_wrapper" style="margin-bottom: 5px;">
                                  <p style="margin: 0; font-weight: bold; color: #0f172a; font-size: 16px;">${productTitle}</p>
                              </div>
-                             <p style="margin: 0; font-size: 14px; color: #64748b;">الكمية: ${item.number || 1}</p>
+                             <p style="margin: 0; font-size: 14px; color: #64748b;">الكمية: ${qty}</p>
                          </div>
                      </a>
-                     <div style="font-weight: bold; color: #f97316; font-size: 17px;">${item.price}</div>
+                     <div style="font-weight: bold; color: #f97316; font-size: 17px;">${(numericPrice * qty).toFixed(2)} ج.م</div>
                  </div>
              `;
+            });
+
+            // تحديث الإجمالي الفرعي
+            document.querySelectorAll('.cart-total-price').forEach(el => {
+                el.textContent = calculatedSubTotal.toFixed(2) + ' ج.م';
+            });
+
+            // حساب الشحن وتحديث الإجمالي النهائي
+            let shippingText = document.getElementById('display-shipping-cost')?.textContent || '0';
+            let shippingCost = parseFloat(shippingText.replace(/[^\d.]/g, '')) || 0;
+            let finalTotal = calculatedSubTotal + shippingCost;
+
+            document.querySelectorAll('.final-total-price').forEach(el => {
+                el.textContent = finalTotal.toFixed(2) + ' ج.م';
             });
         }
     });
