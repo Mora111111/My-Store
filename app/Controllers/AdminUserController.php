@@ -107,22 +107,8 @@ public function requestOtp(): void {
     $id = intval($_POST['user_id'] ?? 0);
     if ($id <= 0) { echo json_encode(['success' => false]); exit; }
     
-    $otp = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-    $_SESSION['admin_otp_code'] = $otp;
     $_SESSION['admin_otp_user_id'] = $id;
-    
-    $to = "amr.mansour.mohamed1@gmail.com";
-    $subject = "Security Alert: Admin Role Request";
-    $message = "A request has been made to grant Admin privileges. Your OTP is: " . $otp;
-    
-    require_once CORE_DIR . '/Mailer.php';
-    
-    try {
-        $mailSent = Mailer::sendMail($to, $subject, $message);
-        echo json_encode(['success' => true]);
-    } catch (\Exception $e) {
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-    }
+    echo json_encode(['success' => true, 'message' => 'افتح تطبيق Google Authenticator على هاتفك للحصول على الكود']);
     exit;
 }
 
@@ -136,17 +122,22 @@ public function verifyRoleOtp(): void {
         }
 
         $inputOtp = $_POST['otp_code'] ?? '';
-        $sessionOtp = $_SESSION['admin_otp_code'] ?? '';
         $userId = $_SESSION['admin_otp_user_id'] ?? 0;
         
-        if (!empty($inputOtp) && $inputOtp === $sessionOtp && $userId > 0) {
+        require_once CORE_DIR . '/GoogleAuthenticator.php';
+        if (!GoogleAuthenticator::checkCode('AMRMYSTORE2222XX', $inputOtp)) { 
+            echo json_encode(['success'=>false, 'message'=>'الكود غير صحيح أو منتهي الصلاحية']); 
+            exit; 
+        }
+        
+        if ($userId > 0) {
             $userModel = new User();
             $userModel->updateRole($userId, 'admin');
-            unset($_SESSION['admin_otp_code'], $_SESSION['admin_otp_user_id']);
+            unset($_SESSION['admin_otp_user_id']);
             $_SESSION['toast_msg'] = 'تم منح صلاحيات المدير بنجاح.';
             $_SESSION['toast_type'] = 'success';
         } else {
-            $_SESSION['toast_msg'] = 'رمز التحقق غير صحيح أو منتهي.';
+            $_SESSION['toast_msg'] = 'طلب غير صالح.';
             $_SESSION['toast_type'] = 'error';
         }
     }
