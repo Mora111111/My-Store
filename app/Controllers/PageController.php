@@ -1,5 +1,18 @@
 <?php
-class PageController {public function sendMessage(): void {
+class PageController {
+    public function about(): void {
+        require_once APP_DIR . '/Views/layouts/header.php';
+        require_once APP_DIR . '/Views/pages/about.php';
+        require_once APP_DIR . '/Views/layouts/footer.php';
+    }
+
+    public function contact(): void {
+        require_once APP_DIR . '/Views/layouts/header.php';
+        require_once APP_DIR . '/Views/pages/contact.php';
+        require_once APP_DIR . '/Views/layouts/footer.php';
+    }
+
+    public function sendMessage(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $messageModel = new Message();
             
