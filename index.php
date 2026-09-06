@@ -41,7 +41,7 @@ if (Session::isLoggedIn()) {
         Session::remove('user_id');
         Session::remove('user_name');
         Session::remove('user_role');
-        Session::set('login_error', 'عفواً، تم حظر هذا الحساب من قبل الإدارة ولا يمكنه إتمام أي عملية.');
+        Session::set('login_error', 'تعرض حسابك للحظر يمكنك مراسلتنا عبر البريد الالكتروني ');
         header('Location: /login');
         exit;
     }
