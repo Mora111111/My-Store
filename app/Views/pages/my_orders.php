@@ -157,7 +157,7 @@ document.querySelectorAll('.details-btn').forEach(btn => {
             } else {
                 products.forEach(product => {
                     const rawSrc = product.src || 'images/logos/logo.png';
-                    const imgUrl = (rawSrc.startsWith('http') || rawSrc.startsWith('/')) ? rawSrc : '/' + rawSrc;
+                    const imgUrl = rawSrc.startsWith('http') ? rawSrc : '<?= BASE_URL ?>' + rawSrc.replace(/^\/+/, '');
                     const title = product.title || 'منتج غير معروف';
                     const priceStr = product.price || '0';
                     const qty = parseInt(product.quantity || product.quantty || product.number || 1);

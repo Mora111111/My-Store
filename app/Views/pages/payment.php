@@ -228,7 +228,7 @@
             const cartItems = JSON.parse(cartItemsStr);
             cartItems.forEach(item => {
                 let rawImg = item.img || item.image || item.image_url || item.imgSrc || item.productImg || item.src || 'images/logos/logo.png';
-                let productImg = (rawImg.startsWith('http') || rawImg.startsWith('/')) ? rawImg : '/' + rawImg;
+                let productImg = rawImg.startsWith('http') ? rawImg : '<?= BASE_URL ?>' + rawImg.replace(/^\/+/, '');
                 let productTitle = item.title || item.name || item.productName || 'منتج إلكتروني';
                 let productId = item.id || item.productId || item.product_id || item.Id || item.ID;
                 let qty = parseInt(item.number || item.quantity || item.qty || 1);

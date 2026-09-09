@@ -6,4 +6,6 @@ define('DB_NAME', getenv('DB_NAME') ?: 'e-website');
 define('GEMINI_API_KEY', getenv('GEMINI_API_KEY'));
 
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
-define('BASE_URL', $protocol . "://" . $_SERVER['HTTP_HOST'] . "/");
+$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+$scriptDir = rtrim($scriptDir, '/');
+define('BASE_URL', $protocol . "://" . $_SERVER['HTTP_HOST'] . $scriptDir . "/");

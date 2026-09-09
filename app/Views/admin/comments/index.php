@@ -18,13 +18,13 @@
           $safe_comment = htmlspecialchars($row['comment_text']);
           $safe_reply = htmlspecialchars($row['admin_reply'] ?? '');
           $status_badge = !empty($row['admin_reply']) ? "<span class='badge-success'><i class='fa-solid fa-circle-check'></i> تم الرد</span>" : "<span class='badge-warning'><i class='fa-solid fa-clock'></i> معلق</span>";
-          $imgPath = !empty($row['image_url']) ? $row['image_url'] : 'uploads/default.png';
+          
           $u_rating = isset($row['user_rating']) ? (int)$row['user_rating'] : 5;
         ?>
         <tr>
           <td>
             <div style="display:flex; align-items:center; gap:12px;">
-              <img src="/<?php echo ltrim($imgPath, '/'); ?>" width="50" height="50" style="border-radius:10px; object-fit:cover; border:1px solid #e2e8f0; background:#fff;"> 
+              <img src="<?= Product::getImageUrl($row['image_url']) ?>" width="50" height="50" style="border-radius:10px; object-fit:cover; border:1px solid #e2e8f0; background:#fff;"> 
               <span style="font-weight:700; color:#1e293b; font-size:14px;"><?php echo htmlspecialchars($row['product_title']); ?></span>
             </div>
           </td>

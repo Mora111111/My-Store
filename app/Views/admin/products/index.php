@@ -19,8 +19,7 @@
     <?php if (!empty($products)): ?>
       <?php foreach ($products as $row): ?>
       <tr>
-<?php $imgPath = !empty($row['image_url']) ? $row['image_url'] : (!empty($row['image']) ? $row['image'] : 'uploads/default.png'); ?>
-        <td><img src="/<?php echo ltrim($imgPath, '/'); ?>" width="60" height="60" style="border-radius:12px; object-fit:cover; box-shadow:0 4px 6px rgba(0,0,0,0.05);"></td>        <td style="font-weight:500;"><?php echo htmlspecialchars($row['title']); ?></td>
+<td><img src="<?= Product::getImageUrl($row['image_url']) ?>" width="60" height="60" style="border-radius:12px; object-fit:cover; box-shadow:0 4px 6px rgba(0,0,0,0.05);"></td>        <td style="font-weight:500;"><?php echo htmlspecialchars($row['title']); ?></td>
         <td><span class="badge"><?php echo htmlspecialchars($row['category_class']); ?></span></td>
         <td style="font-weight:700; color:#0f172a;"><?php echo htmlspecialchars($row['price']); ?> ج.م</td>
         <td>

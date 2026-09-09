@@ -94,4 +94,21 @@ class Product {
         $stmt = $this->db->prepare("DELETE FROM products WHERE id = ?");
         return $stmt->execute([$id]);
     }
+   public static function getImageUrl(?string $path): string {
+        if (empty($path)) {
+            return BASE_URL . 'images/logos/logo.png';
+        }
+        
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+        
+        $cleanPath = ltrim($path, '/');
+        
+        if (file_exists(ROOT_DIR . '/' . $cleanPath)) {
+            return BASE_URL . $cleanPath;
+        }
+        
+        return BASE_URL . 'images/logos/logo.png';
+    } 
 }
