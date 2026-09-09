@@ -24,218 +24,168 @@ if (!empty($sysSettings['maintenance_mode'])) {
   <title>MY Store - متجر على الإنترنت</title>
   <meta name="csrf-token" content="<?= CSRF::generate() ?>">
 
-  <!-- درع الحماية وتنسيقات الاستجابة للهواتف (مستقل تماماً) -->
+  <!-- درع الحماية وتنسيق الهيدر النظيف (يمنع تعارض الـ CSS والشبورة) -->
   <style>
-    /* الإعدادات الأساسية للهيدر */
-    .master-header { background: #fff; box-shadow: 0 2px 15px rgba(0,0,0,0.04); position: relative; z-index: 1000; width: 100%; }
-    .header-wrapper { display: flex; align-items: center; justify-content: space-between; padding: 15px 40px; max-width: 1400px; margin: 0 auto; box-sizing: border-box; }
+    .clean-header {
+      background-color: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      position: fixed; left: 0; top: 0; width: 100%; z-index: 1000;
+    }
+    .clean-nav {
+      height: 80px; display: flex; justify-content: space-between; align-items: center; gap: 20px;
+    }
+    .clean-search-box {
+      flex: 1; max-width: 500px; display: flex; align-items: center;
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 25px; padding: 5px 20px; transition: 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .clean-search-box:focus-within { border-color: var(--main-color); box-shadow: 0 0 0 3px rgba(14,165,233,0.1); background: #fff; }
+    .clean-search-box input { border: none; background: transparent; width: 100%; padding: 8px 0; outline: none; font-size: 14px; font-family: inherit; color: #334155; }
+    .clean-search-box button { background: none; border: none; color: var(--main-color); font-size: 18px; cursor: pointer; margin-left: 10px; }
     
-    /* تقسيم الهيدر إلى مجموعتين: يمين ويسار */
-    .header-right { display: flex; align-items: center; gap: 40px; }
-    .header-left { display: flex; align-items: center; gap: 20px; flex: 1; justify-content: flex-end; }
-
-    /* فئات الإظهار والإخفاء الذكية */
-    .mobile-only { display: none !important; }
-    .desktop-only { display: flex !important; align-items: center; gap: 20px; }
-
-    /* تنسيق روابط الكمبيوتر */
-    .nav-list { display: flex; align-items: center; gap: 25px; list-style: none; padding: 0; margin: 0; }
-    .nav_link { color: #475569; font-size: 16px; font-weight: 700; text-decoration: none; transition: 0.2s; }
-    .nav_link:hover { color: var(--main-color); }
-    .nav_link.active { color: var(--main-color); }
-
-    /* شريط البحث المطور */
-    .search-box-container { width: 100%; max-width: 450px; }
-    .smart-search-form { display: flex; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 25px; padding: 6px 20px; transition: 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
-    .smart-search-form:focus-within { border-color: var(--main-color); box-shadow: 0 0 0 3px rgba(14,165,233,0.1); background: #fff; }
-    .smart-search-form input { border: none; background: transparent; width: 100%; padding: 8px 0; outline: none; font-family: inherit; font-size: 15px; color: #334155; }
-    .smart-search-form button { background: none; border: none; color: var(--main-color); font-size: 18px; cursor: pointer; margin-left: 10px; }
+    .mobile-sidebar-actions { display: none; }
 
     /* --- وضع الموبايل --- */
     @media (max-width: 800px) {
-        .header-wrapper { display: flex; flex-direction: column; padding: 15px 20px !important; gap: 15px; }
-        
-        .header-right { width: 100%; justify-content: flex-start; gap: 15px; margin: 0; }
-        .header-left { width: 100%; justify-content: center; }
-        
-        /* إخفاء أيقونات الكمبيوتر وإظهار قوائم الموبايل */
-        .desktop-only { display: none !important; } 
-        .mobile-only { display: flex !important; } 
-        
-        /* ترتيب العناصر في الموبايل */
-        .nav_toggle { font-size: 26px !important; color: var(--main-color) !important; cursor: pointer; margin: 0 !important; }
-        .logo-container { margin: 0 auto; padding-right: 30px; } /* لضبط التوسيط البصري */
-        .nav_logo { max-height: 40px !important; width: auto !important; }
-        
-        .search-box-container { max-width: 100%; }
-        
-        /* تصميم القائمة الجانبية المنسدلة */
-        .nav_menu { 
-            position: fixed;
-            top: 0; right: -100%; /* يبدأ مخفياً خارج الشاشة */
-            background: #ffffff !important; 
-            width: 320px !important; 
-            height: 100vh;
-            max-width: 85% !important; 
-            padding: 0 !important; 
-            box-shadow: -5px 0 30px rgba(0,0,0,0.15) !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: stretch !important;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1005;
-            overflow-y: auto;
-        }
-        .nav_menu.show_menu { right: 0; }
-        .nav_menu_close { position: absolute !important; top: 20px !important; left: 20px !important; color: #ef4444 !important; font-size: 24px !important; cursor: pointer; display: block !important; }
-        
-        /* أزرار السلة والحساب داخل القائمة الجانبية */
-        .sidebar-actions-panel {
-            background: #f8fafc;
-            padding: 60px 20px 20px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .sidebar-btn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #fff;
-            padding: 14px 15px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            color: #0f172a;
-            font-weight: 700;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .sidebar-btn i { color: var(--main-color); font-size: 20px; width: 25px; text-align: center; }
-        
-        /* روابط الصفحات في الموبايل */
-        .nav-list { padding: 15px 20px !important; margin: 0 !important; flex-direction: column !important; width: 100% !important; box-sizing: border-box !important; align-items: flex-start !important; }
-        .nav-item { width: 100%; margin: 0; }
-        .nav_link { 
-            color: #475569 !important; 
-            font-size: 16px !important; 
-            padding: 14px 10px !important; 
-            border-bottom: 1px solid #f1f5f9 !important; 
-            display: block !important;
-            font-weight: 600 !important;
-        }
-        .nav_link.active { color: var(--main-color) !important; padding-right: 20px !important; background: transparent; }
+      .clean-nav { height: auto; flex-wrap: wrap; padding: 15px 20px !important; gap: 15px; }
+      
+      /* الترتيب الصحيح: الزر يمين، اللوجو يسار، والبحث أسفلهم */
+      .nav_box { order: 1; width: auto; gap: 0 !important; }
+      .nav_logo { order: 2; margin-right: auto; max-height: 40px !important; }
+      .clean-search-box { order: 3; width: 100%; max-width: 100%; flex-basis: 100%; }
+
+      /* إخفاء الأيقونات من الهيدر وإظهار زر القائمة المنسدلة فقط */
+      .nav_btns .login_toggle, .nav_btns .nav_shop { display: none !important; }
+      .nav_toggle { display: block !important; font-size: 26px; color: var(--main-color); cursor: pointer; }
+
+      /* تبييض القائمة الجانبية وتنسيقها لتصبح احترافية */
+      .nav_menu {
+          background: #ffffff !important;
+          box-shadow: -5px 0 25px rgba(0,0,0,0.15) !important;
+          padding: 0 !important;
+          display: flex; flex-direction: column; justify-content: flex-start;
+          transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .nav_menu.show_menu { right: 0 !important; }
+      .nav_menu_close { position: absolute; top: 20px; left: 20px; color: #ef4444 !important; font-size: 24px; cursor: pointer; display: block !important;}
+      
+      /* أزرار السلة والحساب داخل القائمة الجانبية للموبايل */
+      .mobile-sidebar-actions {
+          display: flex; flex-direction: column; gap: 10px;
+          padding: 60px 20px 20px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
+      }
+      .sidebar-btn {
+          display: flex; align-items: center; justify-content: flex-start; gap: 12px;
+          background: #fff; padding: 14px 15px; border-radius: 12px;
+          border: 1px solid #e2e8f0; color: #0f172a; font-weight: 700;
+          text-decoration: none; cursor: pointer; transition: 0.3s;
+      }
+      .sidebar-btn i { color: var(--main-color); font-size: 20px; width: 25px; text-align: center; }
+
+      /* روابط الصفحات داخل الموبايل */
+      .nav-list { margin-top: 10px !important; padding: 0 20px; width: 100%; flex-direction: column !important; align-items: flex-start !important; }
+      .nav-item { width: 100%; margin: 0 !important; }
+      .nav_link { color: #334155 !important; font-size: 16px; border-bottom: 1px solid #f1f5f9; padding: 15px 5px !important; display: block !important; font-weight: 600; }
+      .nav_link.active { color: var(--main-color) !important; background: transparent !important; border: none !important; border-bottom: 1px solid #f1f5f9 !important; padding-right: 15px !important; }
     }
   </style>
 </head>
 
 <body>
-  <header class="master-header" id="header">
-    <div class="header-wrapper">
+  <header class="clean-header" id="header">
+    <nav class="nav clean-nav container">
       
-      <!-- ============================================== -->
-      <!-- اليمين: اللوجو + روابط الصفحات -->
-      <!-- ============================================== -->
-      <div class="header-right">
-          <!-- زر الموبايل (يظهر في الموبايل فقط) -->
-          <div class="nav_toggle mobile-only" id="nav-toggle">
+      <!-- 1. مجموعة اليمين: زر الموبايل + الأيقونات + القائمة -->
+      <div class="nav_box">
+        <div class="nav_btns">
+          <!-- زر القائمة الجانبية للموبايل -->
+          <div class="nav_toggle" id="nav-toggle">
             <i class="fa-solid fa-bars"></i>
           </div>
 
-          <!-- اللوجو -->
-          <a href="/" class="logo-container">
-            <img src="/images/logos/logo.png" alt="MY Store Logo" class="nav_logo" style="max-height: 50px;" />
-          </a>
-
-          <!-- القائمة (بجوار اللوجو للكمبيوتر / جانبية للموبايل) -->
-          <div class="nav_menu" id="nav-menu">
-            <i class="fa-solid fa-xmark nav_menu_close mobile-only" id="menu-close"></i>
-            
-            <!-- قسم الحساب والسلة (يظهر داخل القائمة الجانبية للموبايل فقط) -->
-            <div class="mobile-only sidebar-actions-panel">
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <div style="font-size: 15px; color: #64748b; margin-bottom: 5px; font-weight: bold;">
-                        مرحباً بك، <span style="color: var(--main-color);"><?php echo (isset($_SESSION['user_name']) && !empty(trim($_SESSION['user_name']))) ? htmlspecialchars(explode(' ', trim($_SESSION['user_name']))[0]) : 'ضيف'; ?></span>
-                    </div>
-                    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                        <a href="/admin" class="sidebar-btn"><i class="fa-solid fa-gauge"></i> لوحة الإدارة</a>
-                    <?php else: ?>
-                        <a href="/profile" class="sidebar-btn"><i class="fa-solid fa-user-gear"></i> حسابي</a>
-                        <a href="/my-orders" class="sidebar-btn"><i class="fa-solid fa-box-open"></i> طلباتي</a>
-                    <?php endif; ?>
-                    <a href="/logout" class="sidebar-btn" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ef4444;"></i> تسجيل خروج</a>
-                <?php else: ?>
-                    <a href="/login" class="sidebar-btn"><i class="fa-solid fa-user-lock"></i> تسجيل الدخول</a>
-                <?php endif; ?>
-                
-                <!-- زر السلة المربوط برمجياً بالسلة الأصلية -->
-                <div class="sidebar-btn" onclick="document.getElementById('cart-shop').click();" style="cursor:pointer; justify-content: space-between;">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <i class="fa-solid fa-cart-shopping"></i> <span>سلة المشتريات</span>
-                    </div>
-                    <span class="cart_count" style="background:#ef4444; color:#fff; padding:2px 8px; border-radius:10px; font-size:13px;">0</span>
+          <!-- أيقونات الحساب والسلة (تظهر في الكمبيوتر وتختفي في الموبايل) -->
+          <div class="login_toggle profile-dropdown-container">
+            <?php if (isset($_SESSION['user_id'])): ?>
+              <a href="javascript:void(0);" class="login_link profile-trigger" id="profile-btn">
+                <i class="fa-solid fa-circle-user" style="color: var(--main-color); font-size: 26px;"></i>
+              </a>
+              <div class="profile-menu" id="profile-menu">
+                <div class="profile-header">
+                  مرحباً،
+                  <span><?php echo (isset($_SESSION['user_name']) && !empty(trim($_SESSION['user_name']))) ? htmlspecialchars(explode(' ', trim($_SESSION['user_name']))[0]) : 'ضيف'; ?></span> 👋
                 </div>
-            </div>
-
-            <!-- روابط الصفحات -->
-            <ul class="nav-list">
-              <?php $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
-              <li class="nav-item"><a href="/" class="nav_link <?= ($currentUri === '/') ? 'active' : '' ?>">الرئيسية</a></li>
-              <li class="nav-item"><a href="/products" class="nav_link <?= ($currentUri === '/products' || $currentUri === '/product') ? 'active' : '' ?>">المنتجات</a></li>
-              <li class="nav-item"><a href="/services" class="nav_link <?= ($currentUri === '/services') ? 'active' : '' ?>">الخدمات</a></li>
-              <li class="nav-item"><a href="/about" class="nav_link <?= ($currentUri === '/about') ? 'active' : '' ?>">من نحن</a></li>
-              <li class="nav-item"><a href="/contact" class="nav_link <?= ($currentUri === '/contact') ? 'active' : '' ?>">اتصل بنا</a></li>
-            </ul>
+                <ul class="profile-links">
+                  <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                    <li><a href="/admin"><i class="fa-solid fa-gauge"></i> لوحة الإدارة</a></li>
+                  <?php else: ?>
+                    <li><a href="/profile"><i class="fa-solid fa-user-gear"></i> الملف الشخصي</a></li>
+                    <li><a href="/my-orders"><i class="fa-solid fa-box-open"></i> طلباتي</a></li>
+                    <li><a href="/my-messages"><i class="fa-solid fa-envelope"></i> رسائلي</a></li>
+                  <?php endif; ?>
+                  <li><a href="/logout" class="logout-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل خروج</a></li>
+                </ul>
+              </div>
+            <?php else: ?>
+              <a href="/login" class="login_link"><i class="fa-regular fa-user"></i></a>
+            <?php endif; ?>
           </div>
-      </div>
 
-      <!-- ============================================== -->
-      <!-- اليسار: البحث + أيقونات الكمبيوتر -->
-      <!-- ============================================== -->
-      <div class="header-left">
+          <div class="nav_shop" id="cart-shop">
+            <img src="/images/icons/cart.png" alt="" style="width: 26px;">
+            <span class="cart_count">0</span>
+          </div>
+        </div>
+
+        <!-- القائمة (جانبية للموبايل / أفقية للكمبيوتر) -->
+        <div class="nav_menu" id="nav-menu">
+          <i class="fa-solid fa-xmark nav_menu_close" id="menu-close"></i>
           
-          <!-- شريط البحث -->
-          <div class="search-box-container">
-              <form action="/products" method="GET" class="smart-search-form">
-                  <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-                  <input type="text" name="search" placeholder="ابحث عن منتجك هنا..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
-              </form>
-          </div>
-
-          <!-- أيقونات الكمبيوتر (تختفي في الموبايل) -->
-          <div class="desktop-only nav_btns">
-            <div class="login_toggle profile-dropdown-container">
+          <!-- أزرار الموبايل (الحساب والسلة) تظهر هنا داخل القائمة الجانبية فقط -->
+          <div class="mobile-sidebar-actions">
               <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="javascript:void(0);" class="login_link profile-trigger" id="profile-btn">
-                  <i class="fa-solid fa-circle-user" style="color: var(--main-color); font-size: 28px;"></i>
-                </a>
-                <div class="profile-menu" id="profile-menu">
-                  <div class="profile-header">
-                    مرحباً، <span><?php echo (isset($_SESSION['user_name']) && !empty(trim($_SESSION['user_name']))) ? htmlspecialchars(explode(' ', trim($_SESSION['user_name']))[0]) : 'ضيف'; ?></span> 👋
+                  <div style="font-size: 15px; color: #64748b; margin-bottom: 5px; font-weight: bold;">
+                      مرحباً بك، <span style="color: var(--main-color);"><?php echo htmlspecialchars(explode(' ', trim($_SESSION['user_name']))[0]); ?></span>
                   </div>
-                  <ul class="profile-links">
-                    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                      <li><a href="/admin"><i class="fa-solid fa-gauge"></i> لوحة الإدارة</a></li>
-                    <?php else: ?>
-                      <li><a href="/profile"><i class="fa-solid fa-user-gear"></i> الملف الشخصي</a></li>
-                      <li><a href="/my-orders"><i class="fa-solid fa-box-open"></i> طلباتي</a></li>
-                      <li><a href="/my-messages"><i class="fa-solid fa-envelope"></i> رسائلي</a></li>
-                    <?php endif; ?>
-                    <li><a href="/logout" class="logout-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل خروج</a></li>
-                  </ul>
-                </div>
+                  <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                      <a href="/admin" class="sidebar-btn"><i class="fa-solid fa-gauge"></i> لوحة الإدارة</a>
+                  <?php else: ?>
+                      <a href="/profile" class="sidebar-btn"><i class="fa-solid fa-user-gear"></i> حسابي</a>
+                      <a href="/my-orders" class="sidebar-btn"><i class="fa-solid fa-box-open"></i> طلباتي</a>
+                  <?php endif; ?>
+                  <a href="/logout" class="sidebar-btn" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ef4444;"></i> تسجيل خروج</a>
               <?php else: ?>
-                <a href="/login" class="login_link"><i class="fa-regular fa-user" style="font-size: 24px; color: var(--main-color);"></i></a>
+                  <a href="/login" class="sidebar-btn"><i class="fa-solid fa-user-lock"></i> تسجيل الدخول</a>
               <?php endif; ?>
-            </div>
-
-            <div class="nav_shop" id="cart-shop" style="cursor:pointer; display:flex; align-items:center; position:relative;">
-              <img src="/images/icons/cart.png" alt="" style="width: 28px;">
-              <span class="cart_count" style="position:absolute; top:-8px; right:-8px; background:#ef4444; color:#fff; font-size:12px; width:20px; height:20px; display:flex; justify-content:center; align-items:center; border-radius:50%;">0</span>
-            </div>
+              
+              <div class="sidebar-btn" onclick="document.getElementById('cart-shop').click();" style="justify-content: space-between;">
+                  <div style="display:flex; align-items:center; gap:12px;">
+                      <i class="fa-solid fa-cart-shopping"></i> <span>سلة المشتريات</span>
+                  </div>
+                  <span class="cart_count" style="background:#ef4444; color:#fff; padding:2px 8px; border-radius:10px; font-size:13px;">0</span>
+              </div>
           </div>
-          
+
+          <ul class="nav-list">
+            <?php $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
+            <li class="nav-item"><a href="/" class="nav_link <?= ($currentUri === '/') ? 'active' : '' ?>">الرئيسية</a></li>
+            <li class="nav-item"><a href="/products" class="nav_link <?= ($currentUri === '/products' || $currentUri === '/product') ? 'active' : '' ?>">المنتجات</a></li>
+            <li class="nav-item"><a href="/services" class="nav_link <?= ($currentUri === '/services') ? 'active' : '' ?>">الخدمات</a></li>
+            <li class="nav-item"><a href="/about" class="nav_link <?= ($currentUri === '/about') ? 'active' : '' ?>">من نحن</a></li>
+            <li class="nav-item"><a href="/contact" class="nav_link <?= ($currentUri === '/contact') ? 'active' : '' ?>">اتصل بنا</a></li>
+          </ul>
+        </div>
       </div>
 
-    </div>
+      <!-- 2. المنتصف: شريط البحث المطور -->
+      <form action="/products" method="GET" class="clean-search-box">
+          <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+          <input type="text" name="search" placeholder="ابحث عن منتجك هنا..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
+      </form>
+
+      <!-- 3. اليسار: اللوجو (كما في النسخة المستقرة) -->
+      <a href="/">
+        <img src="/images/logos/logo.png" alt="MY Store Logo" class="nav_logo" />
+      </a>
+
+    </nav>
   </header>
