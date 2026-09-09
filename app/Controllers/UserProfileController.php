@@ -17,12 +17,45 @@ class UserProfileController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userModel = new User();
             $data = [
-                'name' => $_POST['name'] ?? '',
-                'email' => $_POST['email'] ?? ''
+                'name' => trim($_POST['name'] ?? '')
             ];
+            // منعنا استقبال الإيميل من الفورم
             $userModel->updateProfile(Session::get('user_id'), $data);
             Session::set('user_name', $data['name']);
-            header('Location: /profile?success=1');
+            header('Location: /profile?success=profile');
+            exit;
+        }
+    }
+
+    public function updatePassword(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userModel = new User();
+            $userId = Session::get('user_id');
+            $currentPassword = $_POST['current_password'] ?? '';
+            $newPassword = $_POST['new_password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+
+            $user = $userModel->findById($userId);
+
+            // 1. التحقق من صحة كلمة المرور الحالية
+            if (!password_verify($currentPassword, $user['password'])) {
+                header('Location: /profile?error=wrong_current_password');
+                exit;
+            }
+
+            // 2. التحقق من طول الكلمة الجديدة وتطابقها
+            if (strlen($newPassword) < 8) {
+                header('Location: /profile?error=short_password');
+                exit;
+            }
+            if ($newPassword !== $confirmPassword) {
+                header('Location: /profile?error=mismatch_password');
+                exit;
+            }
+
+            // 3. التشفير والحفظ
+            $userModel->updatePassword($userId, password_hash($newPassword, PASSWORD_DEFAULT));
+            header('Location: /profile?success=password');
             exit;
         }
     }

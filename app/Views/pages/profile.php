@@ -24,8 +24,24 @@
 
 <div class="profile-container">
 
+    <!-- قسم رسائل النجاح والخطأ -->
     <?php if(isset($_GET['success'])): ?>
-        <div class="alert alert-success">تم تحديث الملف الشخصي بنجاح.</div>
+        <?php if($_GET['success'] === 'profile'): ?>
+            <div class="alert alert-success"><i class="fa-solid fa-circle-check"></i> تم تحديث البيانات الشخصية بنجاح.</div>
+        <?php elseif($_GET['success'] === 'password'): ?>
+            <div class="alert alert-success"><i class="fa-solid fa-shield-check"></i> تم تغيير كلمة المرور بنجاح.</div>
+        <?php endif; ?>
+    <?php endif; ?>
+
+    <?php if(isset($_GET['error'])): ?>
+        <div class="alert alert-error">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <?php 
+                if($_GET['error'] === 'wrong_current_password') echo 'كلمة المرور الحالية غير صحيحة.';
+                elseif($_GET['error'] === 'short_password') echo 'كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل.';
+                elseif($_GET['error'] === 'mismatch_password') echo 'كلمتا المرور الجديدتان غير متطابقتين.';
+            ?>
+        </div>
     <?php endif; ?>
 
     <div class="profile-header">
@@ -43,6 +59,7 @@
         </div>
     </div>
 
+    <!-- نموذج تعديل البيانات (الإيميل للقراءة فقط) -->
     <div class="profile-box">
         <h3><i class="fa-solid fa-user-gear"></i> تعديل الملف الشخصي</h3>
         <form method="POST" action="/profile/update">
@@ -52,26 +69,31 @@
                 <input type="text" name="name" value="<?php echo htmlspecialchars($user['name'] ?? ''); ?>" required>
             </div>
             <div class="form-group">
-                <label>البريد الإلكتروني</label>
-                <input type="email" name="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required>
+                <label>البريد الإلكتروني (لا يمكن تغييره)</label>
+                <input type="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" readonly style="background-color: #f8fafc; color: #94a3b8; cursor: not-allowed; border-color: #e2e8f0;">
             </div>
-            <button type="submit" class="btn-update">تحديث البيانات</button>
+            <button type="submit" class="btn-update"><i class="fa-solid fa-floppy-disk"></i> تحديث البيانات</button>
         </form>
     </div>
 
+    <!-- نموذج تغيير الباسورد (إضافة الباسورد الحالي) -->
     <div class="profile-box" style="margin-top: 30px;">
         <h3><i class="fa-solid fa-lock"></i> تغيير كلمة المرور</h3>
-        <form method="POST" action="">
+        <form method="POST" action="/profile/update-password">
             <?= CSRF::getField() ?>
             <div class="form-group">
+                <label>كلمة المرور الحالية</label>
+                <input type="password" name="current_password" placeholder="أدخل كلمة المرور الحالية لتأكيد هويتك" required>
+            </div>
+            <div class="form-group">
                 <label>كلمة المرور الجديدة</label>
-                <input type="password" name="new_password" placeholder="أدخل كلمة المرور الجديدة" required>
+                <input type="password" name="new_password" placeholder="أدخل كلمة المرور الجديدة (8 أحرف كحد أدنى)" required minlength="8">
             </div>
             <div class="form-group">
                 <label>تأكيد كلمة المرور الجديدة</label>
-                <input type="password" name="confirm_password" placeholder="أعد إدخال كلمة المرور" required>
+                <input type="password" name="confirm_password" placeholder="أعد إدخال كلمة المرور الجديدة" required minlength="8">
             </div>
-            <button type="submit" name="update_password" class="btn-update">تحديث كلمة المرور</button>
+            <button type="submit" name="update_password" class="btn-update" style="background-color: #0f172a;"><i class="fa-solid fa-key"></i> تحديث كلمة المرور</button>
         </form>
     </div>
 

@@ -48,12 +48,13 @@ class User {
     }
 
     public function updateProfile(int $id, array $data): bool {
-        $stmt = $this->db->prepare("UPDATE elogin SET name = ?, email = ? WHERE id = ?");
-        return $stmt->execute([$data['name'], $data['email'], $id]);
+        // قمنا بإزالة تحديث الإيميل من هنا نهائياً
+        $stmt = $this->db->prepare("UPDATE elogin SET name = ? WHERE id = ?");
+        return $stmt->execute([$data['name'], $id]);
     }
 
-    public function updateRole(int $id, string $role): bool {
-        $stmt = $this->db->prepare("UPDATE elogin SET role = ? WHERE id = ?");
-        return $stmt->execute([$role, $id]);
+    public function updatePassword(int $id, string $hashedPassword): bool {
+        $stmt = $this->db->prepare("UPDATE elogin SET password = ? WHERE id = ?");
+        return $stmt->execute([$hashedPassword, $id]);
     }
 }

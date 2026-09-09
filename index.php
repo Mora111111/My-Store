@@ -57,6 +57,7 @@ $router->add('GET', '/checkout', 'CheckoutController@index');
 $router->add('POST', '/checkout/process', 'CheckoutController@process');
 $router->add('GET', '/profile', 'UserProfileController@index');
 $router->add('POST', '/profile/update', 'UserProfileController@update');
+$router->add('POST', '/profile/update-password', 'UserProfileController@updatePassword');
 $router->add('GET', '/my-orders', 'UserProfileController@orders');
 $router->add('POST', '/my-orders/cancel', 'UserProfileController@cancelOrder');
 $router->add('POST', '/my-orders/hide', 'UserProfileController@hideOrder');
