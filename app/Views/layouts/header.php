@@ -24,7 +24,7 @@ if (!empty($sysSettings['maintenance_mode'])) {
   <title>MY Store - متجر على الإنترنت</title>
   <meta name="csrf-token" content="<?= CSRF::generate() ?>">
 
-  <!-- درع الحماية وتنسيق الهيدر النظيف (يمنع تعارض الـ CSS والشبورة) -->
+  <!-- درع الحماية وتنسيق الهيدر النظيف (نفس الترتيب الأصلي) -->
   <style>
     .clean-header {
       background-color: rgba(255, 255, 255, 0.98);
@@ -34,9 +34,12 @@ if (!empty($sysSettings['maintenance_mode'])) {
     }
     .clean-nav {
       height: 80px; display: flex; justify-content: space-between; align-items: center; gap: 20px;
+      padding: 0 30px; max-width: 1400px; margin: 0 auto; box-sizing: border-box;
     }
+    
+    /* شريط البحث في المنتصف */
     .clean-search-box {
-      flex: 1; max-width: 500px; display: flex; align-items: center;
+      flex: 1; max-width: 550px; display: flex; align-items: center; margin: 0 2vw;
       background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 25px; padding: 5px 20px; transition: 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
     }
     .clean-search-box:focus-within { border-color: var(--main-color); box-shadow: 0 0 0 3px rgba(14,165,233,0.1); background: #fff; }
@@ -49,22 +52,26 @@ if (!empty($sysSettings['maintenance_mode'])) {
     @media (max-width: 800px) {
       .clean-nav { height: auto; flex-wrap: wrap; padding: 15px 20px !important; gap: 15px; }
       
-      /* الترتيب الصحيح: الزر يمين، اللوجو يسار، والبحث أسفلهم */
+      /* الترتيب الصحيح للموبايل: الزر يمين، اللوجو يسار، والبحث أسفلهم */
       .nav_box { order: 1; width: auto; gap: 0 !important; }
-      .nav_logo { order: 2; margin-right: auto; max-height: 40px !important; }
-      .clean-search-box { order: 3; width: 100%; max-width: 100%; flex-basis: 100%; }
+      .nav_logo-link { order: 2; margin-right: auto; }
+      .nav_logo { max-height: 40px !important; width: auto !important; }
+      .clean-search-box { order: 3; width: 100%; max-width: 100%; flex-basis: 100%; margin: 0; }
 
       /* إخفاء الأيقونات من الهيدر وإظهار زر القائمة المنسدلة فقط */
       .nav_btns .login_toggle, .nav_btns .nav_shop { display: none !important; }
-      .nav_toggle { display: block !important; font-size: 26px; color: var(--main-color); cursor: pointer; }
+      .nav_toggle { display: block !important; font-size: 26px; color: var(--main-color); cursor: pointer; margin-left: 10px; }
 
-      /* تبييض القائمة الجانبية وتنسيقها لتصبح احترافية */
+      /* القائمة الجانبية الاحترافية */
       .nav_menu {
+          position: fixed; top: 0; right: -100%;
           background: #ffffff !important;
           box-shadow: -5px 0 25px rgba(0,0,0,0.15) !important;
+          width: 320px !important; max-width: 85% !important; height: 100vh;
           padding: 0 !important;
           display: flex; flex-direction: column; justify-content: flex-start;
           transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 1005; overflow-y: auto;
       }
       .nav_menu.show_menu { right: 0 !important; }
       .nav_menu_close { position: absolute; top: 20px; left: 20px; color: #ef4444 !important; font-size: 24px; cursor: pointer; display: block !important;}
@@ -93,9 +100,9 @@ if (!empty($sysSettings['maintenance_mode'])) {
 
 <body>
   <header class="clean-header" id="header">
-    <nav class="nav clean-nav container">
+    <nav class="nav clean-nav">
       
-      <!-- 1. مجموعة اليمين: زر الموبايل + الأيقونات + القائمة -->
+      <!-- 1. أقصى اليمين: القوائم والأيقونات -->
       <div class="nav_box">
         <div class="nav_btns">
           <!-- زر القائمة الجانبية للموبايل -->
@@ -126,7 +133,7 @@ if (!empty($sysSettings['maintenance_mode'])) {
                 </ul>
               </div>
             <?php else: ?>
-              <a href="/login" class="login_link"><i class="fa-regular fa-user"></i></a>
+              <a href="/login" class="login_link"><i class="fa-regular fa-user" style="color:var(--main-color); font-size:24px;"></i></a>
             <?php endif; ?>
           </div>
 
@@ -136,7 +143,7 @@ if (!empty($sysSettings['maintenance_mode'])) {
           </div>
         </div>
 
-        <!-- القائمة (جانبية للموبايل / أفقية للكمبيوتر) -->
+        <!-- القائمة العلوية -->
         <div class="nav_menu" id="nav-menu">
           <i class="fa-solid fa-xmark nav_menu_close" id="menu-close"></i>
           
@@ -144,7 +151,7 @@ if (!empty($sysSettings['maintenance_mode'])) {
           <div class="mobile-sidebar-actions">
               <?php if (isset($_SESSION['user_id'])): ?>
                   <div style="font-size: 15px; color: #64748b; margin-bottom: 5px; font-weight: bold;">
-                      مرحباً بك، <span style="color: var(--main-color);"><?php echo htmlspecialchars(explode(' ', trim($_SESSION['user_name']))[0]); ?></span>
+                      مرحباً بك، <span style="color: var(--main-color);"><?php echo htmlspecialchars(explode(' ', trim($_SESSION['user_name']))[0] ?? 'ضيف'); ?></span>
                   </div>
                   <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
                       <a href="/admin" class="sidebar-btn"><i class="fa-solid fa-gauge"></i> لوحة الإدارة</a>
@@ -182,9 +189,9 @@ if (!empty($sysSettings['maintenance_mode'])) {
           <input type="text" name="search" placeholder="ابحث عن منتجك هنا..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
       </form>
 
-      <!-- 3. اليسار: اللوجو (كما في النسخة المستقرة) -->
-      <a href="/">
-        <img src="/images/logos/logo.png" alt="MY Store Logo" class="nav_logo" />
+      <!-- 3. أقصى اليسار: اللوجو -->
+      <a href="/" class="nav_logo-link">
+        <img src="/images/logos/logo.png" alt="MY Store Logo" class="nav_logo" style="max-height: 50px;" />
       </a>
 
     </nav>
