@@ -91,6 +91,15 @@ class Product {
     }
 
     public function delete(int $id): bool {
+        // 1. تنظيف التعليقات المرتبطة بالمنتج أولاً
+        $stmtComments = $this->db->prepare("DELETE FROM product_comments WHERE product_id = ?");
+        $stmtComments->execute([$id]);
+
+        // 2. تنظيف المفضلة الخاصة بالعملاء المرتبطة بهذا المنتج
+        $stmtFavorites = $this->db->prepare("DELETE FROM favorites WHERE product_id = ?");
+        $stmtFavorites->execute([$id]);
+
+        // 3. أخيراً، حذف المنتج نفسه بأمان
         $stmt = $this->db->prepare("DELETE FROM products WHERE id = ?");
         return $stmt->execute([$id]);
     }

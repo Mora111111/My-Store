@@ -45,7 +45,7 @@ class CheckoutController {
                     $dbProduct = $productModel->findById((int)$cartItem['id']);
                     if ($dbProduct) {
                         $basePrice = floatval($dbProduct['price']);
-                        $qty = intval($cartItem['number'] ?? $cartItem['quantity'] ?? 1);
+                        $qty = max(1, intval($cartItem['number'] ?? $cartItem['quantity'] ?? 1));
                         $finalPrice = $basePrice;
                         $promoAppliedToItem = false;
 

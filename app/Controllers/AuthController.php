@@ -34,6 +34,9 @@ public function login(): void
                 if (password_verify($password, $user['password'])) {
                     $db->prepare("UPDATE elogin SET failed_attempts = 0, lockout_until = NULL WHERE id = ?")->execute([$user['id']]);
 
+                    // تأمين الجلسة بتوليد معرف جديد (Session Fixation Prevention)
+                    session_regenerate_id(true);
+
                     Session::set('user_id', $user['id']);
                     Session::set('user_name', $user['name']);
                     Session::set('user_role', $user['role']);

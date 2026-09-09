@@ -90,6 +90,12 @@ $footerSettings =$footerSettingModel->getSettings();
           <i class="fa-solid fa-location-dot footer-icon"></i>
           <span><?php echo !empty($footerSettings['address']) ? htmlspecialchars($footerSettings['address']) : 'المحافظات - مصر'; ?></span>
         </li>
+        <?php if(!empty($footerSettings['facebook_link'])): ?>
+        <li class="footer_li">
+          <i class="fa-brands fa-facebook footer-icon" style="color: #1877F2;"></i>
+          <a href="<?php echo htmlspecialchars($footerSettings['facebook_link']); ?>" target="_blank" style="color: var(--color-tow); text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='var(--main-color)'" onmouseout="this.style.color='var(--color-tow)'">تابعنا على فيسبوك</a>
+        </li>
+        <?php endif; ?>
       </ul>
     </div>
   </div>
