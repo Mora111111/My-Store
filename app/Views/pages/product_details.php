@@ -78,33 +78,38 @@
     <div class="card" style="max-width: 800px; margin: 0 auto; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 10px;">
         <h2 style="color: #2c3e50; margin-top:0; border-bottom: 2px solid #eee; padding-bottom: 15px;">آراء وتقييمات العملاء <i class="fa-solid fa-comments" style="color: var(--main-color);"></i></h2>
 
-        <div class="comments-list" style="margin-top: 25px; margin-bottom: 40px;">
+        <div class="comments-list grid_content" style="margin-top: 25px; margin-bottom: 40px;">
             <?php if (!empty($comments)): ?>
                 <?php foreach ($comments as $c): ?>
-                    <div style='background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-right: 4px solid var(--main-color);'>
-                        <h4 style='margin: 0 0 5px 0; color: #333; display: flex; justify-content: space-between; align-items: center;'>
-                            <span><i class='fa-solid fa-circle-user' style='color:#bdc3c7;'></i> <?php echo htmlspecialchars($c['customer_name']); ?></span>
-                            <span style='font-size:12px; color:#999; font-weight:normal;'><i class='fa-regular fa-clock'></i> <?php echo date('Y-m-d', strtotime($c['created_at'])); ?></span>
-                        </h4>
-                        <div style='margin-bottom: 10px; color:#f1c40f; font-size:13px;'>
+                    <div class="testimonial_box" style="padding: 30px 20px; position: relative;">
+                        <i class="fa-solid fa-quote-left quote_icon"></i>
+                        <p style="min-height: 50px; font-size: 14px; line-height: 1.8; color: #555;"><?php echo nl2br(htmlspecialchars($c['comment_text'])); ?></p>
+                        <div class="rating" style="margin-bottom: 15px; font-size: 14px;">
                             <?php 
                             $u_rating = isset($c['user_rating']) ? (int)$c['user_rating'] : 5;
                             for($i=1; $i<=5; $i++) echo $i <= $u_rating ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
                             ?>
                         </div>
-                        <p style='margin: 0; color: #555; line-height: 1.6; font-size: 15px;'><?php echo nl2br(htmlspecialchars($c['comment_text'])); ?></p>
+                        
+                        <div style="width: 50px; height: 50px; background: var(--main-color); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; margin: 0 auto 10px;">
+                            <?php echo mb_substr(htmlspecialchars($c['customer_name']), 0, 1, 'UTF-8'); ?>
+                        </div>
+                        
+                        <h3 style="margin-bottom: 5px; font-size: 16px;"><?php echo htmlspecialchars($c['customer_name']); ?></h3>
+                        <span style="font-size:12px; color:#94a3b8;"><i class="fa-regular fa-clock"></i> <?php echo date('Y-m-d', strtotime($c['created_at'])); ?></span>
+                        
                         <?php if (!empty($c['admin_reply'])): ?>
-                            <div style='margin-top: 15px; padding: 15px; background: #e8f4f8; border-radius: 5px; border-right: 4px solid #3498db;'>
-                                <strong style='color: #2980b9; display:block; margin-bottom: 5px;'><i class='fa-solid fa-headset'></i> رد إدارة المتجر:</strong>
-                                <p style='margin: 0; color: #444; line-height: 1.6; font-size: 14.5px;'><?php echo nl2br(htmlspecialchars($c['admin_reply'])); ?></p>
+                            <div style="margin-top: 20px; padding: 12px; background: #f8fafc; border-radius: 8px; border-top: 3px solid #38bdf8; text-align: right;">
+                                <strong style="color: #0ea5e9; display:block; margin-bottom: 5px; font-size: 13px;"><i class="fa-solid fa-headset"></i> رد المتجر:</strong>
+                                <p style="margin: 0; color: #475569; line-height: 1.6; font-size: 13px;"><?php echo nl2br(htmlspecialchars($c['admin_reply'])); ?></p>
                             </div>
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div style='text-align:center; padding: 30px; background: #f9f9f9; border-radius: 8px; border: 1px dashed #ddd;'>
-                    <i class='fa-regular fa-comment-dots' style='font-size: 40px; color: #ccc; margin-bottom: 10px;'></i>
-                    <p style='color:#777; margin: 0; font-size: 16px;'>لا توجد تعليقات حتى الآن. كن أول من يشاركنا رأيه وتجربته!</p>
+                <div style="grid-column: 1 / -1; text-align:center; padding: 40px; background: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <i class="fa-regular fa-comment-dots" style="font-size: 40px; color: #cbd5e1; margin-bottom: 15px;"></i>
+                    <p style="color:#64748b; margin: 0; font-size: 16px; font-weight: bold;">لا توجد تعليقات حتى الآن. كن أول من يشاركنا رأيه!</p>
                 </div>
             <?php endif; ?>
         </div>
