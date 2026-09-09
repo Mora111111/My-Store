@@ -1617,42 +1617,110 @@ input[type="checkbox"] {
   }
 }
 
+/* تصميم قائمة الملف الشخصي الجديدة */
 .profile-menu {
   display: none;
   position: absolute;
-  top: 130%;
-  right: 0;
-  background: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  width: 200px;
+  top: 150%;
+  right: -15px;
+  background: #ffffff;
+  padding: 0;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  width: 280px;
   z-index: 1000;
-  border: 1px solid #eee;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  animation: fadeInDropdown 0.3s ease forwards;
+}
+
+/* سهم علوي صغير يربط القائمة بالأيقونة */
+.profile-menu::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 25px;
+  width: 12px;
+  height: 12px;
+  background: #f8fafc;
+  transform: rotate(45deg);
+  border-left: 1px solid #e2e8f0;
+  border-top: 1px solid #e2e8f0;
+}
+
+@keyframes fadeInDropdown {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .profile-header {
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-  font-weight: bold;
-  color: #333;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  padding: 20px 25px;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 800;
+  color: #0f172a;
   text-align: right;
+  font-size: 16px;
+}
+
+.profile-header span {
+  color: var(--main-color);
+  font-size: 18px;
+}
+
+.profile-links {
+  padding: 10px 0;
+  margin: 0;
 }
 
 .profile-links li {
-  margin-bottom: 15px;
+  margin-bottom: 0;
 }
 
 .profile-links a {
-  color: #555;
+  color: #475569;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
+  padding: 14px 25px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.profile-links a i {
+  font-size: 18px;
+  color: #94a3b8;
+  transition: 0.2s;
+  width: 20px;
+  text-align: center;
 }
 
 .profile-links a:hover {
+  background: #f8fafc;
   color: var(--main-color);
+  padding-right: 32px; /* تأثير حركة ناعم لليسار عند التمرير */
+}
+
+.profile-links a:hover i {
+  color: var(--main-color);
+}
+
+/* تصميم خاص لزر تسجيل الخروج */
+.profile-links li:last-child a {
+  border-top: 1px solid #f1f5f9;
+  margin-top: 5px;
+  color: #ef4444;
+}
+
+.profile-links li:last-child a i {
+  color: #ef4444;
+}
+
+.profile-links li:last-child a:hover {
+  background: #fef2f2;
+  color: #dc2626;
+  padding-right: 32px;
 }
 
 
@@ -2110,10 +2178,15 @@ input[type="checkbox"] {
   }
   
   /* منع خروج قائمة الحساب عن الشاشة */
+  /* ضبط حجم القائمة الجديدة على الهواتف */
   .profile-menu { 
     right: auto; 
-    left: 0; 
-    width: 180px; 
+    left: -15px; 
+    width: 250px; 
+  }
+  .profile-menu::before {
+    right: auto;
+    left: 25px;
   }
   
   /* تحسين عرض شبكة المنتجات على الموبايل لتظهر كروت مناسبة */
