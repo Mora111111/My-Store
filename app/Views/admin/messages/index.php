@@ -4,9 +4,8 @@
       <thead>
         <tr>
           <th>المرسل</th>
-          <th>التواصل</th>
+          <th>بيانات التواصل</th>
           <th>الرسالة</th>
-          <th>الرد</th>
           <th>التاريخ</th>
           <th>الإجراءات</th>
         </tr>
@@ -15,37 +14,39 @@
       <?php if (!empty($contact_messages)): ?>
         <?php foreach ($contact_messages as $row):
           $full_name = htmlspecialchars($row['first_name'] . ' ' . $row['last_name']);
-          $reply_text = $row['reply'] ?? '';
-          $status_badge = !empty($reply_text) ? '<span class="badge-success"><i class="fa-solid fa-check"></i> تم الرد</span>' : '<span class="badge-warning"><i class="fa-solid fa-clock"></i> معلق</span>';
         ?>
         <tr>
           <td><div style="font-weight:700; color:#1e293b;"><?= $full_name ?></div></td>
           <td>
-            <div style="font-size:13px; color:#64748b;">
-                <i class="fa-solid fa-envelope" style="width:15px;"></i> <?= htmlspecialchars($row['email']) ?><br>
-                <i class="fa-solid fa-phone" style="width:15px;"></i> <?= htmlspecialchars($row['phone'] ?: '---') ?>
+            <div style="font-size:13px; color:#64748b; display: flex; flex-direction: column; gap: 5px;">
+                <a href="mailto:<?= htmlspecialchars($row['email']) ?>" style="color:#0ea5e9; text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
+                    <i class="fa-solid fa-envelope"></i> <?= htmlspecialchars($row['email']) ?>
+                </a>
+                <?php if(!empty($row['phone'])): ?>
+                <a href="tel:<?= htmlspecialchars($row['phone']) ?>" style="color:#10b981; text-decoration:none; display:inline-flex; align-items:center; gap:5px; direction:ltr; justify-content:flex-end;">
+                    <i class="fa-solid fa-phone"></i> <?= htmlspecialchars($row['phone']) ?>
+                </a>
+                <?php else: ?>
+                <span><i class="fa-solid fa-phone" style="width:15px;"></i> ---</span>
+                <?php endif; ?>
             </div>
           </td>
           <td><div class="message-content" title="<?= htmlspecialchars($row['message']) ?>"><?= nl2br(htmlspecialchars($row['message'])) ?></div></td>
-          <td><?= $status_badge ?></td>
           <td><span class="date-badge"><?= date('Y-m-d', strtotime($row['created_at'])) ?></span></td>
           <td>
             <div class="actions-flex">
-              <button type="button" class="btn-reply" onclick="openReplyModal(<?= $row['id'] ?>, 'contact', <?= htmlspecialchars(json_encode($reply_text)) ?>, <?= htmlspecialchars(json_encode($row['message'])) ?>)">
-                <i class="fa-solid fa-reply"></i> <?= !empty($reply_text) ? 'تعديل' : 'رد' ?>
-              </button>
               <form method="POST" action="/admin/messages/delete" style="display:inline;" onsubmit="return confirm('حذف هذه الرسالة؟');">
                 <?= CSRF::getField() ?>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
                 <input type="hidden" name="type" value="contact">
-                <button type="submit" class="btn-delete"><i class="fa-solid fa-trash"></i></button>
+                <button type="submit" class="btn-delete"><i class="fa-solid fa-trash"></i> حذف</button>
               </form>
             </div>
           </td>
         </tr>
         <?php endforeach; ?>
       <?php else: ?>
-        <tr><td colspan="6" style="text-align:center; padding:40px; color:#94a3b8;">لا توجد رسائل زوار.</td></tr>
+        <tr><td colspan="5" style="text-align:center; padding:40px; color:#94a3b8;">لا توجد رسائل زوار.</td></tr>
       <?php endif; ?>
       </tbody>
     </table>
