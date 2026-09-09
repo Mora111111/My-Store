@@ -112,7 +112,7 @@
                     <button class="heart-action-btn" data-product-id="<?= $row['id'] ?>" style="position:absolute; top:10px; right:10px; background:transparent; border:none; cursor:pointer; font-size:1.5rem; color:#ff4757;">
                         <i class="fa-solid fa-heart"></i>
                     </button>
-                    <img src="/<?= ltrim($row['image_url'] ?? '', '/') ?>" alt="<?= htmlspecialchars($row['title']) ?>" style="width: 100%; max-height: 200px; object-fit: contain;">
+                    <img src="<?= Product::getImageUrl($row['image_url']) ?>" alt="<?= htmlspecialchars($row['title']) ?>" style="width: 100%; max-height: 200px; object-fit: contain;">
                     <div class="card_title_wrapper" style="margin: 10px 0;">
                       <h3 style="font-size: 1.1rem; margin: 0; position:relative; z-index:2;"><?= htmlspecialchars($row['title']) ?></h3>
                     </div>

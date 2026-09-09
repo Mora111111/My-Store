@@ -22,7 +22,13 @@ class CheckoutController {
             $couponModel = new Coupon();
             $settingModel = new Setting();
             
-            $activeCoupons = $couponModel->getActiveStrikethroughCoupons();
+            $activeCouponsRaw = $couponModel->getActiveStrikethroughCoupons();
+            // ترتيب الخصومات لاختيار الأفضل للعميل لضمان تطابق السعر مع الواجهة
+            usort($activeCouponsRaw, function($a, $b) {
+                if ($a['discount_type'] === $b['discount_type']) return $b['discount_value'] <=> $a['discount_value'];
+                return $a['discount_type'] === 'percentage' ? -1 : 1;
+            });
+            $activeCoupons = $activeCouponsRaw;
             $appliedCoupon = null;
             if (!empty($_POST['applied_promo_code'])) {
                 $db = Database::getInstance()->getConnection();
