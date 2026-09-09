@@ -2245,3 +2245,208 @@ input[type="checkbox"] {
 @keyframes rotate-border {
   100% { transform: rotate(360deg); }
 }
+/* =========================================
+   تنسيقات الهيدر الجديد (كمبيوتر)
+   ========================================= */
+.header {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  padding: 0;
+}
+.header-wrapper {
+  height: 85px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+}
+.logo-link { display: flex; align-items: center; }
+.nav_logo { width: 130px; }
+
+/* شريط البحث */
+.header-search-container {
+  flex: 1;
+  max-width: 500px;
+}
+.search-form {
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 30px;
+  padding: 6px 20px;
+  width: 100%;
+  transition: all 0.3s;
+}
+.search-form:focus-within {
+  border-color: var(--main-color);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(26, 143, 184, 0.1);
+}
+.search-btn { background: none; border: none; cursor: pointer; color: var(--main-color); font-size: 18px; margin-left: 10px; }
+.search-input { border: none; background: transparent; outline: none; width: 100%; font-family: inherit; font-size: 15px; padding: 8px 0; color: #334155; }
+
+/* القائمة والأيقونات للكمبيوتر */
+.nav_menu {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.nav_actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.action-text { display: none; } /* إخفاء النصوص بجوار الأيقونات في الكمبيوتر */
+.menu-mobile-header { display: none; }
+
+.login_link i, .nav_shop i {
+  font-size: 24px;
+  color: var(--main-color);
+  cursor: pointer;
+  transition: 0.3s;
+}
+.login_link i:hover, .nav_shop i:hover { transform: scale(1.1); }
+
+/* ضبط فقاعة السلة */
+.nav_shop { position: relative; display: flex; align-items: center; cursor: pointer; }
+.nav_shop .cart_count {
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #ef4444;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #fff;
+}
+.nav_toggle { display: none; } /* مخفي في الكمبيوتر */
+
+
+/* =========================================
+   تنسيقات الهيدر الجديد (موبايل)
+   ========================================= */
+@media only screen and (max-width: 800px) {
+  .header-wrapper {
+     height: auto;
+     flex-wrap: wrap;
+     padding: 15px 0;
+     gap: 15px;
+  }
+  
+  /* ترتيب العناصر: زر القائمة يمين، اللوجو يسار، البحث بالأسفل */
+  .nav_toggle {
+     display: block;
+     font-size: 28px;
+     color: var(--main-color);
+     cursor: pointer;
+     order: 1;
+  }
+  .logo-link { order: 2; margin-right: auto; }
+  .nav_logo { width: 110px; }
+  
+  .header-search-container {
+     order: 3;
+     width: 100%;
+     max-width: 100%;
+  }
+
+  /* تصميم القائمة الجانبية الفاخرة للموبايل */
+  .nav_menu {
+     position: fixed;
+     right: -100%;
+     top: 0;
+     width: 320px;
+     max-width: 85%;
+     height: 100vh;
+     background-color: #ffffff;
+     flex-direction: column;
+     align-items: flex-start;
+     gap: 0;
+     transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+     z-index: 1005;
+     box-shadow: -10px 0 30px rgba(0,0,0,0.15);
+     overflow-y: auto;
+  }
+  .nav_menu.show_menu { right: 0; }
+  
+  .menu-mobile-header {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     width: 100%;
+     padding: 20px 25px;
+     background: #f8fafc;
+     border-bottom: 1px solid #e2e8f0;
+     box-sizing: border-box;
+  }
+  .nav_menu_close {
+     font-size: 26px;
+     color: #64748b;
+     cursor: pointer;
+     display: block;
+     position: static;
+  }
+  
+  /* أزرار الحساب والسلة داخل القائمة الجانبية */
+  .nav_actions {
+     display: flex;
+     flex-direction: column;
+     width: 100%;
+     padding: 25px;
+     border-bottom: 1px solid #e2e8f0;
+     gap: 15px;
+     box-sizing: border-box;
+  }
+  .action-text { display: inline-block; font-size: 16px; font-weight: 700; color: #1e293b; margin-right: 15px; }
+  .login_toggle, .nav_shop { width: 100%; display: flex; align-items: center; padding: 15px 20px; background: #f8fafc; border-radius: 12px; transition: 0.3s; box-sizing: border-box; }
+  .login_toggle:hover, .nav_shop:hover { background: #e0f2fe; }
+  .nav_shop .cart_count { position: static; margin-right: auto; }
+  
+  /* روابط القائمة للموبايل */
+  .nav-list {
+     flex-direction: column;
+     width: 100%;
+     padding: 15px 0;
+  }
+  .nav-item { margin: 0; width: 100%; }
+  .nav_link {
+     display: block;
+     padding: 16px 30px;
+     color: #475569;
+     font-size: 16px;
+     font-weight: 700;
+     border-bottom: 1px solid #f1f5f9;
+  }
+  .nav_link.active {
+     background: transparent;
+     border-bottom: 1px solid #f1f5f9;
+     color: var(--main-color);
+     padding-right: 40px;
+  }
+  
+  /* تعديل القائمة المنسدلة للملف الشخصي لتفتح داخل القائمة الجانبية بنعومة */
+  .profile-menu {
+     position: static;
+     width: 100%;
+     box-shadow: none;
+     border: none;
+     background: transparent;
+     padding: 10px 20px 0;
+  }
+  .profile-menu::before { display: none; }
+  .profile-header { display: none; }
+  .profile-links a { padding: 12px 15px; font-size: 15px; border-radius: 8px; }
+}

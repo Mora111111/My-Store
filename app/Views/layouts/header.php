@@ -22,23 +22,46 @@ if (!empty($sysSettings['maintenance_mode'])) {
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="/images/icons/shopping-cart_head.png">
   <title>MY Store - متجر على الإنترنت</title>
-<meta name="csrf-token" content="<?= CSRF::generate() ?>">
+  <meta name="csrf-token" content="<?= CSRF::generate() ?>">
 </head>
 
 <body>
-  <header class="header" id="header" style="flex-direction: column; align-items: stretch; padding: 0;">
-    <div style="width: 100%; padding: 20px 40px; box-sizing: border-box;">
-    <nav class="nav container">
-      <div class="nav_box">
-        <div class="nav_btns">
-          <div class="nav_toggle" id="nav-toggle">
-            <i class="fa-solid fa-bars"></i>
-          </div>
+  <header class="header" id="header">
+    <div class="container header-wrapper">
+      
+      <!-- زر القائمة الجانبية للموبايل -->
+      <div class="nav_toggle" id="nav-toggle">
+        <i class="fa-solid fa-bars"></i>
+      </div>
 
+      <!-- اللوجو -->
+      <a href="/" class="logo-link">
+        <img src="/images/logos/logo.png" alt="MY Store Logo" class="nav_logo" />
+      </a>
+
+      <!-- شريط البحث -->
+      <div class="header-search-container">
+        <form action="/products" method="GET" class="search-form">
+            <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <input type="text" name="search" placeholder="ابحث عن منتجك هنا..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>" class="search-input">
+        </form>
+      </div>
+
+      <!-- القائمة (أفقية للكمبيوتر - جانبية للموبايل) -->
+      <div class="nav_menu" id="nav-menu">
+        
+        <!-- رأس القائمة الجانبية (يظهر للموبايل فقط) -->
+        <div class="menu-mobile-header">
+           <img src="/images/logos/logo.png" alt="MY Store" class="mobile-menu-logo" style="width: 90px;" />
+           <i class="fa-solid fa-xmark nav_menu_close" id="menu-close"></i>
+        </div>
+
+        <!-- أيقونات الحساب والسلة (مدمجة داخل القائمة) -->
+        <div class="nav_actions">
           <div class="login_toggle profile-dropdown-container">
             <?php if (isset($_SESSION['user_id'])): ?>
               <a href="javascript:void(0);" class="login_link profile-trigger" id="profile-btn">
-                <i class="fa-solid fa-circle-user" style="color: var(--main-color); font-size: 26px;"></i>
+                <i class="fa-solid fa-circle-user"></i> <span class="action-text">حسابي</span>
               </a>
               <div class="profile-menu" id="profile-menu">
                 <div class="profile-header">
@@ -60,35 +83,26 @@ if (!empty($sysSettings['maintenance_mode'])) {
                 </ul>
               </div>
             <?php else: ?>
-              <a href="/login" class="login_link"><i class="fa-regular fa-user"></i></a>
+              <a href="/login" class="login_link"><i class="fa-solid fa-user-lock"></i> <span class="action-text">تسجيل الدخول</span></a>
             <?php endif; ?>
           </div>
 
           <div class="nav_shop" id="cart-shop">
-            <img src="/images/icons/cart.png" alt="">
+            <i class="fa-solid fa-cart-shopping"></i> <span class="action-text">سلة المشتريات</span>
             <span class="cart_count">0</span>
           </div>
         </div>
 
-        <div class="nav_menu" id="nav-menu">
-          <i class="fa-solid fa-xmark nav_menu_close" id="menu-close"></i>
-          <ul class="nav-list">
-            <?php $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
-            <li class="nav-item"><a href="/" class="nav_link <?= ($currentUri === '/') ? 'active' : '' ?>">الرئيسية</a></li>
-            <li class="nav-item"><a href="/products" class="nav_link <?= ($currentUri === '/products' || $currentUri === '/product') ? 'active' : '' ?>">المنتجات</a></li>
-            <li class="nav-item"><a href="/services" class="nav_link <?= ($currentUri === '/services') ? 'active' : '' ?>">الخدمات</a></li>
-            <li class="nav-item"><a href="/about" class="nav_link <?= ($currentUri === '/about') ? 'active' : '' ?>">من نحن</a></li>
-            <li class="nav-item"><a href="/contact" class="nav_link <?= ($currentUri === '/contact') ? 'active' : '' ?>">اتصل بنا</a></li>
-          </ul>
-        </div>
+        <!-- روابط الصفحات الرئيسية -->
+        <ul class="nav-list">
+          <?php $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
+          <li class="nav-item"><a href="/" class="nav_link <?= ($currentUri === '/') ? 'active' : '' ?>">الرئيسية</a></li>
+          <li class="nav-item"><a href="/products" class="nav_link <?= ($currentUri === '/products' || $currentUri === '/product') ? 'active' : '' ?>">المنتجات</a></li>
+          <li class="nav-item"><a href="/services" class="nav_link <?= ($currentUri === '/services') ? 'active' : '' ?>">الخدمات</a></li>
+          <li class="nav-item"><a href="/about" class="nav_link <?= ($currentUri === '/about') ? 'active' : '' ?>">من نحن</a></li>
+          <li class="nav-item"><a href="/contact" class="nav_link <?= ($currentUri === '/contact') ? 'active' : '' ?>">اتصل بنا</a></li>
+        </ul>
       </div>
-      <div class="header-search-container" style="flex: 1; margin: 0 3vw; max-width: 600px; display: flex; align-items: center;">
-          <form action="/products" method="GET" style="display: flex; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 25px; padding: 5px 20px; width: 100%; transition: all 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);" onfocusin="this.style.borderColor='var(--main-color)'; this.style.boxShadow='0 0 0 3px rgba(14, 165, 233, 0.1)';" onfocusout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.02)';">
-              <button type="submit" style="background: none; border: none; cursor: pointer; color: var(--main-color); font-size: 18px; margin-left: 15px;"><i class="fa-solid fa-magnifying-glass"></i></button>
-              <input type="text" name="search" placeholder="ابحث عن منتجك هنا..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>" style="border: none; background: transparent; outline: none; width: 100%; font-family: inherit; font-size: 15px; padding: 8px 0; color: #334155;">
-          </form>
-      </div>
-      <img src="/images/logos/logo.png" alt="MY Store Logo" class="nav_logo" />
-    </nav>
+
     </div>
   </header>
