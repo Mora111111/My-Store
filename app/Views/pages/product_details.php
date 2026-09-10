@@ -81,7 +81,7 @@
                 <?php foreach ($comments as $c): ?>
                     <div class="testimonial_box" style="padding: 30px 20px; position: relative;">
                         <i class="fa-solid fa-quote-left quote_icon"></i>
-                        <p style="min-height: 50px; font-size: 14px; line-height: 1.8; color: #555;"><?php echo nl2br(htmlspecialchars($c['comment_text'])); ?></p>
+                        <p style="min-height: 50px; font-size: 14px; line-height: 1.8; color: #555; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;" title="<?php echo htmlspecialchars($c['comment_text']); ?>"><?php echo nl2br(htmlspecialchars($c['comment_text'])); ?></p>
                         <div class="rating" style="margin-bottom: 15px; font-size: 14px;">
                             <?php 
                             $u_rating = isset($c['user_rating']) ? (int)$c['user_rating'] : 5;
