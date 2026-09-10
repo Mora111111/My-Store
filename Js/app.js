@@ -1,19 +1,19 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const profileBtn = document.getElementById('profile-btn');
     const profileMenu = document.getElementById('profile-menu');
-    
-    if(profileBtn && profileMenu) {
-        profileBtn.addEventListener('click', function(e) {
+
+    if (profileBtn && profileMenu) {
+        profileBtn.addEventListener('click', function (e) {
             e.stopPropagation();
-            if(profileMenu.style.display === 'none' || profileMenu.style.display === '') {
+            if (profileMenu.style.display === 'none' || profileMenu.style.display === '') {
                 profileMenu.style.display = 'block';
             } else {
                 profileMenu.style.display = 'none';
             }
         });
-        
-        document.addEventListener('click', function(e) {
-            if(!profileMenu.contains(e.target) && !profileBtn.contains(e.target)) {
+
+        document.addEventListener('click', function (e) {
+            if (!profileMenu.contains(e.target) && !profileBtn.contains(e.target)) {
                 profileMenu.style.display = 'none';
             }
         });
@@ -30,7 +30,7 @@ const btnBuy = document.querySelector(".btn_buy");
 const cartEmpty = document.querySelector(".cart_empty");
 const promoSection = document.getElementById("promo-section");
 let activeCoupon = null;
-try { activeCoupon = JSON.parse(localStorage.getItem('activeCoupon')) || null; } catch(e) { localStorage.removeItem('activeCoupon'); }
+try { activeCoupon = JSON.parse(localStorage.getItem('activeCoupon')) || null; } catch (e) { localStorage.removeItem('activeCoupon'); }
 
 if (cartIcon && cart) {
     cartIcon.addEventListener("click", () => {
@@ -60,9 +60,9 @@ if (cartContent && total && btnBuy && cartEmpty) {
         total.style.display = "flex";
         btnBuy.style.display = "block";
         cartEmpty.style.display = "none";
-        if(promoSection) promoSection.style.display = "block";
+        if (promoSection) promoSection.style.display = "block";
     }
-    
+
     cartContent.addEventListener("click", (e) => {
         if (e.target.classList.contains("cart_remove")) {
             e.target.parentElement.parentElement.remove();
@@ -71,7 +71,7 @@ if (cartContent && total && btnBuy && cartEmpty) {
             );
             addCartBtn.forEach((btn) => {
                 if (
-                    btn.parentElement.querySelector(".card_title") && 
+                    btn.parentElement.querySelector(".card_title") &&
                     e.target.parentElement.querySelector(".cart_product_title") &&
                     btn.parentElement.querySelector(".card_title").textContent ===
                     e.target.parentElement.querySelector(".cart_product_title").textContent
@@ -84,7 +84,7 @@ if (cartContent && total && btnBuy && cartEmpty) {
                 total.style.display = "none";
                 btnBuy.style.display = "none";
                 cartEmpty.style.display = "block";
-                if(promoSection) promoSection.style.display = "none";
+                if (promoSection) promoSection.style.display = "none";
             }
             updateCartCount(arrayOfCards);
             updateTotalPrice();
@@ -96,17 +96,19 @@ addCartBtn.forEach((btn) => {
         const myCard = event.target.closest(".card") || event.target.closest(".product_details_section");
         const cardImgSrc = myCard.querySelector(".card_image") ? myCard.querySelector(".card_image").src : (myCard.querySelector("#mainProductImage") ? myCard.querySelector("#mainProductImage").src : "");
         const cardTitle = myCard.querySelector(".card_title").textContent;
-        
+
         // الجزء المعدل يبدأ من هنا
         const priceEl = myCard.querySelector(".card_price") || myCard.querySelector("p");
         let cardPrice = "0";
         if (priceEl) {
-            const delEl = priceEl.querySelector("del");
-            if (delEl) {
-                cardPrice = delEl.textContent;
-            } else {
-                const spanEl = priceEl.querySelector("span:first-child");
-                cardPrice = spanEl ? spanEl.textContent : priceEl.textContent;
+            // نأخذ السعر النهائي المكتوب داخل الـ span مباشرة
+            const spanEl = priceEl.querySelector("span:first-child");
+            cardPrice = spanEl ? spanEl.textContent : priceEl.textContent;
+            // سنلتقط السعر المخصوم في الواجهة، لكن الباك-إند هو من سيحسب السعر الفعلي 
+            // وتم الاعتماد على data-base-price الذي أضافه OpenCode لمنع تضارب الخصم
+            const basePriceAttr = myCard.getAttribute("data-base-price");
+            if (basePriceAttr) {
+                cardPrice = basePriceAttr + " ج.م";
             }
         }
         // الجزء المعدل ينتهي هنا
@@ -120,24 +122,24 @@ addCartBtn.forEach((btn) => {
         }
         btn.textContent = "تم أضافة";
         btn.classList.add("done");
-        if(total && btnBuy && cartEmpty){
+        if (total && btnBuy && cartEmpty) {
             total.style.display = "flex";
             btnBuy.style.display = "block";
             cartEmpty.style.display = "none";
-            if(promoSection) promoSection.style.display = "block";
+            if (promoSection) promoSection.style.display = "block";
         }
     });
 });
 
-    arrayOfCards.forEach((e) => {
-        if (
-            btn.parentElement.querySelector(".card_title") && 
-            btn.parentElement.querySelector(".card_title").textContent === e.title
-        ) {
-            btn.textContent = "تم أضافة";
-            btn.classList.add("done");
-        }
-    });
+arrayOfCards.forEach((e) => {
+    if (
+        btn.parentElement.querySelector(".card_title") &&
+        btn.parentElement.querySelector(".card_title").textContent === e.title
+    ) {
+        btn.textContent = "تم أضافة";
+        btn.classList.add("done");
+    }
+});
 });
 
 function addCardToArray(cardImgSrc, cardTitle, cardPrice, cardId) {
@@ -150,12 +152,12 @@ function addCardToArray(cardImgSrc, cardTitle, cardPrice, cardId) {
         completed: false,
     };
     arrayOfCards.push(cardData);
-    if(cartContent) addToCart(arrayOfCards, cardTitle);
+    if (cartContent) addToCart(arrayOfCards, cardTitle);
     addToLocaleStorage(arrayOfCards);
 }
 
 function addToCart(arrayOfCards, cardTitle) {
-    if(!cartContent) return;
+    if (!cartContent) return;
     const cartItems = cartContent.querySelectorAll(".cart_product_title");
     for (let i of cartItems) {
         if (i.textContent === cardTitle) {
@@ -186,7 +188,7 @@ function addToCart(arrayOfCards, cardTitle) {
             const numberElement = cartBox.querySelector(".number");
             const decrementBtn = cartBox.querySelector("#decrement");
             let quantity = Number(numberElement.textContent);
-            
+
             if (e.target.id === "decrement" && quantity > 1) {
                 quantity--;
                 if (quantity === 1) {
@@ -196,15 +198,15 @@ function addToCart(arrayOfCards, cardTitle) {
                 quantity++;
                 decrementBtn.style.color = "#333";
             }
-            
+
             numberElement.textContent = quantity;
-            
+
             const currentCard = arrayOfCards.find(c => c.id == card.id);
-            if(currentCard) {
+            if (currentCard) {
                 currentCard.number = quantity;
                 addToLocaleStorage(arrayOfCards);
             }
-            
+
             updateTotalPrice();
         });
     });
@@ -225,7 +227,7 @@ function getData() {
     let data = window.localStorage.getItem("cards");
     if (data) {
         let cards = JSON.parse(data);
-        if(cartContent) addToCart(cards);
+        if (cartContent) addToCart(cards);
     }
 }
 
@@ -236,7 +238,7 @@ function deleteCardWith(cardId) {
 
 function updateTotalPrice() {
     let totalPriceElement = document.querySelector(".total_price");
-    if(!totalPriceElement) return;
+    if (!totalPriceElement) return;
 
     const cartBoxes = document.querySelectorAll(".cart_box");
     let subtotal = 0;
@@ -250,9 +252,9 @@ function updateTotalPrice() {
         const quantity = quantityElement ? parseInt(quantityElement.textContent) : 1;
         const itemId = parseInt(cartBox.getAttribute('data-id')) || 0;
         const itemTotal = price * quantity;
-        
+
         subtotal += itemTotal;
-        
+
         const tType = activeCoupon ? (activeCoupon.target_type || activeCoupon.target) : null;
         const targetId = activeCoupon ? parseInt(activeCoupon.target_product_id || activeCoupon.product_id) : 0;
 
@@ -271,13 +273,13 @@ function updateTotalPrice() {
             if (dType === 'percentage') {
                 discountTotal = subtotal * (dValue / 100);
             } else {
-                discountTotal = dValue; 
+                discountTotal = dValue;
             }
         } else if (tType === 'specific_product' && specificProductSubtotal > 0) {
             if (dType === 'percentage') {
                 discountTotal = specificProductSubtotal * (dValue / 100);
             } else {
-                discountTotal = dValue; 
+                discountTotal = dValue;
             }
             if (discountTotal > specificProductSubtotal) discountTotal = specificProductSubtotal;
         } else if (tType === 'specific_product' && specificProductSubtotal === 0) {
@@ -310,35 +312,35 @@ function updateTotalPrice() {
     const hiddenPromo = document.getElementById('hidden-promo-code');
     const hiddenTotal = document.getElementById('hidden-total-price');
     const shippingCostEl = document.getElementById('display-shipping-cost');
-    
+
     if (checkoutTotalElements.length > 0) {
         checkoutTotalElements.forEach(el => el.textContent = subtotal.toFixed(2) + ' ج.م');
-        
+
         let shippingCost = 0;
         if (shippingCostEl) {
             const cleanShip = shippingCostEl.textContent.toString().replace(/,/g, '').replace(/[^\d.]/g, '');
             shippingCost = parseFloat(cleanShip) || 0;
         }
-        
+
         if (discountTotal > 0 && activeCoupon) {
-            if(discountRow) discountRow.style.display = 'flex';
-            if(discountTitle) discountTitle.textContent = 'كوبون الخصم (' + activeCoupon.code + ')';
-            if(discountDisplay) discountDisplay.textContent = '- ' + discountTotal.toFixed(2) + ' ج.م';
+            if (discountRow) discountRow.style.display = 'flex';
+            if (discountTitle) discountTitle.textContent = 'كوبون الخصم (' + activeCoupon.code + ')';
+            if (discountDisplay) discountDisplay.textContent = '- ' + discountTotal.toFixed(2) + ' ج.م';
         } else {
-            if(discountRow) discountRow.style.display = 'none';
+            if (discountRow) discountRow.style.display = 'none';
         }
-        
+
         const checkoutFinal = finalTotal + shippingCost;
         checkoutFinalElements.forEach(el => el.textContent = checkoutFinal.toFixed(2) + ' ج.م');
-        
-        if(hiddenTotal) hiddenTotal.value = checkoutFinal;
-        if(hiddenPromo) hiddenPromo.value = activeCoupon ? activeCoupon.code : '';
+
+        if (hiddenTotal) hiddenTotal.value = checkoutFinal;
+        if (hiddenPromo) hiddenPromo.value = activeCoupon ? activeCoupon.code : '';
     }
 }
 
 function updateCartCount(arrayOfCards) {
     const cartCountElement = document.querySelector(".cart_count");
-    if(!cartCountElement) return;
+    if (!cartCountElement) return;
     if (arrayOfCards.length > 0) {
         cartCountElement.style.visibility = "visible";
         cartCountElement.textContent = arrayOfCards.length;
@@ -377,14 +379,14 @@ function removeActiveBtn() {
 document.addEventListener('submit', function (e) {
     if (e.target && e.target.tagName === 'FORM') {
         const submitBtn = e.target.querySelector('button[type="submit"], input[type="submit"], .btn-submit, .send_btn');
-        
+
         if (submitBtn) {
             // تعطيل الزر برمجياً بعد جزء من الثانية لضمان نجاح الإرسال
             setTimeout(() => {
                 submitBtn.disabled = true;
                 submitBtn.style.cursor = 'not-allowed';
                 submitBtn.style.opacity = '0.7';
-                
+
                 if (submitBtn.tagName === 'INPUT') {
                     submitBtn.value = 'جاري الإرسال...';
                 } else {
@@ -424,13 +426,13 @@ navLinks.forEach(link => {
 
 
 document.addEventListener('click', async (e) => {
-    if(e.target.id === 'apply_promo_btn') {
+    if (e.target.id === 'apply_promo_btn') {
         e.preventDefault();
         const codeInput = document.getElementById('promo_code_input');
         const code = codeInput.value.trim();
         const msgEl = document.getElementById('promo_message');
 
-        if(!code) {
+        if (!code) {
             msgEl.textContent = 'أدخل الكود أولاً';
             msgEl.style.color = '#ef4444';
             return;
@@ -440,27 +442,27 @@ document.addEventListener('click', async (e) => {
         try {
             const cards = JSON.parse(localStorage.getItem("cards")) || [];
             cartIds = cards.map(c => parseInt(c.id));
-        } catch(err) {}
+        } catch (err) { }
 
         e.target.textContent = '...';
-        
+
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-        
+
         try {
             const res = await fetch('/api/validate-coupon', {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
                 body: JSON.stringify({ code: code, cart_ids: cartIds })
             });
-            
+
             if (!res.ok) throw new Error('HTTP Error: ' + res.status);
-            
+
             const data = await res.json();
 
-            if(data.success) {
+            if (data.success) {
                 activeCoupon = data.coupon;
                 localStorage.setItem('activeCoupon', JSON.stringify(activeCoupon));
                 msgEl.textContent = data.message;
