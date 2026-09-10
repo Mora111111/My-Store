@@ -90,9 +90,17 @@ class CheckoutController {
             }
 
             $site_settings = $settingModel->getSettings();
-            $shipping = floatval($site_settings['shipping_cost'] ?? 0);
-            $server_total = $subtotal + $shipping;
+            $payment_method = $_POST['payment_method'] ?? 'cod';
             
+            // تطبيق الشحن المجاني إذا كان الدفع إلكتروني
+            if ($payment_method === 'online') {
+                $shipping = 0;
+            } else {
+                $shipping = floatval($site_settings['shipping_cost'] ?? 0);
+            }
+            
+            $server_total = $subtotal + $shipping;
+
             $data = [
                 'user_id' => Session::get('user_id'),
                 'full_name' => $_POST['full_name'] ?? '',
@@ -103,12 +111,23 @@ class CheckoutController {
                 'governorate' => $_POST['governorate'] ?? '',
                 'zip_code' => $_POST['zip_code'] ?? '',
                 'total_price' => $server_total,
-                'products' => json_encode($secureProductsArray, JSON_UNESCAPED_UNICODE)
+                'products' => json_encode($secureProductsArray, JSON_UNESCAPED_UNICODE),
+                'payment_method' => $payment_method,
+                'payment_status' => 'pending',
+                'transaction_id' => null
             ];
 
-            if ($orderModel->create($data)) {
+            $orderId = $orderModel->create($data);
+            if ($orderId) {
+                // توجيه العميل إلى الكنترولر الخاص ببوابة الدفع
+                if ($payment_method === 'online') {
+                    $redirectUrl = '/payment/pay?order_id=' . $orderId;
+                } else {
+                    $redirectUrl = '/my-orders';
+                }
+
                 header('Content-Type: application/json');
-                echo json_encode(['success' => true, 'redirect' => '/my-orders']);
+                echo json_encode(['success' => true, 'redirect' => $redirectUrl]);
                 exit;
             }
             

@@ -6,6 +6,7 @@
         <th>العميل</th>
         <th>الهاتف</th>
         <th>الإجمالي</th>
+        <th>الدفع</th>
         <th>الحالة الحالية</th>
         <th>تغيير الحالة</th>
         <th>الإجراءات</th>
@@ -23,15 +24,24 @@
           $status = $row['status'];
           $status_class = $status_map[$status] ?? 'status-pending';
           $products_json = htmlspecialchars($row['products'], ENT_QUOTES, 'UTF-8');
+          
+          $pay_method = ($row['payment_method'] ?? 'cod') === 'online' ? '<span class="badge" style="background:#eff6ff; color:#3b82f6;"><i class="fa-regular fa-credit-card"></i> إلكتروني</span>' : '<span class="badge" style="background:#f0fdf4; color:#166534;"><i class="fa-solid fa-money-bill"></i> كاش (COD)</span>';
+          $pay_status = ($row['payment_status'] ?? 'pending') === 'paid' ? '<span style="color:#10b981; font-size:12px; font-weight:bold;"><i class="fa-solid fa-check"></i> مدفوع</span>' : '<span style="color:#f59e0b; font-size:12px; font-weight:bold;"><i class="fa-solid fa-clock"></i> معلق</span>';
         ?>
         <tr>
           <td><span style="font-weight:700;">#<?php echo $row['id']; ?></span></td>
           <td style="font-weight:500;"><?php echo htmlspecialchars($row['full_name']); ?></td>
           <td><a href="tel:<?php echo htmlspecialchars($row['phone']); ?>" style="color:#3b82f6; text-decoration:none;"><?php echo htmlspecialchars($row['phone']); ?></a></td>
           <td style="font-weight:700; color:#0f172a;"><?php echo htmlspecialchars($row['total_price']); ?> ج.م</td>
+          <td>
+            <div style="display:flex; flex-direction:column; gap:5px;">
+                <?php echo $pay_method; ?>
+                <?php echo $pay_status; ?>
+            </div>
+          </td>
           <td><span class="status-badge <?php echo $status_class; ?>"><?php echo $status; ?></span></td>
           <td>
-            <form method="POST" action="/admin/orders/update" class="status-form">
+            <form method="POST" action="/admin/orders/update" class="status-form" style="margin:0;">
               <?= CSRF::getField() ?>
               <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
               <select name="new_status" class="status-select">
@@ -40,7 +50,7 @@
                 <option value="مكتمل" <?php echo $status == 'مكتمل' ? 'selected' : ''; ?>>مكتمل</option>
                 <option value="ملغي" <?php echo $status == 'ملغي' ? 'selected' : ''; ?>>ملغي</option>
               </select>
-              <button type="submit" class="btn-update"><i class="fa-solid fa-check"></i> تأكيد</button>
+              <button type="submit" class="btn-update"><i class="fa-solid fa-check"></i></button>
             </form>
           </td>
           <td>
@@ -56,14 +66,18 @@
                   data-gov="<?php echo htmlspecialchars($row['governorate'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                   data-zip="<?php echo htmlspecialchars($row['zip_code'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                   data-phone="<?php echo htmlspecialchars($row['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                  data-date="<?php echo isset($row['created_at']) ? date('Y-m-d h:i A', strtotime($row['created_at'])) : ''; ?>">
+                  data-date="<?php echo isset($row['created_at']) ? date('Y-m-d h:i A', strtotime($row['created_at'])) : ''; ?>"
+                  data-pay-method="<?php echo htmlspecialchars($row['payment_method'] ?? 'cod', ENT_QUOTES, 'UTF-8'); ?>"
+                  data-pay-status="<?php echo htmlspecialchars($row['payment_status'] ?? 'pending', ENT_QUOTES, 'UTF-8'); ?>"
+                  data-trx-id="<?php echo htmlspecialchars($row['transaction_id'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                  >
                   <i class="fa-solid fa-eye"></i> عرض
                 </button>
                 <?php if ($status === 'ملغي'): ?>
-                  <form method="POST" action="/admin/orders/delete" style="display:inline-block;" onsubmit="return confirm('هل أنت متأكد من حذف هذا الطلب نهائياً من قاعدة البيانات؟');">
+                  <form method="POST" action="/admin/orders/delete" style="display:inline-block; margin:0;" onsubmit="return confirm('هل أنت متأكد من حذف هذا الطلب نهائياً من قاعدة البيانات؟');">
                     <?= CSRF::getField() ?>
                     <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                    <button type="submit" class="btn-delete" style="border:none; cursor:pointer; font-family:inherit;"><i class="fa-solid fa-trash"></i> حذف</button>
+                    <button type="submit" class="btn-delete" style="border:none; cursor:pointer; font-family:inherit;"><i class="fa-solid fa-trash"></i></button>
                   </form>
                 <?php endif; ?>
             </div>
@@ -71,10 +85,10 @@
         </tr>
         <?php endforeach; ?>
       <?php else: ?>
-        <tr><td colspan="7" style="text-align:center; padding:40px; color:#94a3b8; font-size:16px;"><i class="fa-solid fa-cart-shopping" style="font-size:40px; margin-bottom:15px; opacity:0.5;"></i><br>لا توجد طلبات حتى الآن.</td></tr>
+        <tr><td colspan="8" style="text-align:center; padding:40px; color:#94a3b8; font-size:16px;"><i class="fa-solid fa-cart-shopping" style="font-size:40px; margin-bottom:15px; opacity:0.5;"></i><br>لا توجد طلبات حتى الآن.</td></tr>
       <?php endif; ?>
     </table>
-  </div>
+</div>
 
 <div id="adminOrderModal" class="modal-overlay">
   <div class="modal-content-modern" style="width: 850px; max-width: 95%; padding: 0;">
@@ -109,6 +123,16 @@
           <p style="margin: 8px 0; font-size: 14px; color: #1e293b;"><strong>العنوان 2:</strong> <span id="modalAddr2"></span></p>
           <p style="margin: 8px 0; font-size: 14px; color: #1e293b;"><strong>الرمز البريدي:</strong> <span id="modalZip"></span></p>
         </div>
+        
+        <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+          <h4 style="margin: 0 0 15px 0; color: #475569; font-size: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">
+            <div style="background: #fef3c7; color: #d97706; width: 30px; height: 30px; border-radius: 8px; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-wallet"></i></div> بيانات الدفع
+          </h4>
+          <p style="margin: 8px 0; font-size: 14px; color: #1e293b;"><strong>الطريقة:</strong> <span id="modalPayMethod" style="font-weight:bold;"></span></p>
+          <p style="margin: 8px 0; font-size: 14px; color: #1e293b;"><strong>الحالة:</strong> <span id="modalPayStatus"></span></p>
+          <p style="margin: 8px 0; font-size: 14px; color: #1e293b;"><strong>رقم العملية:</strong> <span id="modalTrxId" style="font-family: monospace; color: #64748b;"></span></p>
+        </div>
+
       </div>
 
       <div style="background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
@@ -118,7 +142,7 @@
         <div id="modalProductsList" style="padding: 10px 20px; display: flex; flex-direction: column; gap: 10px;"></div>
         
         <div style="background: #f8fafc; padding: 20px; border-top: 2px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 18px; font-weight: 700; color: #475569;">إجمالي الطلب (شامل الشحن):</span>
+          <span style="font-size: 18px; font-weight: 700; color: #475569;">إجمالي الطلب (شامل الشحن إن وجد):</span>
           <span id="modalGrandTotal" style="font-size: 24px; font-weight: 900; color: #059669;"></span>
         </div>
       </div>
@@ -142,6 +166,14 @@ document.querySelectorAll('.details-btn').forEach(btn => {
     document.getElementById('modalPhone').innerText = this.getAttribute('data-phone');
     document.getElementById('modalZip').innerText = this.getAttribute('data-zip') || 'لا يوجد';
     document.getElementById('modalGrandTotal').innerText = this.getAttribute('data-total') + " ج.م";
+
+    const payMethod = this.getAttribute('data-pay-method') === 'online' ? '<span style="color:#3b82f6;">إلكتروني (فيزا/محفظة)</span>' : '<span style="color:#166534;">نقدي عند الاستلام (COD)</span>';
+    const payStatus = this.getAttribute('data-pay-status') === 'paid' ? '<span style="color:#10b981;">مدفوع <i class="fa-solid fa-check"></i></span>' : '<span style="color:#f59e0b;">معلق <i class="fa-solid fa-clock"></i></span>';
+    const trxId = this.getAttribute('data-trx-id') || '---';
+
+    document.getElementById('modalPayMethod').innerHTML = payMethod;
+    document.getElementById('modalPayStatus').innerHTML = payStatus;
+    document.getElementById('modalTrxId').innerText = trxId;
 
     const productsList = document.getElementById('modalProductsList');
     productsList.innerHTML = '';

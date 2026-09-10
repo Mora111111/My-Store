@@ -112,5 +112,6 @@ $router->add('POST', '/ai/comment', 'AiController@handleComment');
 $router->add('POST', '/ai/chatbot', 'AiController@handleChatbot');
 $router->add('POST', '/ai/generate-product', 'AiController@generateProduct');
 $router->add('POST', '/ai/message-reply', 'AiController@generateMessageReply');
-
+$router->add('GET', '/payment/pay', 'PaymentController@pay');
+$router->add('POST', '/payment/process-sandbox', 'PaymentController@processSandbox');
 $router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
