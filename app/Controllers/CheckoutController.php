@@ -17,18 +17,18 @@ class CheckoutController {
             $orderModel = new Order();
             $productsJson = $_POST['products'] ?? '[]';
             $cartProducts = json_decode($productsJson, true);
-
+            
             $productModel = new Product();
             $couponModel = new Coupon();
             $settingModel = new Setting();
-
+            
             $activeCouponsRaw = $couponModel->getActiveStrikethroughCoupons();
+            // ترتيب الخصومات لاختيار الأفضل للعميل لضمان تطابق السعر مع الواجهة
             usort($activeCouponsRaw, function($a, $b) {
                 if ($a['discount_type'] === $b['discount_type']) return $b['discount_value'] <=> $a['discount_value'];
                 return $a['discount_type'] === 'percentage' ? -1 : 1;
             });
             $activeCoupons = $activeCouponsRaw;
-
             $appliedCoupon = null;
             if (!empty($_POST['applied_promo_code'])) {
                 $db = Database::getInstance()->getConnection();
@@ -36,53 +36,63 @@ class CheckoutController {
                 $stmt->execute([trim($_POST['applied_promo_code'])]);
                 $appliedCoupon = $stmt->fetch(PDO::FETCH_ASSOC);
             }
-
+            
             $subtotal = 0;
             $secureProductsArray = [];
 
             if (is_array($cartProducts)) {
                 foreach ($cartProducts as $cartItem) {
                     $dbProduct = $productModel->findById((int)$cartItem['id']);
-                    if (!$dbProduct) continue;
+                    if ($dbProduct) {
+                        $basePrice = floatval($dbProduct['price']);
+                        $qty = max(1, intval($cartItem['number'] ?? $cartItem['quantity'] ?? 1));
+                        $finalPrice = $basePrice;
+                        $promoAppliedToItem = false;
 
-                    $qty = max(1, intval($cartItem['number'] ?? $cartItem['quantity'] ?? 1));
-                    $basePrice = floatval($dbProduct['price']);
-
-                    $manualPrice = null;
-                    if ($appliedCoupon) {
-                        $matchesTarget = $appliedCoupon['target_type'] === 'all'
-                            || ($appliedCoupon['target_type'] === 'specific_product' && $appliedCoupon['target_product_id'] == $dbProduct['id']);
-                        if ($matchesTarget) {
-                            $manualPrice = $appliedCoupon['discount_type'] === 'percentage'
-                                ? $basePrice - ($basePrice * ($appliedCoupon['discount_value'] / 100))
-                                : $basePrice - $appliedCoupon['discount_value'];
-                            $manualPrice = max(0, $manualPrice);
+                        // 1. الأولوية للكوبون اليدوي (يلغي الشطب التلقائي)
+                        if ($appliedCoupon) {
+                            if ($appliedCoupon['target_type'] === 'all' || ($appliedCoupon['target_type'] === 'specific_product' && $appliedCoupon['target_product_id'] == $dbProduct['id'])) {
+                                $promoAppliedToItem = true;
+                                if ($appliedCoupon['discount_type'] === 'percentage') {
+                                    $finalPrice = $basePrice - ($basePrice * ($appliedCoupon['discount_value'] / 100));
+                                } else {
+                                    $finalPrice = $basePrice - $appliedCoupon['discount_value'];
+                                }
+                            }
                         }
+
+                        // 2. الخصم التلقائي (يطبق فقط إذا لم يكن هناك كوبون يدوي لهذا المنتج)
+                        if (!$promoAppliedToItem) {
+                            foreach ($activeCoupons as $c) {
+                                if ($c['target_type'] === 'all' || ($c['target_type'] === 'specific_product' && $c['target_product_id'] == $dbProduct['id'])) {
+                                    if ($c['discount_type'] === 'percentage') {
+                                        $finalPrice = $basePrice - ($basePrice * ($c['discount_value'] / 100));
+                                    } else {
+                                        $finalPrice = $basePrice - $c['discount_value'];
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                        $finalPrice = max(0, $finalPrice);
+                        $subtotal += ($finalPrice * $qty);
+
+                        $secureProductsArray[] = [
+                            'id' => $dbProduct['id'],
+                            'src' => $dbProduct['image_url'],
+                            'title' => $dbProduct['title'],
+                            'price' => number_format($finalPrice, 2, '.', '') . ' ج.م',
+                            'quantity' => $qty
+                        ];
                     }
-
-                    if ($manualPrice !== null) {
-                        $finalPrice = $manualPrice;
-                    } else {
-                        $discountResult = Product::calculateDiscount($dbProduct, $activeCoupons);
-                        $finalPrice = $discountResult['final_price'];
-                    }
-
-                    $subtotal += ($finalPrice * $qty);
-
-                    $secureProductsArray[] = [
-                        'id' => $dbProduct['id'],
-                        'src' => $dbProduct['image_url'],
-                        'title' => $dbProduct['title'],
-                        'price' => number_format($finalPrice, 2, '.', '') . ' ج.م',
-                        'quantity' => $qty
-                    ];
                 }
             }
 
             $site_settings = $settingModel->getSettings();
             $shipping = floatval($site_settings['shipping_cost'] ?? 0);
             $server_total = $subtotal + $shipping;
-
+            
             $data = [
                 'user_id' => Session::get('user_id'),
                 'full_name' => $_POST['full_name'] ?? '',
@@ -101,7 +111,7 @@ class CheckoutController {
                 echo json_encode(['success' => true, 'redirect' => '/my-orders']);
                 exit;
             }
-
+            
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'error' => 'Database error']);
             exit;

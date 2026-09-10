@@ -91,18 +91,7 @@ class ProductController {
         $comments = $commentModel->getByProductId((int)$id);
         $productUpdated = (new Product())->findById((int)$id);
         $rating = isset($productUpdated['rating']) ? (float)$productUpdated['rating'] : 0;
-        $globalCouponModel = new Coupon();
-        $activeCouponsRaw = $globalCouponModel->getActiveStrikethroughCoupons();
-        usort($activeCouponsRaw, function($a,$b) {
-            if ($a['discount_type'] === $b['discount_type']) return $b['discount_value'] <=> $a['discount_value'];
-            return $a['discount_type'] === 'percentage' ? -1 : 1;
-        });
-
-        $discountData = Product::calculateDiscount($productUpdated, $activeCouponsRaw);
-        $final_price = $discountData['final_price'];
-        $original_price = $discountData['original_price'];
-        $has_coupon_discount = $discountData['has_discount'];
-        $discount_pct_badge = $discountData['discount_pct'];
+        
         $starsHtml = '';
         for ($i = 1; $i <= 5; $i++) {
             if ($rating >= $i) { $starsHtml .= '<i class="fa-solid fa-star"></i>'; } 

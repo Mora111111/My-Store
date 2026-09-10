@@ -218,6 +218,7 @@
 
 <script src="/Js/payment.js"></script>
 <script>
+    <script>
     document.addEventListener('DOMContentLoaded', () => {
         const reviewContainer = document.getElementById('review-products-container');
         const cartItemsStr = localStorage.getItem('cards');
