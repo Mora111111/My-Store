@@ -81,7 +81,10 @@
                 <?php foreach ($comments as $c): ?>
                     <div class="testimonial_box" style="padding: 30px 20px; position: relative;">
                         <i class="fa-solid fa-quote-left quote_icon"></i>
-                        <p style="min-height: 50px; font-size: 14px; line-height: 1.8; color: #555; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;" title="<?php echo htmlspecialchars($c['comment_text']); ?>"><?php echo nl2br(htmlspecialchars($c['comment_text'])); ?></p>
+                        <div style="cursor: pointer;" onclick='openCommentModal(<?php echo htmlspecialchars(json_encode($c['customer_name']), ENT_QUOTES, "UTF-8"); ?>, <?php echo htmlspecialchars(json_encode($c['comment_text']), ENT_QUOTES, "UTF-8"); ?>)'>
+    <p style="min-height: 50px; font-size: 14px; line-height: 1.8; color: #555; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;" title="انقر لقراءة التعليق بالكامل"><?php echo nl2br(htmlspecialchars($c['comment_text'])); ?></p>
+    <span style="color: var(--main-color); font-size: 12px; font-weight: bold;">اقرأ المزيد...</span>
+</div>
                         <div class="rating" style="margin-bottom: 15px; font-size: 14px;">
                             <?php 
                             $u_rating = isset($c['user_rating']) ? (int)$c['user_rating'] : 5;
@@ -159,3 +162,29 @@
     </div>
   </div>
 
+<!-- نافذة التعليق الكامل -->
+<div id="commentModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1500; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+    <div style="background:#fff; width:90%; max-width:500px; border-radius:15px; padding:25px; position:relative; box-shadow:0 10px 25px rgba(0,0,0,0.1); animation: fadeIn 0.3s;">
+        <i class="fa-solid fa-xmark" onclick="document.getElementById('commentModalOverlay').style.display='none'" style="position:absolute; top:15px; right:15px; font-size:22px; color:#94a3b8; cursor:pointer; transition:0.2s;"></i>
+        
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:15px; border-bottom:1px solid #f1f5f9; padding-bottom:15px;">
+            <div id="modalAvatar" style="width: 45px; height: 45px; background: var(--main-color); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;"></div>
+            <h3 id="modalName" style="margin:0; font-size:18px; color:#1e293b;"></h3>
+        </div>
+        
+        <p id="modalText" style="font-size:15px; line-height:1.8; color:#475569; max-height:60vh; overflow-y:auto; margin:0; padding-right:5px; white-space: pre-wrap;"></p>
+    </div>
+</div>
+
+<script>
+function openCommentModal(name, text) {
+    document.getElementById('modalName').innerText = name;
+    document.getElementById('modalAvatar').innerText = name.charAt(0);
+    document.getElementById('modalText').innerText = text;
+    document.getElementById('commentModalOverlay').style.display = 'flex';
+}
+
+document.getElementById('commentModalOverlay').addEventListener('click', function(e) {
+    if(e.target === this) this.style.display = 'none';
+});
+</script>
