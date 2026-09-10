@@ -42,6 +42,28 @@
         <input type="checkbox" name="maintenance_mode" id="maintenance_mode" value="1" <?php echo (!empty($site_settings['maintenance_mode'])) ? 'checked' : ''; ?> style="width: 20px; height: 20px; cursor: pointer;">
         <label for="maintenance_mode" style="margin: 0; color: #991b1b; cursor: pointer; font-weight: bold;">تفعيل وضع الصيانة (إغلاق المتجر للزوار)</label>
       </div>
+      <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
+      <h3 style="color:#0f172a; margin-bottom: 15px;"><i class="fa-solid fa-credit-card" style="color:#38bdf8;"></i> إعدادات بوابات الدفع (الدفع الإلكتروني)</h3>
+      
+      <div class="form_row" style="display: flex; align-items: center; gap: 10px; background: #f0fdf4; padding: 15px; border-radius: 12px; border: 1px solid #bbf7d0; margin-bottom: 15px;">
+        <input type="checkbox" name="enable_online_payment" id="enable_online_payment" value="1" <?php echo (!empty($site_settings['enable_online_payment'])) ? 'checked' : ''; ?> style="width: 20px; height: 20px; cursor: pointer;">
+        <label for="enable_online_payment" style="margin: 0; color: #166534; cursor: pointer; font-weight: bold;">تفعيل الدفع الإلكتروني (فيزا / محافظ إلكترونية)</label>
+      </div>
+
+      <div class="form_row">
+        <label>مفتاح الربط الخاص (API Key):</label>
+        <input type="text" name="gateway_api_key" value="<?php echo htmlspecialchars($site_settings['gateway_api_key'] ?? ''); ?>">
+      </div>
+
+      <div class="form_row">
+        <label>رقم الدمج (Integration ID):</label>
+        <input type="text" name="gateway_integration_id" value="<?php echo htmlspecialchars($site_settings['gateway_integration_id'] ?? ''); ?>">
+      </div>
+
+      <div class="form_row">
+        <label>رقم نافذة الدفع (Iframe ID):</label>
+        <input type="text" name="gateway_iframe_id" value="<?php echo htmlspecialchars($site_settings['gateway_iframe_id'] ?? ''); ?>">
+      </div>
       <br>
       <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> حفظ التعديلات</button>
     </form>
