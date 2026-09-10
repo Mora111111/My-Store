@@ -1,4 +1,34 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // --- منطق طرق الدفع وتغيير الشحن ---
+    const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+    const displayShippingCost = document.getElementById('display-shipping-cost');
+
+    if (paymentRadios.length > 0) {
+        paymentRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                // تعديل الشكل
+                document.querySelectorAll('.payment-methods-container label').forEach(lbl => {
+                    lbl.style.borderColor = '#e2e8f0';
+                    lbl.style.background = '#fff';
+                });
+                const selectedLabel = e.target.closest('label');
+                selectedLabel.style.borderColor = 'var(--main-color)';
+                selectedLabel.style.background = '#f8fafc';
+
+                // تغيير مصاريف الشحن (مجاني للأونلاين، ورسوم للـ COD)
+                if (e.target.value === 'online') {
+                    if (displayShippingCost) displayShippingCost.textContent = 'مجاني';
+                } else {
+                    if (displayShippingCost && typeof BASE_SHIPPING_COST !== 'undefined') {
+                        displayShippingCost.textContent = BASE_SHIPPING_COST > 0 ? BASE_SHIPPING_COST + ' ج.م' : 'مجاني';
+                    }
+                }
+                
+                // إعادة حساب الإجمالي
+                if (typeof updateTotalPrice === 'function') updateTotalPrice();
+            });
+        });
+    }
     const orderBtn = document.querySelector(".order_btn");
     const modal = document.querySelector(".container_modal"); 
     const layer = document.querySelector(".layer");
@@ -216,7 +246,8 @@ document.addEventListener("DOMContentLoaded", () => {
             formData.append("city", document.getElementById("city-Address").textContent);
             formData.append("governorate", document.getElementById("boycott-Address").textContent);
             formData.append("zip_code", document.getElementById("postal-Address").textContent);
-            
+            const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
+            formData.append("payment_method", selectedPaymentMethod);
            const activeCoupon = JSON.parse(localStorage.getItem('activeCoupon') || 'null');
 if (activeCoupon) {
     formData.append("applied_promo_code", activeCoupon.code);

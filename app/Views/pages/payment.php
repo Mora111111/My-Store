@@ -56,17 +56,33 @@
 
     <div class="item_payment">
       <h4 class="title_payment">طرق السداد</h4>
-      <div class="cards_payment">
-        <div class="card_payment" id="card-payment">
-          <img src="/images/payment/payMent.png" class="card_payment_img" />
-          <span class="card_payment_p">إضافة بطاقة جديدة</span>
-        </div>
-        <div class="card_payment">
-          <img src="/images/payment/payment_1.png" class="visa_img" />
-          <img src="/images/payment/payment_2.png" class="visa_img" />
-          <img src="/images/payment/payment_3.png" class="visa_img" />
-          <img src="/images/payment/payment_4.png" class="visa_img" />
-        </div>
+      <div class="payment-methods-container" style="display: flex; flex-direction: column; gap: 15px;">
+        
+        <!-- خيار: الدفع عند الاستلام -->
+        <label style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid var(--main-color); border-radius: 12px; cursor: pointer; background: #f8fafc; transition: 0.3s;" id="label_cod">
+            <input type="radio" name="payment_method" value="cod" checked style="width: 20px; height: 20px; accent-color: var(--main-color);">
+            <div style="flex: 1;">
+                <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع نقداً عند الاستلام (COD)</h5>
+                <span style="font-size: 13px; color: #64748b;">سيتم تطبيق مصاريف الشحن المعتادة.</span>
+            </div>
+            <i class="fa-solid fa-hand-holding-dollar" style="font-size: 24px; color: #64748b;"></i>
+        </label>
+
+        <!-- خيار: الدفع الإلكتروني (يظهر فقط إذا تم تفعيله من الإعدادات) -->
+        <?php if(!empty($site_settings['enable_online_payment'])): ?>
+        <label style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; background: #fff; transition: 0.3s;" id="label_online">
+            <input type="radio" name="payment_method" value="online" style="width: 20px; height: 20px; accent-color: var(--main-color);">
+            <div style="flex: 1;">
+                <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع الإلكتروني (فيزا / محافظ إلكترونية)</h5>
+                <span style="font-size: 13px; color: #10b981; font-weight: bold;">شحن مجاني لتشجيع الدفع المسبق!</span>
+            </div>
+            <div style="display: flex; gap: 5px;">
+                <img src="/images/payment/payment_1.png" style="height: 20px;">
+                <img src="/images/payment/payment_2.png" style="height: 20px;">
+            </div>
+        </label>
+        <?php endif; ?>
+
       </div>
     </div>
   </div>
@@ -215,7 +231,7 @@
 </div>
 
 <div class="layer"></div>
-
+<script> const BASE_SHIPPING_COST = <?php echo floatval($site_settings['shipping_cost'] ?? 0); ?>; </script>
 <script src="/Js/payment.js"></script>
 <script>
     <script>
