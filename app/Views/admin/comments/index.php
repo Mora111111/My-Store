@@ -70,7 +70,7 @@
     <div class="modal-body-modern">
       <div style="background:#f8fafc; padding:15px; border-radius:12px; margin-bottom:20px; border-right:4px solid #3b82f6;">
         <strong style="color:#1e293b; font-size:13px;">تعليق العميل (<span id="display_customer"></span>):</strong>
-        <p id="display_comment" style="margin:8px 0 0 0; color:#475569; line-height:1.6; font-size:14px;"></p>
+        <p id="display_comment" style="margin:8px 0 0 0; color:#475569; line-height:1.6; font-size:14px; max-height:130px; overflow-y:auto; padding-right:5px; white-space:pre-wrap;"></p>
         <input type="hidden" id="hidden_comment_text">
       </div>
       <form action="/admin/comments/reply" method="POST">

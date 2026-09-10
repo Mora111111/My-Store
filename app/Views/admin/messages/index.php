@@ -111,7 +111,7 @@
     <div class="modal-body-modern">
       <div style="background:#f8fafc; padding:15px; border-radius:12px; margin-bottom:20px; border-right:4px solid #3b82f6;">
         <strong style="color:#1e293b; font-size:13px;"><i class="fa-solid fa-envelope-open-text"></i> نص الرسالة الواردة:</strong>
-        <p id="display_full_message" style="margin:8px 0 0 0; color:#475569; line-height:1.6; font-size:14px;"></p>
+        <p id="display_full_message" style="margin:8px 0 0 0; color:#475569; line-height:1.6; font-size:14px; max-height:150px; overflow-y:auto; padding-right:5px; white-space:pre-wrap;"></p>
       </div>
       <form method="POST" action="/admin/messages/reply">
         <?= CSRF::getField() ?>
