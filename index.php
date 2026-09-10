@@ -2,10 +2,14 @@
 ob_start();
 session_start();
 
-if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] !== 'zoro' || $_SERVER['PHP_AUTH_PW'] !== '123321') {
-    header('WWW-Authenticate: Basic realm="Maintenance Mode"');
-    header('HTTP/1.0 401 Unauthorized');
-    die('<h2 style="text-align:center; margin-top:50px; font-family:sans-serif; direction:rtl;">الموقع تحت الصيانة مؤقتاً. جاري التحديث...</h2>');
+if (empty($_SESSION['maintenance_passed'])) {
+    if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== 'zoro' || $_SERVER['PHP_AUTH_PW'] !== '404404') {
+        header('WWW-Authenticate: Basic realm="Maintenance Mode"');
+        header('HTTP/1.0 401 Unauthorized');
+        die('<h2 style="text-align:center; margin-top:50px; font-family:sans-serif; direction:rtl;">الموقع تحت الصيانة مؤقتاً. جاري التحديث...</h2>');
+    } else {
+        $_SESSION['maintenance_passed'] = true;
+    }
 }
 
 define('ROOT_DIR', __DIR__);
