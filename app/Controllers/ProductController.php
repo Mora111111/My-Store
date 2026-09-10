@@ -98,6 +98,42 @@ class ProductController {
             elseif ($rating >= $i - 0.5) { $starsHtml .= '<i class="fa-regular fa-star-half-stroke fa-flip-horizontal"></i>'; } 
             else { $starsHtml .= '<i class="fa-regular fa-star"></i>'; }
         }
+        // جلب وحساب الخصومات التلقائية لصفحة المنتج
+        $globalCouponModel = new Coupon();
+        $activeCouponsRaw = $globalCouponModel->getActiveStrikethroughCoupons();
+        usort($activeCouponsRaw, function($a,$b) {
+            if ($a['discount_type'] === $b['discount_type']) return $b['discount_value'] <=> $a['discount_value'];
+            return $a['discount_type'] === 'percentage' ? -1 : 1;
+        });
+
+        $final_price = $productUpdated['price'];
+        $original_price = $productUpdated['price'];
+        $has_coupon_discount = false;
+        $discount_pct_badge = 0;
+
+        foreach($activeCouponsRaw as $c) {
+            if($c['target_type'] === 'all' || ($c['target_type'] === 'specific_product' && $c['target_product_id'] == $productUpdated['id'])) {
+                $has_coupon_discount = true;
+                if($c['discount_type'] === 'percentage') {
+                    $discount_amount = ($original_price * ($c['discount_value'] / 100));
+                    $final_price = $original_price - $discount_amount;
+                    $discount_pct_badge = round($c['discount_value']);
+                } else {
+                    $final_price = $original_price - $c['discount_value'];
+                    $discount_pct_badge = round(($c['discount_value'] / $original_price) * 100);
+                }
+                $final_price = max(0, $final_price);
+                break;
+            }
+        }
+
+        // في حال عدم وجود كوبون ولكن يوجد سعر قديم يدوي
+        if(!$has_coupon_discount && !empty($productUpdated['old_price']) && $productUpdated['old_price'] > $original_price) {
+            $has_coupon_discount = true;
+            $final_price = $original_price;
+            $original_price = $productUpdated['old_price'];
+            $discount_pct_badge = round((($original_price - $final_price) / $original_price) * 100);
+        }
         $priceParts = explode('.', number_format($productUpdated['price'], 2, '.', ''));
         $mainPrice = $priceParts[0]; $decimals = $priceParts[1];
         
