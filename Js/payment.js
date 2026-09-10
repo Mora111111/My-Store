@@ -223,8 +223,7 @@ if (activeCoupon) {
 }
 
 const finalTotalText = document.querySelector('.final-total-price')?.textContent || window.localStorage.getItem("total_Price") || "0";
-const finalTotalNumeric = finalTotalText.replace(/[^\d.]/g, '');
-formData.append("total_price", finalTotalNumeric || 0);
+formData.append("total_price", 0);
 
 formData.append("products", JSON.stringify(cartItems.map(item => {
     item.number = parseInt(item.number || item.quantity || item.qty || 1);

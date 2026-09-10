@@ -120,4 +120,40 @@ class Product {
         
         return BASE_URL . 'images/logos/logo.png';
     } 
+    public static function calculateDiscount($product, $activeCoupons) {
+        $final_price = $product['price'];
+        $has_coupon_discount = false;
+        $discount_pct_badge = 0;
+        $original_price = $product['price'];
+
+        foreach($activeCoupons as $c) {
+            if($c['target_type'] === 'all' || ($c['target_type'] === 'specific_product' && $c['target_product_id'] == $product['id'])) {
+                $has_coupon_discount = true;
+                if($c['discount_type'] === 'percentage') {
+                    $discount_amount = ($original_price * ($c['discount_value'] / 100));
+                    $final_price = $original_price - $discount_amount;
+                    $discount_pct_badge = round($c['discount_value']);
+                } else {
+                    $final_price = $original_price - $c['discount_value'];
+                    $discount_pct_badge = round(($c['discount_value'] / $original_price) * 100);
+                }
+                $final_price = max(0, $final_price);
+                break;
+            }
+        }
+
+        if(!$has_coupon_discount && !empty($product['old_price']) && $product['old_price'] > $original_price) {
+            $has_coupon_discount = true;
+            $final_price = $original_price;
+            $original_price = $product['old_price']; 
+            $discount_pct_badge = round((($original_price - $final_price) / $original_price) * 100);
+        }
+
+        return [
+            'final_price' => $final_price,
+            'original_price' => $original_price,
+            'has_discount' => $has_coupon_discount,
+            'discount_pct' => $discount_pct_badge
+        ];
+    }
 }

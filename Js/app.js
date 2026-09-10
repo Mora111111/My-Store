@@ -91,18 +91,26 @@ if (cartContent && total && btnBuy && cartEmpty) {
         }
     });
 }
-
 addCartBtn.forEach((btn) => {
     btn.addEventListener("click", (event) => {
         const myCard = event.target.closest(".card") || event.target.closest(".product_details_section");
         const cardImgSrc = myCard.querySelector(".card_image") ? myCard.querySelector(".card_image").src : (myCard.querySelector("#mainProductImage") ? myCard.querySelector("#mainProductImage").src : "");
         const cardTitle = myCard.querySelector(".card_title").textContent;
+        
+        // الجزء المعدل يبدأ من هنا
         const priceEl = myCard.querySelector(".card_price") || myCard.querySelector("p");
         let cardPrice = "0";
         if (priceEl) {
-            const spanEl = priceEl.querySelector("span:first-child");
-            cardPrice = spanEl ? spanEl.textContent : priceEl.textContent;
+            const delEl = priceEl.querySelector("del");
+            if (delEl) {
+                cardPrice = delEl.textContent;
+            } else {
+                const spanEl = priceEl.querySelector("span:first-child");
+                cardPrice = spanEl ? spanEl.textContent : priceEl.textContent;
+            }
         }
+        // الجزء المعدل ينتهي هنا
+
         const cardId = btn.getAttribute("data-id");
 
         if (btn.classList.contains("done")) {
@@ -119,6 +127,8 @@ addCartBtn.forEach((btn) => {
             if(promoSection) promoSection.style.display = "block";
         }
     });
+});
+
     arrayOfCards.forEach((e) => {
         if (
             btn.parentElement.querySelector(".card_title") && 
