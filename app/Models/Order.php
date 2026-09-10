@@ -4,7 +4,7 @@ class Order {
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
     }
-    public function create(array $data): int|false {
+   public function create(array $data): int|false {
         $sql = "INSERT INTO orders (user_id, full_name, phone, address_line1, address_line2, city, governorate, zip_code, total_price, products, payment_method, payment_status, transaction_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $success = $stmt->execute([
@@ -24,8 +24,7 @@ class Order {
         ]);
         return $success ? (int)$this->db->lastInsertId() : false;
     }
-        return $success ? (int)$this->db->lastInsertId() : false;
-    }
+    
 
     public function countAll(): int {
         return (int)$this->db->query("SELECT COUNT(*) FROM orders")->fetchColumn();

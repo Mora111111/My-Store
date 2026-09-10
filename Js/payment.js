@@ -281,12 +281,18 @@ orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري ال�
                         localStorage.removeItem("total_Price");
                         localStorage.removeItem("activeCoupon");
                         
-                        const popup = document.querySelector(".popup");
-                        if (popup) {
-                            popup.classList.add("modal_active");
-                            layer.classList.add("layer_active");
+                        // التعديل الذكي: التوجيه فوراً لصفحة البنك إذا كان الدفع إلكتروني
+                        if (data.redirect && data.redirect.includes('/payment/pay')) {
+                            window.location.href = data.redirect;
                         } else {
-                            window.location.href = data.redirect || "/my-orders";
+                            // إذا كان الدفع عند الاستلام، نظهر نافذة النجاح الخضراء المعتادة
+                            const popup = document.querySelector(".popup");
+                            if (popup) {
+                                popup.classList.add("modal_active");
+                                layer.classList.add("layer_active");
+                            } else {
+                                window.location.href = data.redirect || "/my-orders";
+                            }
                         }
                     } else {
                         alert("حدث خطأ أثناء تسجيل الطلب: " + (data.error || ""));
