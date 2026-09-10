@@ -13,6 +13,7 @@
         </div>
 
         <form action="/payment/process-sandbox" method="POST">
+            <?= CSRF::getField() ?>
             <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
             
             <div style="margin-bottom: 20px; text-align: right;">
