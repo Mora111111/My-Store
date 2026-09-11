@@ -93,7 +93,7 @@ class CheckoutController {
             $payment_method = $_POST['payment_method'] ?? 'cod';
             
             // تطبيق الشحن المجاني إذا كان الدفع إلكتروني
-            if ($payment_method === 'online') {
+            if (in_array($payment_method, ['online_card', 'online_wallet'])) {
                 $shipping = 0;
             } else {
                 $shipping = floatval($site_settings['shipping_cost'] ?? 0);
@@ -120,7 +120,7 @@ class CheckoutController {
             $orderId = $orderModel->create($data);
             if ($orderId) {
                 // توجيه العميل إلى الكنترولر الخاص ببوابة الدفع
-                if ($payment_method === 'online') {
+                if (in_array($payment_method, ['online_card', 'online_wallet'])) {
                     $redirectUrl = '/payment/pay?order_id=' . $orderId;
                 } else {
                     $redirectUrl = '/my-orders';

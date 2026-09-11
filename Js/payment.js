@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 selectedLabel.style.background = '#f8fafc';
 
                 // تغيير مصاريف الشحن (مجاني للأونلاين، ورسوم للـ COD)
-                if (e.target.value === 'online') {
+                if (e.target.value === 'online_card' || e.target.value === 'online_wallet') {
                     if (displayShippingCost) displayShippingCost.textContent = 'مجاني';
                 } else {
                     if (displayShippingCost && typeof BASE_SHIPPING_COST !== 'undefined') {
