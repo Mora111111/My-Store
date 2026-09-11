@@ -58,7 +58,6 @@
       <h4 class="title_payment">طرق السداد</h4>
       <div class="payment-methods-container" style="display: flex; flex-direction: column; gap: 15px;">
         
-        <!-- خيار: الدفع عند الاستلام -->
         <label style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid var(--main-color); border-radius: 12px; cursor: pointer; background: #f8fafc; transition: 0.3s;" id="label_cod">
             <input type="radio" name="payment_method" value="cod" checked style="width: 20px; height: 20px; accent-color: var(--main-color);">
             <div style="flex: 1;">
@@ -68,17 +67,27 @@
             <i class="fa-solid fa-hand-holding-dollar" style="font-size: 24px; color: #64748b;"></i>
         </label>
 
-        <!-- خيار: الدفع الإلكتروني (يظهر فقط إذا تم تفعيله من الإعدادات) -->
         <?php if(!empty($site_settings['enable_online_payment'])): ?>
-        <label style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; background: #fff; transition: 0.3s;" id="label_online">
-            <input type="radio" name="payment_method" value="online" style="width: 20px; height: 20px; accent-color: var(--main-color);">
+        <label style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; background: #fff; transition: 0.3s;" id="label_online_card">
+            <input type="radio" name="payment_method" value="online_card" style="width: 20px; height: 20px; accent-color: var(--main-color);">
             <div style="flex: 1;">
-                <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع الإلكتروني (فيزا / محافظ إلكترونية)</h5>
-                <span style="font-size: 13px; color: #10b981; font-weight: bold;">شحن مجاني لتشجيع الدفع المسبق!</span>
+                <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع بالبطاقة البنكية (فيزا / ماستركارد)</h5>
+                <span style="font-size: 13px; color: #10b981; font-weight: bold;">شحن مجاني!</span>
             </div>
             <div style="display: flex; gap: 5px;">
                 <img src="/images/payment/payment_1.png" style="height: 20px;">
                 <img src="/images/payment/payment_2.png" style="height: 20px;">
+            </div>
+        </label>
+
+        <label style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; background: #fff; transition: 0.3s;" id="label_online_wallet">
+            <input type="radio" name="payment_method" value="online_wallet" style="width: 20px; height: 20px; accent-color: var(--main-color);">
+            <div style="flex: 1;">
+                <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع بالمحافظ الإلكترونية (فودافون كاش وغيرها)</h5>
+                <span style="font-size: 13px; color: #10b981; font-weight: bold;">شحن مجاني!</span>
+            </div>
+            <div style="display: flex; gap: 5px;">
+                <i class="fa-solid fa-wallet" style="font-size: 24px; color: #64748b;"></i>
             </div>
         </label>
         <?php endif; ?>

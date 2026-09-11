@@ -5,62 +5,60 @@ class PaymentController {
             header('Location: /login');
             exit;
         }
-
+        
         $orderId = (int)($_GET['order_id'] ?? 0);
         if (!$orderId) {
             header('Location: /my-orders');
             exit;
         }
-
+        
         $db = Database::getInstance()->getConnection();
         $stmt = $db->prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?");
         $stmt->execute([$orderId, Session::get('user_id')]);
         $order = $stmt->fetch();
-
-        // حماية: إذا الطلب غير موجود، أو كاش، أو مدفوع مسبقاً، نمنع الدخول
-        if (!$order || $order['payment_method'] !== 'online' || $order['payment_status'] === 'paid') {
+        
+        $isWallet = ($order['payment_method'] === 'online_wallet');
+        $isCard = ($order['payment_method'] === 'online_card' || $order['payment_method'] === 'online');
+        
+        if (!$order || (!$isWallet && !$isCard) || $order['payment_status'] === 'paid') {
             header('Location: /my-orders');
             exit;
         }
-
+        
         $settingModel = new Setting();
         $settings = $settingModel->getSettings();
-
+        
         $apiKey = trim($settings['gateway_api_key'] ?? '');
-        $integrationId = trim($settings['gateway_integration_id'] ?? '');
         $iframeId = trim($settings['gateway_iframe_id'] ?? '');
-
-        if (empty($apiKey) || empty($integrationId) || empty($iframeId)) {
+        $integrationId = $isWallet ? trim($settings['gateway_integration_id_wallet'] ?? '') : trim($settings['gateway_integration_id'] ?? '');
+        
+        if (empty($apiKey) || empty($integrationId)) {
             die("<h2 style='text-align:center; margin-top:50px; font-family:sans-serif;'>عذراً، بوابات الدفع غير مهيأة بشكل كامل. يرجى مراجعة الإدارة.</h2>");
         }
-
-        // Paymob تتعامل بالقرش، لذا نضرب السعر في 100
+        
         $amountCents = (int)($order['total_price'] * 100);
-
-        // 1. Authentication Request
+        
         $authResponse = $this->cURL('https://accept.paymob.com/api/auth/tokens', [
             'api_key' => $apiKey
         ]);
         $token = $authResponse->token ?? null;
         if (!$token) die("فشل المصادقة مع سيرفر الدفع (تأكد من صحة الـ API Key).");
-
-        // 2. Order Registration Request
+        
         $orderResponse = $this->cURL('https://accept.paymob.com/api/ecommerce/orders', [
             'auth_token' => $token,
             'delivery_needed' => 'false',
             'amount_cents' => $amountCents,
             'currency' => 'EGP',
-            'merchant_order_id' => $order['id'] . '_' . time() // نضيف الوقت لمنع تعارض الأرقام في وضع الاختبار
+            'merchant_order_id' => $order['id'] . '_' . time()
         ]);
         $paymobOrderId = $orderResponse->id ?? null;
         if (!$paymobOrderId) die("فشل تسجيل الطلب في بوابة الدفع.");
-
-        // فصل الاسم الأول والأخير لتمريره للبنك
+        
         $nameParts = explode(' ', $order['full_name'], 2);
         $firstName = $nameParts[0] ?? 'Customer';
         $lastName = $nameParts[1] ?? 'Name';
-
-        // 3. Payment Key Request
+        $phone = !empty($order['phone']) ? $order['phone'] : '01000000000';
+        
         $paymentKeyResponse = $this->cURL('https://accept.paymob.com/api/acceptance/payment_keys', [
             'auth_token' => $token,
             'amount_cents' => $amountCents,
@@ -68,12 +66,12 @@ class PaymentController {
             'order_id' => $paymobOrderId,
             'billing_data' => [
                 'apartment' => 'NA',
-                'email' => 'customer@domain.com', // يفضل تغييره لبريد العميل إن وجد
+                'email' => 'customer@domain.com',
                 'floor' => 'NA',
                 'first_name' => $firstName,
                 'street' => !empty($order['address_line1']) ? $order['address_line1'] : 'NA',
                 'building' => 'NA',
-                'phone_number' => !empty($order['phone']) ? $order['phone'] : 'NA',
+                'phone_number' => $phone,
                 'shipping_method' => 'NA',
                 'postal_code' => !empty($order['zip_code']) ? $order['zip_code'] : 'NA',
                 'city' => !empty($order['city']) ? $order['city'] : 'NA',
@@ -86,13 +84,104 @@ class PaymentController {
         ]);
         $paymentToken = $paymentKeyResponse->token ?? null;
         if (!$paymentToken) die("فشل توليد مفتاح الدفع النهائي.");
-
-        // 4. Redirect to Paymob Iframe
-        header('Location: https://accept.paymob.com/api/acceptance/iframes/' . $iframeId . '?payment_token=' . $paymentToken);
+        
+        if ($isWallet) {
+            $walletResponse = $this->cURL('https://accept.paymob.com/api/acceptance/payments/pay', [
+                'source' => [
+                    'identifier' => $phone,
+                    'subtype' => 'WALLET'
+                ],
+                'payment_token' => $paymentToken
+            ]);
+            $redirectUrl = $walletResponse->redirect_url ?? null;
+            if ($redirectUrl) {
+                header('Location: ' . $redirectUrl);
+                exit;
+            } else {
+                die("فشل توليد رابط الدفع للمحفظة الإلكترونية.");
+            }
+        } else {
+            header('Location: https://accept.paymob.com/api/acceptance/iframes/' . $iframeId . '?payment_token=' . $paymentToken);
+            exit;
+        }
+    }
+    
+    public function callback(): void {
+        $data = file_get_contents('php://input');
+        $json = json_decode($data, true);
+        
+        if (!$json || !isset($json['obj'])) {
+            http_response_code(400);
+            exit;
+        }
+        
+        $obj = $json['obj'];
+        $success = $obj['success'] ?? false;
+        $merchantOrderId = $obj['order']['merchant_order_id'] ?? '';
+        
+        $orderIdParts = explode('_', $merchantOrderId);
+        $realOrderId = (int)$orderIdParts[0];
+        
+        $settingModel = new Setting();
+        $settings = $settingModel->getSettings();
+        $hmacSecret = trim($settings['gateway_hmac_secret'] ?? '');
+        
+        $receivedHmac = $_GET['hmac'] ?? '';
+        
+        $requestData = [
+            'amount_cents' => $obj['amount_cents'] ?? '',
+            'created_at' => $obj['created_at'] ?? '',
+            'currency' => $obj['currency'] ?? '',
+            'error_occured' => ($obj['error_occured'] ?? false) ? 'true' : 'false',
+            'has_parent_transaction' => ($obj['has_parent_transaction'] ?? false) ? 'true' : 'false',
+            'id' => $obj['id'] ?? '',
+            'integration_id' => $obj['integration_id'] ?? '',
+            'is_3d_secure' => ($obj['is_3d_secure'] ?? false) ? 'true' : 'false',
+            'is_auth' => ($obj['is_auth'] ?? false) ? 'true' : 'false',
+            'is_capture' => ($obj['is_capture'] ?? false) ? 'true' : 'false',
+            'is_refunded' => ($obj['is_refunded'] ?? false) ? 'true' : 'false',
+            'is_standalone_payment' => ($obj['is_standalone_payment'] ?? false) ? 'true' : 'false',
+            'is_voided' => ($obj['is_voided'] ?? false) ? 'true' : 'false',
+            'order' => $obj['order']['id'] ?? '',
+            'owner' => $obj['owner'] ?? '',
+            'pending' => ($obj['pending'] ?? false) ? 'true' : 'false',
+            'source_data_pan' => $obj['source_data']['pan'] ?? '',
+            'source_data_sub_type' => $obj['source_data']['sub_type'] ?? '',
+            'source_data_type' => $obj['source_data']['type'] ?? '',
+            'success' => $success ? 'true' : 'false'
+        ];
+        
+        $concatenatedString = implode('', $requestData);
+        $calculatedHmac = hash_hmac('sha512', $concatenatedString, $hmacSecret);
+        
+        if ($calculatedHmac === $receivedHmac && $success && $realOrderId > 0) {
+            $db = Database::getInstance()->getConnection();
+            $stmt = $db->prepare("UPDATE orders SET payment_status = 'paid' WHERE id = ?");
+            $stmt->execute([$realOrderId]);
+        }
+        
+        http_response_code(200);
+        exit;
+    }
+    
+    public function response(): void {
+        $success = $_GET['success'] ?? 'false';
+        if ($success === 'true') {
+            echo "<div style='text-align:center; padding:50px; font-family:sans-serif; background:#f0fdf4; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;'>
+                    <h1 style='color:#166534; font-size:40px; margin-bottom:20px;'>تم الدفع بنجاح!</h1>
+                    <p style='color:#15803d; font-size:20px; margin-bottom:40px;'>نشكرك، تم استلام طلبك وتأكيد الدفع.</p>
+                    <a href='/my-orders' style='padding:15px 30px; background:#10b981; color:#fff; text-decoration:none; border-radius:8px; font-size:18px; font-weight:bold;'>العودة لطلباتي</a>
+                  </div>";
+        } else {
+            echo "<div style='text-align:center; padding:50px; font-family:sans-serif; background:#fef2f2; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;'>
+                    <h1 style='color:#991b1b; font-size:40px; margin-bottom:20px;'>فشلت عملية الدفع!</h1>
+                    <p style='color:#b91c1c; font-size:20px; margin-bottom:40px;'>عذراً، حدث خطأ أثناء معالجة الدفع أو تم رفض العملية من البنك.</p>
+                    <a href='/checkout' style='padding:15px 30px; background:#ef4444; color:#fff; text-decoration:none; border-radius:8px; font-size:18px; font-weight:bold;'>حاول مرة أخرى</a>
+                  </div>";
+        }
         exit;
     }
 
-    // دالة مساعدة للاتصال السريع والمحمي بـ API
     private function cURL($url, $data) {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -101,7 +190,6 @@ class PaymentController {
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json'
         ]);
-        // تجاهل التحقق من SSL محلياً لتجنب الأخطاء، لكن يفضل تفعيله في الإنتاج
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
         $response = curl_exec($ch);
         curl_close($ch);

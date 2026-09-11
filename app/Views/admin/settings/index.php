@@ -1,4 +1,3 @@
-
 <div class="card" style="max-width:800px; margin:auto;">
     <h2 style="text-align:center;"><i class="fa-solid fa-gear" style="color:#38bdf8;"></i> إعدادات الموقع</h2>
 
@@ -54,12 +53,18 @@
         <label>مفتاح الربط الخاص (API Key):</label>
         <input type="text" name="gateway_api_key" value="<?php echo htmlspecialchars($site_settings['gateway_api_key'] ?? ''); ?>">
       </div>
-
       <div class="form_row">
-        <label>رقم الدمج (Integration ID):</label>
+        <label>مفتاح التشفير السري للـ Webhook (HMAC Secret):</label>
+        <input type="text" name="gateway_hmac_secret" value="<?php echo htmlspecialchars($site_settings['gateway_hmac_secret'] ?? ''); ?>">
+      </div>
+      <div class="form_row">
+        <label>رقم الدمج للبطاقات البنكية (Card Integration ID):</label>
         <input type="text" name="gateway_integration_id" value="<?php echo htmlspecialchars($site_settings['gateway_integration_id'] ?? ''); ?>">
       </div>
-
+      <div class="form_row">
+        <label>رقم الدمج للمحافظ الإلكترونية (Wallet Integration ID):</label>
+        <input type="text" name="gateway_integration_id_wallet" value="<?php echo htmlspecialchars($site_settings['gateway_integration_id_wallet'] ?? ''); ?>">
+      </div>
       <div class="form_row">
         <label>رقم نافذة الدفع (Iframe ID):</label>
         <input type="text" name="gateway_iframe_id" value="<?php echo htmlspecialchars($site_settings['gateway_iframe_id'] ?? ''); ?>">
