@@ -36,7 +36,7 @@ class AdminSettingController {
                 
                 $check = $db->query("SELECT id FROM settings WHERE id = 1")->fetch();
                 if (!$check) {
-                    $db->query("INSERT INTO settings (id, about_text, phone1, phone2, email, address, shipping_cost, facebook_link, maintenance_mode, global_discount, enable_online_payment, gateway_api_key, gateway_integration_id, gateway_iframe_id) VALUES (1, 'متجرنا', '010', '', 'email@test.com', 'مصر', 0, '', 0, 0, 0, '', '', '')");
+                    $db->query("INSERT INTO settings (id, about_text, phone1, phone2, email, address, shipping_cost, facebook_link, maintenance_mode, global_discount, enable_online_payment, gateway_api_key, gateway_integration_id, gateway_iframe_id, gateway_hmac_secret, gateway_integration_id_wallet) VALUES (1, 'متجرنا', '010', '', 'email@test.com', 'مصر', 0, '', 0, 0, 0, '', '', '', '', '')");
                 }
                 
                 $settingModel = new Setting();
@@ -53,7 +53,9 @@ class AdminSettingController {
                     'enable_online_payment' => isset($_POST['enable_online_payment']) ? 1 : 0,
                     'gateway_api_key' => trim($_POST['gateway_api_key'] ?? ''),
                     'gateway_integration_id' => trim($_POST['gateway_integration_id'] ?? ''),
-                    'gateway_iframe_id' => trim($_POST['gateway_iframe_id'] ?? '')
+                    'gateway_iframe_id' => trim($_POST['gateway_iframe_id'] ?? ''),
+                    'gateway_hmac_secret' => trim($_POST['gateway_hmac_secret'] ?? ''),
+                    'gateway_integration_id_wallet' => trim($_POST['gateway_integration_id_wallet'] ?? '')
                 ]);
                 
                 $_SESSION['toast_msg'] = 'تم حفظ الإعدادات بنجاح!';
