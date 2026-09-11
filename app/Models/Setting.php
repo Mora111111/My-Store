@@ -9,7 +9,7 @@ class Setting {
         return $stmt->fetch();
     }
     public function update(array $data): bool {
-        $stmt = $this->db->prepare("UPDATE settings SET about_text = ?, phone1 = ?, phone2 = ?, email = ?, address = ?, shipping_cost = ?, facebook_link = ?, maintenance_mode = ?, global_discount = ?, enable_online_payment = ?, gateway_api_key = ?, gateway_integration_id = ?, gateway_iframe_id = ? WHERE id = 1");
+        $stmt = $this->db->prepare("UPDATE settings SET about_text = ?, phone1 = ?, phone2 = ?, email = ?, address = ?, shipping_cost = ?, facebook_link = ?, maintenance_mode = ?, global_discount = ?, enable_online_payment = ?, gateway_api_key = ?, gateway_integration_id = ?, gateway_iframe_id = ?, gateway_hmac_secret = ?, gateway_integration_id_wallet = ? WHERE id = 1");
         return $stmt->execute([
             $data['about_text'], 
             $data['phone1'], 
@@ -23,7 +23,9 @@ class Setting {
             $data['enable_online_payment'],
             $data['gateway_api_key'],
             $data['gateway_integration_id'],
-            $data['gateway_iframe_id']
+            $data['gateway_iframe_id'],
+            $data['gateway_hmac_secret'],
+            $data['gateway_integration_id_wallet']
         ]);
     }
 }
