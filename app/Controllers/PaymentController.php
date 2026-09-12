@@ -106,7 +106,7 @@ class PaymentController {
                 header('Location: ' . $redirectUrl);
                 exit;
             } else {
-                die("فشل توليد رابط الدفع للمحفظة الإلكترونية.");
+                die("<div style='direction:ltr; text-align:left; padding:20px; background:#1e293b; color:#ef4444; font-family:monospace;'><h3>Wallet Pay Error:</h3><pre>" . json_encode($walletResponse, JSON_PRETTY_PRINT) . "</pre></div>");
             }
         } else {
             header('Location: https://accept.paymob.com/api/acceptance/iframes/' . $iframeId . '?payment_token=' . $paymentToken);
