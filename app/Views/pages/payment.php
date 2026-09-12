@@ -293,7 +293,7 @@
             subTotalElements.forEach(el => { el.textContent = calculatedSubTotal.toFixed(2) + ' ج.م'; });
 
             // دالة تحديث الإجمالي النهائي بناءً على طريقة الدفع
-            const updateFinalTotal = () => {
+           const updateFinalTotal = () => {
                 let currentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
                 let currentShipping = (currentMethod === 'online_card' || currentMethod === 'online_wallet') ? 0 : baseShippingCost;
                 
@@ -301,7 +301,13 @@
                     displayShippingCost.textContent = currentShipping > 0 ? currentShipping.toFixed(2) + ' ج.م' : 'مجاني';
                 }
                 
-                let finalTotal = calculatedSubTotal + currentShipping;
+                let baseSubTotal = calculatedSubTotal;
+                const localTotalStr = window.localStorage.getItem("total_Price");
+                if (localTotalStr) {
+                    baseSubTotal = parseFloat(localTotalStr.replace(/[^\d.]/g, '')) || calculatedSubTotal;
+                }
+                
+                let finalTotal = baseSubTotal + currentShipping;
                 finalTotalElements.forEach(el => { el.textContent = finalTotal.toFixed(2) + ' ج.م'; });
             };
 

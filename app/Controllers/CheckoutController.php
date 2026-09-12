@@ -23,21 +23,34 @@ class CheckoutController {
             $settingModel = new Setting();
             
             $activeCouponsRaw = $couponModel->getActiveStrikethroughCoupons();
-            // ترتيب الخصومات لاختيار الأفضل للعميل لضمان تطابق السعر مع الواجهة
             usort($activeCouponsRaw, function($a, $b) {
                 if ($a['discount_type'] === $b['discount_type']) return $b['discount_value'] <=> $a['discount_value'];
                 return $a['discount_type'] === 'percentage' ? -1 : 1;
             });
             $activeCoupons = $activeCouponsRaw;
+            
             $appliedCoupon = null;
+            $couponError = false;
+            
             if (!empty($_POST['applied_promo_code'])) {
                 $db = Database::getInstance()->getConnection();
                 $stmt = $db->prepare("SELECT * FROM coupons WHERE code = ? AND status = 1 AND show_strikethrough = 0 LIMIT 1");
                 $stmt->execute([trim($_POST['applied_promo_code'])]);
                 $appliedCoupon = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$appliedCoupon) {
+                    $couponError = true;
+                }
+            }
+            
+            if ($couponError) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'error' => 'كوبون الخصم غير صالح أو انتهت صلاحيته. يرجى تحديث الصفحة.']);
+                exit;
             }
             
             $subtotal = 0;
+            $fixedDiscountAll = 0;
             $secureProductsArray = [];
 
             if (is_array($cartProducts)) {
@@ -49,19 +62,24 @@ class CheckoutController {
                         $finalPrice = $basePrice;
                         $promoAppliedToItem = false;
 
-                        // 1. الأولوية للكوبون اليدوي (يلغي الشطب التلقائي)
                         if ($appliedCoupon) {
-                            if ($appliedCoupon['target_type'] === 'all' || ($appliedCoupon['target_type'] === 'specific_product' && $appliedCoupon['target_product_id'] == $dbProduct['id'])) {
+                            if ($appliedCoupon['target_type'] === 'specific_product' && $appliedCoupon['target_product_id'] == $dbProduct['id']) {
                                 $promoAppliedToItem = true;
                                 if ($appliedCoupon['discount_type'] === 'percentage') {
                                     $finalPrice = $basePrice - ($basePrice * ($appliedCoupon['discount_value'] / 100));
                                 } else {
                                     $finalPrice = $basePrice - $appliedCoupon['discount_value'];
                                 }
+                            } elseif ($appliedCoupon['target_type'] === 'all') {
+                                $promoAppliedToItem = true;
+                                if ($appliedCoupon['discount_type'] === 'percentage') {
+                                    $finalPrice = $basePrice - ($basePrice * ($appliedCoupon['discount_value'] / 100));
+                                } else {
+                                    $fixedDiscountAll = $appliedCoupon['discount_value'];
+                                }
                             }
                         }
 
-                        // 2. الخصم التلقائي (يطبق فقط إذا لم يكن هناك كوبون يدوي لهذا المنتج)
                         if (!$promoAppliedToItem) {
                             foreach ($activeCoupons as $c) {
                                 if ($c['target_type'] === 'all' || ($c['target_type'] === 'specific_product' && $c['target_product_id'] == $dbProduct['id'])) {
@@ -89,10 +107,18 @@ class CheckoutController {
                 }
             }
 
+            if ($fixedDiscountAll > 0) {
+                $subtotal -= $fixedDiscountAll;
+                $subtotal = max(0, $subtotal);
+            }
+
+            $db = Database::getInstance()->getConnection();
+            $delStmt = $db->prepare("DELETE FROM orders WHERE user_id = ? AND status = 'قيد المراجعة' AND payment_status = 'pending'");
+            $delStmt->execute([Session::get('user_id')]);
+
             $site_settings = $settingModel->getSettings();
             $payment_method = $_POST['payment_method'] ?? 'cod';
             
-            // تطبيق الشحن المجاني إذا كان الدفع إلكتروني
             if (in_array($payment_method, ['online_card', 'online_wallet'])) {
                 $shipping = 0;
             } else {
@@ -119,7 +145,6 @@ class CheckoutController {
 
             $orderId = $orderModel->create($data);
             if ($orderId) {
-                // توجيه العميل إلى الكنترولر الخاص ببوابة الدفع
                 if (in_array($payment_method, ['online_card', 'online_wallet'])) {
                     $redirectUrl = '/payment/pay?order_id=' . $orderId;
                 } else {
@@ -136,4 +161,3 @@ class CheckoutController {
             exit;
         }
     }
-}
