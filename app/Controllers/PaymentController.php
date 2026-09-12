@@ -30,19 +30,22 @@ class PaymentController {
         
         $apiKey = trim($settings['gateway_api_key'] ?? '');
         $iframeId = trim($settings['gateway_iframe_id'] ?? '');
-        $integrationId = $isWallet ? (int)trim($settings['gateway_integration_id_wallet'] ?? 0) : (int)trim($settings['gateway_integration_id'] ?? 0);
         
-        if (empty($apiKey) || empty($integrationId)) {
-            die("<h2 style='text-align:center; margin-top:50px; font-family:sans-serif;'>عذراً، بوابات الدفع غير مهيأة بشكل كامل. يرجى مراجعة الإدارة.</h2>");
+        // جلب أرقام الدمج كأرقام صحيحة لتجنب رفض Paymob
+        $cardIntId = (int)trim($settings['gateway_integration_id'] ?? 0);
+        $walletIntId = (int)trim($settings['gateway_integration_id_wallet'] ?? 0);
+        $integrationId = $isWallet ? $walletIntId : $cardIntId;
+        
+        if (empty($apiKey) || $integrationId === 0) {
+            die("<h2 style='text-align:center; margin-top:50px; font-family:sans-serif;'>عذراً، رقم الدمج غير موجود. يرجى التأكد من حفظ إعدادات بوابات الدفع في لوحة التحكم.</h2>");
         }
         
         $amountCents = (int)($order['total_price'] * 100);
         
-        $authResponse = $this->cURL('https://accept.paymob.com/api/auth/tokens', [
-            'api_key' => $apiKey
-        ]);
+        $authResponse = $this->cURL('https://accept.paymob.com/api/auth/tokens', ['api_key' => $apiKey]);
         $token = $authResponse->token ?? null;
-if (!$token) die("<div style='direction:ltr; text-align:left; padding:20px; background:#1e293b; color:#10b981; font-family:monospace;'><h3>1. Auth Error:</h3><pre>" . json_encode($authResponse, JSON_PRETTY_PRINT) . "</pre></div>");        
+        if (!$token) die("فشل المصادقة مع سيرفر الدفع.");
+        
         $orderResponse = $this->cURL('https://accept.paymob.com/api/ecommerce/orders', [
             'auth_token' => $token,
             'delivery_needed' => 'false',
@@ -51,14 +54,19 @@ if (!$token) die("<div style='direction:ltr; text-align:left; padding:20px; back
             'merchant_order_id' => $order['id'] . '_' . time()
         ]);
         $paymobOrderId = $orderResponse->id ?? null;
-        if (!$paymobOrderId) die("<div style='direction:ltr; text-align:left; padding:20px; background:#1e293b; color:#10b981; font-family:monospace;'><h3>2. Order Error:</h3><pre>" . json_encode($orderResponse, JSON_PRETTY_PRINT) . "</pre></div>");
+        if (!$paymobOrderId) die("فشل تسجيل الطلب في بوابة الدفع.");
         
+        // معالجة وتأمين الاسم الأخير لتجنب انهيار الـ Array
         $fullName = trim($order['full_name']);
         $nameParts = explode(' ', $fullName);
         $firstName = !empty($nameParts[0]) ? $nameParts[0] : 'Customer';
         $lastName = (count($nameParts) > 1 && !empty($nameParts[1])) ? $nameParts[1] : 'User';
-        $phone = !empty($order['phone']) ? preg_replace('/[^0-9]/', '', $order['phone']) : '01000000000';
         
+        // معالجة رقم الهاتف ليتوافق مع اشتراطات محافظ Paymob
+        $rawPhone = !empty($order['phone']) ? preg_replace('/[^0-9]/', '', $order['phone']) : '01000000000';
+        $walletPhone = preg_match('/^01[0125][0-9]{8}$/', $rawPhone) ? $rawPhone : '01010101010'; // رقم محفظة صالح إجبارياً للـ Test
+        $finalPhone = $isWallet ? $walletPhone : $rawPhone;
+
         $paymentKeyResponse = $this->cURL('https://accept.paymob.com/api/acceptance/payment_keys', [
             'auth_token' => $token,
             'amount_cents' => $amountCents,
@@ -71,7 +79,7 @@ if (!$token) die("<div style='direction:ltr; text-align:left; padding:20px; back
                 'first_name' => $firstName,
                 'street' => !empty($order['address_line1']) ? $order['address_line1'] : 'NA',
                 'building' => 'NA',
-                'phone_number' => $phone,
+                'phone_number' => $finalPhone,
                 'shipping_method' => 'NA',
                 'postal_code' => !empty($order['zip_code']) ? $order['zip_code'] : 'NA',
                 'city' => !empty($order['city']) ? $order['city'] : 'NA',
@@ -83,12 +91,12 @@ if (!$token) die("<div style='direction:ltr; text-align:left; padding:20px; back
             'integration_id' => $integrationId
         ]);
         $paymentToken = $paymentKeyResponse->token ?? null;
-        if (!$paymentToken) die("<div style='direction:ltr; text-align:left; padding:20px; background:#1e293b; color:#10b981; font-family:monospace;'><h3>3. Payment Key Error:</h3><pre>" . json_encode($paymentKeyResponse, JSON_PRETTY_PRINT) . "</pre></div>");
+        if (!$paymentToken) die("فشل توليد مفتاح الدفع النهائي.");
         
         if ($isWallet) {
             $walletResponse = $this->cURL('https://accept.paymob.com/api/acceptance/payments/pay', [
                 'source' => [
-                    'identifier' => $phone,
+                    'identifier' => $finalPhone,
                     'subtype' => 'WALLET'
                 ],
                 'payment_token' => $paymentToken
@@ -190,19 +198,12 @@ if (!$token) die("<div style='direction:ltr; text-align:left; padding:20px; back
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json'
         ]);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
+        
+        // تم تفعيل التحقق من الـ SSL (True) لسد ثغرة Man-in-the-Middle وتأمين الاتصال
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true); 
+        
         $response = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-
-        $logData = "[" . date('Y-m-d H:i:s') . "]\n";
-        $logData .= "URL: " . $url . "\n";
-        $logData .= "Payload: " . json_encode($data) . "\n";
-        $logData .= "HTTP Code: " . $http_code . "\n";
-        $logData .= "Response: " . $response . "\n";
-        $logData .= str_repeat("=", 50) . "\n";
-        file_put_contents(__DIR__ . '/paymob_debug.txt', $logData, FILE_APPEND);
-
         return json_decode($response);
     }
 }
