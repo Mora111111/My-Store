@@ -243,7 +243,6 @@
 <script> const BASE_SHIPPING_COST = <?php echo floatval($site_settings['shipping_cost'] ?? 0); ?>; </script>
 <script src="/Js/payment.js"></script>
 <script>
-    <script>
     document.addEventListener('DOMContentLoaded', () => {
         const reviewContainer = document.getElementById('review-products-container');
         const cartItemsStr = localStorage.getItem('cards');

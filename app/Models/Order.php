@@ -36,6 +36,16 @@ class Order {
     }
 
     public function updateStatus(int $id, string $status): bool {
+        // 1. جلب الحالة الحالية للطلب لمنع التعديل إذا كان ملغياً
+        $checkStmt = $this->db->prepare("SELECT status FROM orders WHERE id = ?");
+        $checkStmt->execute([$id]);
+        $currentStatus = $checkStmt->fetchColumn();
+
+        if ($currentStatus === 'ملغي') {
+            return false; // الرفض الأمني: لا يجوز تغيير حالة طلب تم إلغاؤه
+        }
+
+        // 2. التحديث إذا كانت الحالة مسموحة
         $stmt = $this->db->prepare("UPDATE orders SET status = ? WHERE id = ?");
         return $stmt->execute([$status, $id]);
     }

@@ -23,14 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         displayShippingCost.textContent = BASE_SHIPPING_COST > 0 ? BASE_SHIPPING_COST + ' ج.م' : 'مجاني';
                     }
                 }
-                
+
                 // إعادة حساب الإجمالي
                 if (typeof updateTotalPrice === 'function') updateTotalPrice();
             });
         });
     }
     const orderBtn = document.querySelector(".order_btn");
-    const modal = document.querySelector(".container_modal"); 
+    const modal = document.querySelector(".container_modal");
     const layer = document.querySelector(".layer");
     const closeModal = document.querySelector(".close_modal");
     const addressDiv = document.querySelector(".address");
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sendBtn.addEventListener("click", (e) => {
             e.preventDefault();
             const isEmpty = inputs.some(input => !input || input.value.trim() === "");
-            
+
             if (isEmpty) {
                 checkInputs(inputs);
             } else {
@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     changeAddressBtn.addEventListener("click", () => {
                         modalChange.classList.add("modal_active");
                         layer.classList.add("layer_active");
-                        
+
                         userChange.value = document.getElementById("user-Address").textContent;
                         phoneChange.value = document.getElementById("phone-Address").textContent;
                         streetChange.value = document.getElementById("street-Address").textContent;
@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
         doneChangeBtn.addEventListener("click", (e) => {
             e.preventDefault();
             const isEmpty = inputsChange.some(input => !input || input.value.trim() === "");
-            
+
             if (isEmpty) {
                 checkInputs(inputsChange);
             } else {
@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const formData = new FormData();
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-            
+
             formData.append("csrf_token", csrfToken);
             formData.append("ajax_checkout", "1");
             formData.append("full_name", document.getElementById("user-Address").textContent);
@@ -248,22 +248,22 @@ document.addEventListener("DOMContentLoaded", () => {
             formData.append("zip_code", document.getElementById("postal-Address").textContent);
             const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
             formData.append("payment_method", selectedPaymentMethod);
-           const activeCoupon = JSON.parse(localStorage.getItem('activeCoupon') || 'null');
-if (activeCoupon) {
-    formData.append("applied_promo_code", activeCoupon.code);
-}
+            const activeCoupon = JSON.parse(localStorage.getItem('activeCoupon') || 'null');
+            if (activeCoupon) {
+                formData.append("applied_promo_code", activeCoupon.code);
+            }
 
-const finalTotalText = document.querySelector('.final-total-price')?.textContent || window.localStorage.getItem("total_Price") || "0";
-const finalTotalNumeric = finalTotalText.replace(/[^\d.]/g, '');
-formData.append("total_price", finalTotalNumeric || 0);
+            const finalTotalText = document.querySelector('.final-total-price')?.textContent || window.localStorage.getItem("total_Price") || "0";
+            const finalTotalNumeric = finalTotalText.replace(/[^\d.]/g, '');
+            formData.append("total_price", finalTotalNumeric || 0);
 
-formData.append("products", JSON.stringify(cartItems.map(item => {
-    item.number = parseInt(item.number || item.quantity || item.qty || 1);
-    return item;
-})));
+            formData.append("products", JSON.stringify(cartItems.map(item => {
+                item.number = parseInt(item.number || item.quantity || item.qty || 1);
+                return item;
+            })));
 
-orderBtn.disabled = true;
-orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التنفيذ...';
+            orderBtn.disabled = true;
+            orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التنفيذ...';
             fetch("/checkout/process", {
                 method: "POST",
                 headers: {
@@ -272,45 +272,49 @@ orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري ال�
                 },
                 body: formData
             })
-            .then(async res => {
-                const text = await res.text();
-                try {
-                    const data = JSON.parse(text);
-                    if (data.success) {
-                        localStorage.removeItem("cards");
-                        localStorage.removeItem("total_Price");
-                        localStorage.removeItem("activeCoupon");
-                        
-                        // التعديل الذكي: التوجيه فوراً لصفحة البنك إذا كان الدفع إلكتروني
-                        if (data.redirect && data.redirect.includes('/payment/pay')) {
-                            window.location.href = data.redirect;
-                        } else {
-                            // إذا كان الدفع عند الاستلام، نظهر نافذة النجاح الخضراء المعتادة
-                            const popup = document.querySelector(".popup");
-                            if (popup) {
-                                popup.classList.add("modal_active");
-                                layer.classList.add("layer_active");
+                .then(async res => {
+                    const text = await res.text();
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.success) {
+                            if (data.redirect && data.redirect.includes('/payment/pay')) {
+                                // لا تمسح السلة هنا، اتركها تحسباً لفشل الدفع الإلكتروني
+                                window.location.href = data.redirect;
                             } else {
-                                window.location.href = data.redirect || "/my-orders";
+                                // الدفع عند الاستلام (COD): امسح السلة واظهر رسالة النجاح
+                                localStorage.removeItem("cards");
+                                localStorage.removeItem("total_Price");
+                                localStorage.removeItem("activeCoupon");
+
+                                const popup = document.querySelector(".popup");
+                                window.location.href = data.redirect;
+                            } else {
+                                // إذا كان الدفع عند الاستلام، نظهر نافذة النجاح الخضراء المعتادة
+                                const popup = document.querySelector(".popup");
+                                if (popup) {
+                                    popup.classList.add("modal_active");
+                                    layer.classList.add("layer_active");
+                                } else {
+                                    window.location.href = data.redirect || "/my-orders";
+                                }
                             }
+                        } else {
+                            alert("حدث خطأ أثناء تسجيل الطلب: " + (data.error || ""));
+                            orderBtn.disabled = false;
+                            orderBtn.textContent = "تأكيد الطلب";
                         }
-                    } else {
-                        alert("حدث خطأ أثناء تسجيل الطلب: " + (data.error || ""));
+                    } catch (e) {
+                        console.error("Server response:", text);
+                        alert("فشل استجابة السيرفر. برجاء المحاولة مرة أخرى.");
                         orderBtn.disabled = false;
                         orderBtn.textContent = "تأكيد الطلب";
                     }
-                } catch (e) {
-                    console.error("Server response:", text);
-                    alert("فشل استجابة السيرفر. برجاء المحاولة مرة أخرى.");
+                })
+                .catch(err => {
+                    alert("حدث خطأ في الاتصال: " + err.message);
                     orderBtn.disabled = false;
                     orderBtn.textContent = "تأكيد الطلب";
-                }
-            })
-            .catch(err => {
-                alert("حدث خطأ في الاتصال: " + err.message);
-                orderBtn.disabled = false;
-                orderBtn.textContent = "تأكيد الطلب";
-            });
+                });
         });
     }
 });

@@ -41,17 +41,21 @@
           </td>
           <td><span class="status-badge <?php echo $status_class; ?>"><?php echo $status; ?></span></td>
           <td>
-            <form method="POST" action="/admin/orders/update" class="status-form" style="margin:0;">
-              <?= CSRF::getField() ?>
-              <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
-              <select name="new_status" class="status-select">
-                <option value="قيد المراجعة" <?php echo $status == 'قيد المراجعة' ? 'selected' : ''; ?>>قيد المراجعة</option>
-                <option value="تم الشحن" <?php echo $status == 'تم الشحن' ? 'selected' : ''; ?>>تم الشحن</option>
-                <option value="مكتمل" <?php echo $status == 'مكتمل' ? 'selected' : ''; ?>>مكتمل</option>
-                <option value="ملغي" <?php echo $status == 'ملغي' ? 'selected' : ''; ?>>ملغي</option>
-              </select>
-              <button type="submit" class="btn-update"><i class="fa-solid fa-check"></i></button>
-            </form>
+            <?php if ($status === 'ملغي'): ?>
+                <span style="color:#ef4444; font-weight:bold; font-size:14px;"><i class="fa-solid fa-ban"></i> تم الإلغاء نهائياً</span>
+            <?php else: ?>
+                <form method="POST" action="/admin/orders/update" class="status-form" style="margin:0;">
+                  <?= CSRF::getField() ?>
+                  <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
+                  <select name="new_status" class="status-select">
+                    <option value="قيد المراجعة" <?php echo $status == 'قيد المراجعة' ? 'selected' : ''; ?>>قيد المراجعة</option>
+                    <option value="تم الشحن" <?php echo $status == 'تم الشحن' ? 'selected' : ''; ?>>تم الشحن</option>
+                    <option value="مكتمل" <?php echo $status == 'مكتمل' ? 'selected' : ''; ?>>مكتمل</option>
+                    <option value="ملغي" <?php echo $status == 'ملغي' ? 'selected' : ''; ?>>ملغي</option>
+                  </select>
+                  <button type="submit" class="btn-update"><i class="fa-solid fa-check"></i></button>
+                </form>
+            <?php endif; ?>
           </td>
           <td>
             <div class="actions-flex">

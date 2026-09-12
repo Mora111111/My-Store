@@ -178,7 +178,12 @@ class PaymentController {
                     <h1 style='color:#166534; font-size:40px; margin-bottom:20px;'>تم الدفع بنجاح!</h1>
                     <p style='color:#15803d; font-size:20px; margin-bottom:40px;'>نشكرك، تم استلام طلبك وتأكيد الدفع.</p>
                     <a href='/my-orders' style='padding:15px 30px; background:#10b981; color:#fff; text-decoration:none; border-radius:8px; font-size:18px; font-weight:bold;'>العودة لطلباتي</a>
-                  </div>";
+                  </div>
+                  <script>
+                    localStorage.removeItem('cards');
+                    localStorage.removeItem('total_Price');
+                    localStorage.removeItem('activeCoupon');
+                  </script>";
         } else {
             echo "<div style='text-align:center; padding:50px; font-family:sans-serif; background:#fef2f2; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;'>
                     <h1 style='color:#991b1b; font-size:40px; margin-bottom:20px;'>فشلت عملية الدفع!</h1>
