@@ -105,6 +105,7 @@ $footerSettings =$footerSettingModel->getSettings();
 <script src="/Js/app.js"></script>
 <script src="/Js/scroll.js"></script>
 <script src="/Js/account.js"></script>
+<script src="/Js/payment.js?v=<?php echo time(); ?>"></script>
 
 <script>
 document.addEventListener('click', async function(e) {

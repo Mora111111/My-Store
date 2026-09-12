@@ -54,10 +54,11 @@ class PaymentController {
         $paymobOrderId = $orderResponse->id ?? null;
         if (!$paymobOrderId) die("فشل تسجيل الطلب في بوابة الدفع.");
         
-        $nameParts = explode(' ', $order['full_name'], 2);
-        $firstName = $nameParts[0] ?? 'Customer';
-        $lastName = $nameParts[1] ?? 'Name';
-        $phone = !empty($order['phone']) ? $order['phone'] : '01000000000';
+        $fullName = trim($order['full_name']);
+        $nameParts = explode(' ', $fullName);
+        $firstName = !empty($nameParts[0]) ? $nameParts[0] : 'Customer';
+        $lastName = (count($nameParts) > 1 && !empty($nameParts[1])) ? $nameParts[1] : 'User';
+        $phone = !empty($order['phone']) ? preg_replace('/[^0-9]/', '', $order['phone']) : '01000000000';
         
         $paymentKeyResponse = $this->cURL('https://accept.paymob.com/api/acceptance/payment_keys', [
             'auth_token' => $token,
