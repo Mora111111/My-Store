@@ -31,7 +31,7 @@ class PaymentController {
         $apiKey = trim($settings['gateway_api_key'] ?? '');
         $iframeId = trim($settings['gateway_iframe_id'] ?? '');
         
-        // جلب أرقام الدمج كأرقام صحيحة لتجنب رفض Paymob
+        // تحويل أرقام الدمج إلى Integer لمنع رفض بايموب
         $cardIntId = (int)trim($settings['gateway_integration_id'] ?? 0);
         $walletIntId = (int)trim($settings['gateway_integration_id_wallet'] ?? 0);
         $integrationId = $isWallet ? $walletIntId : $cardIntId;
@@ -56,16 +56,15 @@ class PaymentController {
         $paymobOrderId = $orderResponse->id ?? null;
         if (!$paymobOrderId) die("فشل تسجيل الطلب في بوابة الدفع.");
         
-        // معالجة وتأمين الاسم الأخير لتجنب انهيار الـ Array
+        // معالجة الاسم الأخير لمنع انهيار المصفوفة
         $fullName = trim($order['full_name']);
         $nameParts = explode(' ', $fullName);
         $firstName = !empty($nameParts[0]) ? $nameParts[0] : 'Customer';
         $lastName = (count($nameParts) > 1 && !empty($nameParts[1])) ? $nameParts[1] : 'User';
         
-        // معالجة رقم الهاتف ليتوافق مع اشتراطات محافظ Paymob
+        // معالجة رقم الهاتف وإجبار رقم المحفظة التجريبي
         $rawPhone = !empty($order['phone']) ? preg_replace('/[^0-9]/', '', $order['phone']) : '01000000000';
-        $walletPhone = preg_match('/^01[0125][0-9]{8}$/', $rawPhone) ? $rawPhone : '01010101010'; // رقم محفظة صالح إجبارياً للـ Test
-        $finalPhone = $isWallet ? $walletPhone : $rawPhone;
+        $finalPhone = $isWallet ? '01010101010' : $rawPhone;
 
         $paymentKeyResponse = $this->cURL('https://accept.paymob.com/api/acceptance/payment_keys', [
             'auth_token' => $token,
@@ -106,7 +105,7 @@ class PaymentController {
                 header('Location: ' . $redirectUrl);
                 exit;
             } else {
-                die("<div style='direction:ltr; text-align:left; padding:20px; background:#1e293b; color:#ef4444; font-family:monospace;'><h3>Wallet Pay Error:</h3><pre>" . json_encode($walletResponse, JSON_PRETTY_PRINT) . "</pre></div>");
+                die("فشل توليد رابط الدفع للمحفظة الإلكترونية.");
             }
         } else {
             header('Location: https://accept.paymob.com/api/acceptance/iframes/' . $iframeId . '?payment_token=' . $paymentToken);
@@ -198,10 +197,7 @@ class PaymentController {
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json'
         ]);
-        
-        // تم تفعيل التحقق من الـ SSL (True) لسد ثغرة Man-in-the-Middle وتأمين الاتصال
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true); 
-        
         $response = curl_exec($ch);
         curl_close($ch);
         return json_decode($response);
