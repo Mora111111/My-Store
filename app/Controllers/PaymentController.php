@@ -30,7 +30,7 @@ class PaymentController {
         
         $apiKey = trim($settings['gateway_api_key'] ?? '');
         $iframeId = trim($settings['gateway_iframe_id'] ?? '');
-        $integrationId = $isWallet ? trim($settings['gateway_integration_id_wallet'] ?? '') : trim($settings['gateway_integration_id'] ?? '');
+        $integrationId = $isWallet ? (int)trim($settings['gateway_integration_id_wallet'] ?? 0) : (int)trim($settings['gateway_integration_id'] ?? 0);
         
         if (empty($apiKey) || empty($integrationId)) {
             die("<h2 style='text-align:center; margin-top:50px; font-family:sans-serif;'>عذراً، بوابات الدفع غير مهيأة بشكل كامل. يرجى مراجعة الإدارة.</h2>");
