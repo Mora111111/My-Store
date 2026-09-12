@@ -193,7 +193,17 @@ class PaymentController {
         ]);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
         $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+
+        $logData = "[" . date('Y-m-d H:i:s') . "]\n";
+        $logData .= "URL: " . $url . "\n";
+        $logData .= "Payload: " . json_encode($data) . "\n";
+        $logData .= "HTTP Code: " . $http_code . "\n";
+        $logData .= "Response: " . $response . "\n";
+        $logData .= str_repeat("=", 50) . "\n";
+        file_put_contents(__DIR__ . '/paymob_debug.txt', $logData, FILE_APPEND);
+
         return json_decode($response);
     }
 }
