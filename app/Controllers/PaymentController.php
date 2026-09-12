@@ -42,8 +42,7 @@ class PaymentController {
             'api_key' => $apiKey
         ]);
         $token = $authResponse->token ?? null;
-        if (!$token) die("فشل المصادقة مع سيرفر الدفع (تأكد من صحة الـ API Key).");
-        
+if (!$token) die("<div style='direction:ltr; text-align:left; padding:20px; background:#1e293b; color:#10b981; font-family:monospace;'><h3>1. Auth Error:</h3><pre>" . json_encode($authResponse, JSON_PRETTY_PRINT) . "</pre></div>");        
         $orderResponse = $this->cURL('https://accept.paymob.com/api/ecommerce/orders', [
             'auth_token' => $token,
             'delivery_needed' => 'false',
@@ -52,7 +51,7 @@ class PaymentController {
             'merchant_order_id' => $order['id'] . '_' . time()
         ]);
         $paymobOrderId = $orderResponse->id ?? null;
-        if (!$paymobOrderId) die("فشل تسجيل الطلب في بوابة الدفع.");
+        if (!$paymobOrderId) die("<div style='direction:ltr; text-align:left; padding:20px; background:#1e293b; color:#10b981; font-family:monospace;'><h3>2. Order Error:</h3><pre>" . json_encode($orderResponse, JSON_PRETTY_PRINT) . "</pre></div>");
         
         $fullName = trim($order['full_name']);
         $nameParts = explode(' ', $fullName);
@@ -84,7 +83,7 @@ class PaymentController {
             'integration_id' => $integrationId
         ]);
         $paymentToken = $paymentKeyResponse->token ?? null;
-        if (!$paymentToken) die("فشل توليد مفتاح الدفع النهائي.");
+        if (!$paymentToken) die("<div style='direction:ltr; text-align:left; padding:20px; background:#1e293b; color:#10b981; font-family:monospace;'><h3>3. Payment Key Error:</h3><pre>" . json_encode($paymentKeyResponse, JSON_PRETTY_PRINT) . "</pre></div>");
         
         if ($isWallet) {
             $walletResponse = $this->cURL('https://accept.paymob.com/api/acceptance/payments/pay', [
