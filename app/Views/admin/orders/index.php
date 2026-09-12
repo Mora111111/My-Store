@@ -25,7 +25,7 @@
           $status_class = $status_map[$status] ?? 'status-pending';
           $products_json = htmlspecialchars($row['products'], ENT_QUOTES, 'UTF-8');
           
-          $pay_method = ($row['payment_method'] ?? 'cod') === 'online' ? '<span class="badge" style="background:#eff6ff; color:#3b82f6;"><i class="fa-regular fa-credit-card"></i> إلكتروني</span>' : '<span class="badge" style="background:#f0fdf4; color:#166534;"><i class="fa-solid fa-money-bill"></i> كاش (COD)</span>';
+          $pay_method = in_array($row['payment_method'] ?? 'cod', ['online', 'online_card', 'online_wallet']) ? '<span class="badge" style="background:#eff6ff; color:#3b82f6;"><i class="fa-regular fa-credit-card"></i> إلكتروني</span>' : '<span class="badge" style="background:#f0fdf4; color:#166534;"><i class="fa-solid fa-money-bill"></i> كاش (COD)</span>';
           $pay_status = ($row['payment_status'] ?? 'pending') === 'paid' ? '<span style="color:#10b981; font-size:12px; font-weight:bold;"><i class="fa-solid fa-check"></i> مدفوع</span>' : '<span style="color:#f59e0b; font-size:12px; font-weight:bold;"><i class="fa-solid fa-clock"></i> معلق</span>';
         ?>
         <tr>
@@ -167,7 +167,8 @@ document.querySelectorAll('.details-btn').forEach(btn => {
     document.getElementById('modalZip').innerText = this.getAttribute('data-zip') || 'لا يوجد';
     document.getElementById('modalGrandTotal').innerText = this.getAttribute('data-total') + " ج.م";
 
-    const payMethod = this.getAttribute('data-pay-method') === 'online' ? '<span style="color:#3b82f6;">إلكتروني (فيزا/محفظة)</span>' : '<span style="color:#166534;">نقدي عند الاستلام (COD)</span>';
+    const methodVal = this.getAttribute('data-pay-method');
+const payMethod = (methodVal === 'online_card' || methodVal === 'online_wallet' || methodVal === 'online') ? '<span style="color:#3b82f6;">إلكتروني (فيزا/محفظة)</span>' : '<span style="color:#166534;">نقدي عند الاستلام (COD)</span>';
     const payStatus = this.getAttribute('data-pay-status') === 'paid' ? '<span style="color:#10b981;">مدفوع <i class="fa-solid fa-check"></i></span>' : '<span style="color:#f59e0b;">معلق <i class="fa-solid fa-clock"></i></span>';
     const trxId = this.getAttribute('data-trx-id') || '---';
 
