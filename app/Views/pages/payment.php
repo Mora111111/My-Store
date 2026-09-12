@@ -58,21 +58,25 @@
       <h4 class="title_payment">طرق السداد</h4>
       <div class="payment-methods-container" style="display: flex; flex-direction: column; gap: 15px;">
         
-        <label style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid var(--main-color); border-radius: 12px; cursor: pointer; background: #f8fafc; transition: 0.3s;" id="label_cod">
-            <input type="radio" name="payment_method" value="cod" checked style="width: 20px; height: 20px; accent-color: var(--main-color);">
-            <div style="flex: 1;">
-                <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع نقداً عند الاستلام (COD)</h5>
-                <span style="font-size: 13px; color: #64748b;">سيتم تطبيق مصاريف الشحن المعتادة.</span>
+        <label style="display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 2px solid var(--main-color); border-radius: 12px; cursor: pointer; background: #f8fafc; transition: 0.3s;" id="label_cod">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <input type="radio" name="payment_method" value="cod" checked style="width: 20px; height: 20px; accent-color: var(--main-color);">
+                <div>
+                    <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع نقداً عند الاستلام (COD)</h5>
+                    <span style="font-size: 13px; color: #64748b;">سيتم تطبيق مصاريف الشحن المعتادة.</span>
+                </div>
             </div>
             <i class="fa-solid fa-hand-holding-dollar" style="font-size: 24px; color: #64748b;"></i>
         </label>
 
         <?php if(!empty($site_settings['enable_online_payment'])): ?>
-        <label style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; background: #fff; transition: 0.3s;" id="label_online_card">
-            <input type="radio" name="payment_method" value="online_card" style="width: 20px; height: 20px; accent-color: var(--main-color);">
-            <div style="flex: 1;">
-                <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع بالبطاقة البنكية (فيزا / ماستركارد)</h5>
-                <span style="font-size: 13px; color: #10b981; font-weight: bold;">شحن مجاني!</span>
+        <label style="display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; background: #fff; transition: 0.3s;" id="label_online_card">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <input type="radio" name="payment_method" value="online_card" style="width: 20px; height: 20px; accent-color: var(--main-color);">
+                <div>
+                    <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع بالبطاقة البنكية (فيزا / ماستركارد)</h5>
+                    <span style="font-size: 13px; color: #10b981; font-weight: bold;">شحن مجاني!</span>
+                </div>
             </div>
             <div style="display: flex; gap: 5px;">
                 <img src="/images/payment/payment_1.png" style="height: 20px;">
@@ -80,11 +84,13 @@
             </div>
         </label>
 
-        <label style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; background: #fff; transition: 0.3s;" id="label_online_wallet">
-            <input type="radio" name="payment_method" value="online_wallet" style="width: 20px; height: 20px; accent-color: var(--main-color);">
-            <div style="flex: 1;">
-                <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع بالمحافظ الإلكترونية (فودافون كاش وغيرها)</h5>
-                <span style="font-size: 13px; color: #10b981; font-weight: bold;">شحن مجاني!</span>
+        <label style="display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; background: #fff; transition: 0.3s;" id="label_online_wallet">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <input type="radio" name="payment_method" value="online_wallet" style="width: 20px; height: 20px; accent-color: var(--main-color);">
+                <div>
+                    <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع بالمحافظ الإلكترونية (فودافون كاش وغيرها)</h5>
+                    <span style="font-size: 13px; color: #10b981; font-weight: bold;">شحن مجاني!</span>
+                </div>
             </div>
             <div style="display: flex; gap: 5px;">
                 <i class="fa-solid fa-wallet" style="font-size: 24px; color: #64748b;"></i>
@@ -246,7 +252,13 @@
     document.addEventListener('DOMContentLoaded', () => {
         const reviewContainer = document.getElementById('review-products-container');
         const cartItemsStr = localStorage.getItem('cards');
+        const displayShippingCost = document.getElementById('display-shipping-cost');
+        const finalTotalElements = document.querySelectorAll('.final-total-price');
+        const subTotalElements = document.querySelectorAll('.cart-total-price');
+        const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+        
         let calculatedSubTotal = 0;
+        const baseShippingCost = typeof BASE_SHIPPING_COST !== 'undefined' ? BASE_SHIPPING_COST : 0;
 
         if (reviewContainer && cartItemsStr) {
             const cartItems = JSON.parse(cartItemsStr);
@@ -257,7 +269,6 @@
                 let productId = item.id || item.productId || item.product_id || item.Id || item.ID;
                 let qty = parseInt(item.number || item.quantity || item.qty || 1);
 
-                // المعالجة الدقيقة للسعر: إزالة الفواصل أولاً ثم الأرقام
                 let cleanPriceString = (item.price || "0").toString().replace(/,/g, '');
                 let numericPrice = parseFloat(cleanPriceString.replace(/[^\d.]/g, '')) || 0;
                 calculatedSubTotal += (numericPrice * qty);
@@ -275,21 +286,31 @@
                      </a>
                      <div style="font-weight: bold; color: #f97316; font-size: 17px;">${(numericPrice * qty).toFixed(2)} ج.م</div>
                  </div>
-             `;
+               `;
             });
 
             // تحديث الإجمالي الفرعي
-            document.querySelectorAll('.cart-total-price').forEach(el => {
-                el.textContent = calculatedSubTotal.toFixed(2) + ' ج.م';
-            });
+            subTotalElements.forEach(el => { el.textContent = calculatedSubTotal.toFixed(2) + ' ج.م'; });
 
-            // حساب الشحن وتحديث الإجمالي النهائي
-            let shippingText = document.getElementById('display-shipping-cost')?.textContent || '0';
-            let shippingCost = parseFloat(shippingText.replace(/[^\d.]/g, '')) || 0;
-            let finalTotal = calculatedSubTotal + shippingCost;
+            // دالة تحديث الإجمالي النهائي بناءً على طريقة الدفع
+            const updateFinalTotal = () => {
+                let currentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
+                let currentShipping = (currentMethod === 'online_card' || currentMethod === 'online_wallet') ? 0 : baseShippingCost;
+                
+                if (displayShippingCost) {
+                    displayShippingCost.textContent = currentShipping > 0 ? currentShipping.toFixed(2) + ' ج.م' : 'مجاني';
+                }
+                
+                let finalTotal = calculatedSubTotal + currentShipping;
+                finalTotalElements.forEach(el => { el.textContent = finalTotal.toFixed(2) + ' ج.م'; });
+            };
 
-            document.querySelectorAll('.final-total-price').forEach(el => {
-                el.textContent = finalTotal.toFixed(2) + ' ج.م';
+            // تشغيل الدالة فوراً عند التحميل
+            updateFinalTotal();
+
+            // ربط الدالة بتغيير الراديو
+            paymentRadios.forEach(radio => {
+                radio.addEventListener('change', updateFinalTotal);
             });
         }
     });
