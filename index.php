@@ -3,7 +3,7 @@ ob_start();
 session_start();
 
 if (empty($_SESSION['maintenance_passed'])) {
-    if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== 'zoro' || $_SERVER['PHP_AUTH_PW'] !== '404404') {
+    if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== 'zoro' || $_SERVER['PHP_AUTH_PW'] !== '112233') {
         header('WWW-Authenticate: Basic realm="Maintenance Mode"');
         header('HTTP/1.0 401 Unauthorized');
         die('<h2 style="text-align:center; margin-top:50px; font-family:sans-serif; direction:rtl;">الموقع تحت الصيانة مؤقتاً. جاري التحديث...</h2>');
