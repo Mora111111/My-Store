@@ -192,9 +192,19 @@
         <h4 style="margin: 0; padding: 15px 20px; background: #f1f5f9; color: #1e293b; font-size: 16px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
           <i class="fa-solid fa-boxes-stacked" style="color: #64748b;"></i> المنتجات المطلوبة
         </h4>
-        <div id="modalProductsListUser" style="padding: 10px 20px; display: flex; flex-direction: column; gap: 10px;"></div>
         
-        <!-- الإجمالي النهائي -->
+        <!-- التعديل الجراحي: ستايل السكرول الاحترافي المخفي -->
+        <style>
+          #modalProductsListUser::-webkit-scrollbar { width: 6px; }
+          #modalProductsListUser::-webkit-scrollbar-track { background: #f8fafc; }
+          #modalProductsListUser::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+          #modalProductsListUser::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        </style>
+        
+        <!-- الحاوية القابلة للتمرير (تثبيت الارتفاع وإضافة Scroll) -->
+        <div id="modalProductsListUser" style="padding: 10px 20px; display: flex; flex-direction: column; gap: 10px; max-height: 260px; overflow-y: auto;"></div>
+        
+        <!-- الإجمالي النهائي (ثابت بالأسفل) -->
         <div style="background: #f8fafc; padding: 20px; border-top: 2px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
           <span style="font-size: 18px; font-weight: 700; color: #475569;">إجمالي الطلب (شامل الشحن إن وجد):</span>
           <span id="modalGrandTotalUser" style="font-size: 24px; font-weight: 900; color: #059669;"></span>
