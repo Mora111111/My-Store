@@ -90,8 +90,8 @@ function isActive($path) {
     /* Settings Form */
     .form_row { margin-bottom: 20px; }
     .form_row label { display: block; font-weight: bold; margin-bottom: 8px; color: #334155; }
-    .form_row input, .form_row textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 15px; box-sizing: border-box; }
-    .form_row input:focus, .form_row textarea:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 0 4px rgba(56,189,248,0.1); }
+    .form_row input, .form_row textarea, .form_row select { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 15px; box-sizing: border-box; background: #fff; }
+    .form_row input:focus, .form_row textarea:focus, .form_row select:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 0 4px rgba(56,189,248,0.1); }
 
     /* تقييد النصوص الطويلة فقط دون الضغط على الأزرار */
     td { word-wrap: break-word; overflow-wrap: break-word; }

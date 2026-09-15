@@ -34,6 +34,22 @@ spl_autoload_register(function ($class) {
 
 require_once __DIR__ . '/config.php';
 
+// --- النظام الذكي لضبط التوقيت ---
+try {
+    $dbConnection = Database::getInstance()->getConnection();
+    $tzStmt = $dbConnection->query("SELECT timezone FROM settings WHERE id = 1");
+    $shopTimezone = $tzStmt->fetchColumn() ?: 'Africa/Cairo';
+    
+    // 1. ضبط توقيت سيرفر الـ PHP
+    date_default_timezone_set($shopTimezone);
+    
+    // 2. ضبط توقيت قاعدة بيانات MySQL أوتوماتيكياً لتتطابق مع الـ PHP
+    $offset = date('P'); // يجلب فارق التوقيت مثل +03:00 أو +02:00
+    $dbConnection->exec("SET time_zone = '{$offset}'");
+} catch (Exception $e) {
+    date_default_timezone_set('Africa/Cairo'); // توقيت افتراضي في حالة الخطأ
+}
+
 Session::trackOnline();
 
 if (Session::isLoggedIn()) {

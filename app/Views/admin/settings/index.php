@@ -23,6 +23,15 @@
         <label>عنوان المتجر:</label>
         <input type="text" name="address" value="<?php echo htmlspecialchars($site_settings['address'] ?? ''); ?>">
       </div>
+      <div class="form_row">
+        <label>المنطقة الزمنية للمتجر (Timezone):</label>
+        <select name="timezone" class="form_input">
+            <option value="Africa/Cairo" <?php echo ($site_settings['timezone'] ?? '') == 'Africa/Cairo' ? 'selected' : ''; ?>>مصر (Africa/Cairo)</option>
+            <option value="Asia/Riyadh" <?php echo ($site_settings['timezone'] ?? '') == 'Asia/Riyadh' ? 'selected' : ''; ?>>السعودية (Asia/Riyadh)</option>
+            <option value="Asia/Dubai" <?php echo ($site_settings['timezone'] ?? '') == 'Asia/Dubai' ? 'selected' : ''; ?>>الإمارات (Asia/Dubai)</option>
+            <option value="UTC" <?php echo ($site_settings['timezone'] ?? '') == 'UTC' ? 'selected' : ''; ?>>التوقيت العالمي (UTC)</option>
+        </select>
+      </div>
       <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
       <h3 style="color:#0f172a; margin-bottom: 15px;"><i class="fa-solid fa-truck-fast" style="color:#38bdf8;"></i> إعدادات الشحن</h3>
       <div class="form_row">
