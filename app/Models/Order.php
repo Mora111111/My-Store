@@ -31,7 +31,7 @@ class Order {
     }
 
     public function getAll(): array {
-        $stmt = $this->db->query("SELECT * FROM orders ORDER BY created_at DESC");
+        $stmt = $this->db->query("SELECT * FROM orders WHERE admin_hidden = 0 ORDER BY created_at DESC");
         return $stmt->fetchAll();
     }
 
@@ -51,7 +51,7 @@ class Order {
     }
 
     public function delete(int $id): bool {
-        $stmt = $this->db->prepare("DELETE FROM orders WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE orders SET admin_hidden = 1 WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
