@@ -81,6 +81,7 @@ $router->add('POST', '/profile/update-password', 'UserProfileController@updatePa
 $router->add('GET', '/my-orders', 'UserProfileController@orders');
 $router->add('POST', '/my-orders/cancel', 'UserProfileController@cancelOrder');
 $router->add('POST', '/my-orders/hide', 'UserProfileController@hideOrder');
+$router->add('GET', '/my-orders/invoice', 'UserProfileController@invoice');
 $router->add('GET', '/my-messages', 'UserProfileController@messages');
 $router->add('POST', '/my-messages/send', 'UserProfileController@sendMessage');
 $router->add('POST', '/toggle-favorite', 'UserProfileController@toggleFavorite');

@@ -93,4 +93,10 @@ class Order {
         $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getByIdAndUser(int $id, int $userId): array|false {
+        $stmt = $this->db->prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?");
+        $stmt->execute([$id, $userId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

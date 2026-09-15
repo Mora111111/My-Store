@@ -159,4 +159,28 @@ class UserProfileController {
         echo json_encode(['success' => true, 'status' => $status]);
         exit;
     }
+
+    public function invoice(): void {
+        $orderId = (int)($_GET['id'] ?? 0);
+        if (!$orderId) {
+            header('Location: /my-orders');
+            exit;
+        }
+
+        $orderModel = new Order();
+        $order = $orderModel->getByIdAndUser($orderId, (int)Session::get('user_id'));
+
+        if (!$order) {
+            header('Location: /my-orders');
+            exit;
+        }
+
+        $settingModel = new Setting();
+        $settings = $settingModel->getSettings();
+        $products = json_decode($order['products'] ?? '[]', true) ?: [];
+
+        require_once APP_DIR . '/Views/layouts/header.php';
+        require_once APP_DIR . '/Views/pages/order_invoice.php';
+        require_once APP_DIR . '/Views/layouts/footer.php';
+    }
 }
