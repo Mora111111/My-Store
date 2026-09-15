@@ -44,17 +44,9 @@
             <?php if ($status === 'ملغي'): ?>
                 <span style="color:#ef4444; font-weight:bold; font-size:14px;"><i class="fa-solid fa-ban"></i> تم الإلغاء نهائياً</span>
             <?php else: ?>
-                <form method="POST" action="/admin/orders/update" class="status-form" style="margin:0;">
-                  <?= CSRF::getField() ?>
-                  <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
-                  <select name="new_status" class="status-select">
-                    <option value="قيد المراجعة" <?php echo $status == 'قيد المراجعة' ? 'selected' : ''; ?>>قيد المراجعة</option>
-                    <option value="تم الشحن" <?php echo $status == 'تم الشحن' ? 'selected' : ''; ?>>تم الشحن</option>
-                    <option value="مكتمل" <?php echo $status == 'مكتمل' ? 'selected' : ''; ?>>مكتمل</option>
-                    <option value="ملغي" <?php echo $status == 'ملغي' ? 'selected' : ''; ?>>ملغي</option>
-                  </select>
-                  <button type="submit" class="btn-update"><i class="fa-solid fa-check"></i></button>
-                </form>
+                <button type="button" class="btn-update" style="background:#8b5cf6;" onclick="openStatusModal(<?php echo $row['id']; ?>, '<?php echo $status; ?>')">
+                    <i class="fa-solid fa-pen"></i> تغيير الحالة
+                </button>
             <?php endif; ?>
           </td>
           <td>
@@ -234,5 +226,54 @@ document.getElementById('closeAdminModalBtn').addEventListener('click', () => {
 window.onclick = function(event) {
   const modal = document.getElementById('adminOrderModal');
   if (event.target == modal) modal.style.display = 'none';
+  const statusModal = document.getElementById('statusModal');
+  if (event.target == statusModal) statusModal.style.display = 'none';
+}
+</script>
+
+<div id="statusModal" class="modal-overlay">
+  <div class="modal-content-modern" style="width: 450px;">
+    <div class="modal-header-modern">
+      <h3 class="modal-title-modern"><i class="fa-solid fa-pen-to-square" style="color:#38bdf8;"></i> تحديث حالة الطلب #<span id="statusModalOrderIdTxt"></span></h3>
+      <i class="fa-solid fa-xmark close-btn-modern" onclick="closeStatusModal()"></i>
+    </div>
+    <div class="modal-body-modern">
+      <form method="POST" action="/admin/orders/update">
+        <?= CSRF::getField() ?>
+        <input type="hidden" name="order_id" id="statusModalOrderId">
+        
+        <div class="form-group" style="margin-bottom:15px;">
+            <label style="display:block; font-weight:bold; margin-bottom:6px;">الحالة الجديدة:</label>
+            <select name="new_status" id="statusModalSelect" class="form_input" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                <option value="قيد المراجعة">قيد المراجعة</option>
+                <option value="تم الشحن">تم الشحن</option>
+                <option value="مكتمل">مكتمل</option>
+                <option value="ملغي">ملغي</option>
+            </select>
+        </div>
+        
+        <div class="form-group" style="margin-bottom:15px;">
+            <label style="display:block; font-weight:bold; margin-bottom:6px;">رسالة توضيحية للعميل (اختياري):</label>
+            <textarea name="admin_message" class="textarea-modern" style="min-height: 100px;" placeholder="مثال: نعتذر، تم إلغاء الطلب لعدم توفر المنتج في المخزن حالياً..."></textarea>
+        </div>
+
+        <div class="modal-footer-modern">
+          <button type="button" class="btn-cancel-modern" onclick="closeStatusModal()">إلغاء</button>
+          <button type="submit" class="btn-save-modern"><i class="fa-solid fa-check"></i> حفظ التحديث</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function openStatusModal(orderId, currentStatus) {
+    document.getElementById('statusModalOrderIdTxt').innerText = orderId;
+    document.getElementById('statusModalOrderId').value = orderId;
+    document.getElementById('statusModalSelect').value = currentStatus;
+    document.getElementById('statusModal').style.display = 'flex';
+}
+function closeStatusModal() {
+    document.getElementById('statusModal').style.display = 'none';
 }
 </script>

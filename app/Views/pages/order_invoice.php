@@ -3,6 +3,7 @@ $payMethod = in_array($order['payment_method'] ?? 'cod', ['online', 'online_card
     ? 'إلكتروني (بطاقة بنكية / محفظة)' 
     : 'الدفع نقداً عند الاستلام (COD)';
 $payStatus = ($order['payment_status'] ?? 'pending') === 'paid' ? 'مدفوع' : 'معلق';
+$transactionId = !empty($order['transaction_id']) ? $order['transaction_id'] : '#' . $order['id'];
 ?>
 
 <style>
@@ -209,9 +210,16 @@ $payStatus = ($order['payment_status'] ?? 'pending') === 'paid' ? 'مدفوع' :
           <h4><i class="fa-solid fa-credit-card" style="color:#f59e0b;"></i> تفاصيل السداد</h4>
           <p><strong>طريقة الدفع:</strong> <?= $payMethod ?></p>
           <p><strong>حالة الدفع:</strong> <?= $payStatus ?></p>
-          <p><strong>رقم العملية:</strong> <?= htmlspecialchars($order['transaction_id'] ?: '---') ?></p>
+          <p><strong>رقم العملية:</strong> <span style="font-family: monospace; color: #64748b;"><?= htmlspecialchars($transactionId) ?></span></p>
         </div>
       </div>
+
+      <?php if (!empty($order['admin_message'])): ?>
+      <div style="background: #eef2ff; border-right: 4px solid #6366f1; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+        <h4 style="margin: 0 0 10px 0; color: #4338ca; font-size: 16px;"><i class="fa-solid fa-bell"></i> رسالة وتحديث من الإدارة:</h4>
+        <p style="margin: 0; color: #3730a3; font-size: 15px; line-height: 1.6; font-weight: 500;"><?= nl2br(htmlspecialchars($order['admin_message'])) ?></p>
+      </div>
+      <?php endif; ?>
 
       <table class="invoice-table">
         <thead>

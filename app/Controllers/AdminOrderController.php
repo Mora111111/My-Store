@@ -26,7 +26,9 @@ class AdminOrderController {
             $orderModel = new Order();
             $id = intval($_POST['order_id'] ?? 0);
             $status = $_POST['new_status'] ?? '';
-            if ($orderModel->updateStatus($id, $status)) {
+            $adminMessage = trim($_POST['admin_message'] ?? '');
+            
+            if ($orderModel->updateStatus($id, $status, $adminMessage)) {
                 $_SESSION['toast_msg'] = 'تم تحديث حالة الطلب بنجاح.';
                 $_SESSION['toast_type'] = 'success';
             } else {

@@ -163,8 +163,8 @@ class PaymentController {
         
         if ($calculatedHmac === $receivedHmac && $success && $realOrderId > 0) {
             $db = Database::getInstance()->getConnection();
-            $stmt = $db->prepare("UPDATE orders SET payment_status = 'paid' WHERE id = ?");
-            $stmt->execute([$realOrderId]);
+            $stmt = $db->prepare("UPDATE orders SET payment_status = 'paid', transaction_id = ? WHERE id = ?");
+            $stmt->execute([$obj['id'], $realOrderId]);
         }
         
         http_response_code(200);
