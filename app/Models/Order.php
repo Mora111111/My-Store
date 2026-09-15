@@ -87,4 +87,10 @@ class Order {
         }
         return false;
     }
+
+    public function getLastUserOrder(int $userId) {
+        $stmt = $this->db->prepare("SELECT full_name, phone, address_line1, address_line2, city, governorate, zip_code FROM orders WHERE user_id = ? ORDER BY id DESC LIMIT 1");
+        $stmt->execute([$userId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

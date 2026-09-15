@@ -43,6 +43,10 @@
     }
 </style>
 
+<script>
+    const savedAddress = <?php echo json_encode($lastOrder ?: null); ?>;
+</script>
+
 <div class="container_payment">
   <div class="content_payment">
     <div class="item_payment address"></div>
@@ -302,21 +306,66 @@
         
         // إظهار زر الإضافة أول مرة
         if (addressDiv && addressDiv.innerHTML.trim() === "") {
-            addressDiv.innerHTML = `
-              <h4 class="title_payment">عنوان الشحن</h4>
-              <div class="box_address" id="btn-open-add-modal" style="cursor:pointer; background:#f8fafc; padding:15px; border-radius:8px; border:2px dashed #cbd5e1; text-align:center;">
-                <span style="color:#3b82f6; font-weight:bold;"><i class="fa-solid fa-plus"></i> إضافة عنوان الشحن</span>
-              </div>
-            `;
-            setTimeout(() => {
-                const boxAddress = document.getElementById("btn-open-add-modal");
-                if (boxAddress) {
-                    boxAddress.addEventListener("click", () => {
-                        modalAdd.classList.add("modal_active");
-                        layer.classList.add("layer_active");
-                    });
-                }
-            }, 100);
+            if (savedAddress) {
+                document.querySelector(".input_user").value = savedAddress.full_name || "";
+                document.querySelector(".input_tel").value = savedAddress.phone || "";
+                document.querySelector(".input_address_street").value = savedAddress.address_line1 || "";
+                document.querySelector(".input_address_unit").value = savedAddress.address_line2 || "";
+                document.querySelector(".input_address_city").value = savedAddress.city || "";
+                document.querySelector(".input_address_boycott").value = savedAddress.governorate || "";
+                document.querySelector(".input_address_postal").value = savedAddress.zip_code || "";
+
+                addressDiv.innerHTML = `
+                    <div class="address_details" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h4 class="title_payment">عنوان الشحن</h4>
+                        <span class="change_address" id="btn-open-edit-modal" style="color:var(--main-color); cursor:pointer; font-weight:bold;"><i class="fa-solid fa-pen"></i> تعديل</span>
+                    </div>
+                    <div class="content_address" style="background:#f8fafc; padding:15px; border-radius:8px; line-height:1.8; border:1px solid #e2e8f0;">
+                        <h5 id="user-Address" style="margin:0; font-size:16px; color:#0f172a;">${savedAddress.full_name}</h5>
+                        <span id="phone-Address" style="display:block; color:#64748b;">${savedAddress.phone}</span>
+                        <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
+                        <span id="street-Address">${savedAddress.address_line1}</span>، 
+                        <span id="unity-Address">${savedAddress.address_line2}</span><br>
+                        <span id="city-Address">${savedAddress.city}</span> - 
+                        <span id="boycott-Address">${savedAddress.governorate}</span><br>
+                        <span style="color:#64748b;">الرمز البريدي: </span><span id="postal-Address">${savedAddress.zip_code}</span>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    const changeAddressBtn = document.getElementById("btn-open-edit-modal");
+                    if (changeAddressBtn) {
+                        changeAddressBtn.addEventListener("click", () => {
+                            modalEdit.classList.add("modal_active");
+                            layer.classList.add("layer_active");
+                            
+                            document.querySelector(".input_user_change").value = document.getElementById("user-Address").textContent;
+                            document.querySelector(".input_tel_change").value = document.getElementById("phone-Address").textContent;
+                            document.querySelector(".input_address_street_change").value = document.getElementById("street-Address").textContent;
+                            document.querySelector(".input_address_unit_change").value = document.getElementById("unity-Address").textContent;
+                            document.querySelector(".input_address_city_change").value = document.getElementById("city-Address").textContent;
+                            document.querySelector(".input_address_boycott_change").value = document.getElementById("boycott-Address").textContent;
+                            document.querySelector(".input_address_postal_change").value = document.getElementById("postal-Address").textContent;
+                        });
+                    }
+                }, 100);
+            } else {
+                addressDiv.innerHTML = `
+                  <h4 class="title_payment">عنوان الشحن</h4>
+                  <div class="box_address" id="btn-open-add-modal" style="cursor:pointer; background:#f8fafc; padding:15px; border-radius:8px; border:2px dashed #cbd5e1; text-align:center;">
+                    <span style="color:#3b82f6; font-weight:bold;"><i class="fa-solid fa-plus"></i> إضافة عنوان الشحن</span>
+                  </div>
+                `;
+                setTimeout(() => {
+                    const boxAddress = document.getElementById("btn-open-add-modal");
+                    if (boxAddress) {
+                        boxAddress.addEventListener("click", () => {
+                            modalAdd.classList.add("modal_active");
+                            layer.classList.add("layer_active");
+                        });
+                    }
+                }, 100);
+            }
         }
 
         // إغلاق النوافذ

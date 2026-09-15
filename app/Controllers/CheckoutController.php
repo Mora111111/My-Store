@@ -1,12 +1,16 @@
 <?php
 class CheckoutController {
-    public function index(): void {
+   public function index(): void {
         if (!Session::get('user_id')) {
             header('Location: /login');
             exit;
         }
         $settingModel = new Setting();
         $site_settings = $settingModel->getSettings();
+        
+        $orderModel = new Order();
+        $lastOrder = $orderModel->getLastUserOrder(Session::get('user_id'));
+
         require_once APP_DIR . '/Views/layouts/header.php';
         require_once APP_DIR . '/Views/pages/payment.php';
         require_once APP_DIR . '/Views/layouts/footer.php';
@@ -112,9 +116,7 @@ class CheckoutController {
                 $subtotal = max(0, $subtotal);
             }
 
-            $db = Database::getInstance()->getConnection();
-            $delStmt = $db->prepare("DELETE FROM orders WHERE user_id = ? AND status = 'قيد المراجعة' AND payment_status = 'pending'");
-            $delStmt->execute([Session::get('user_id')]);
+            
 
             $site_settings = $settingModel->getSettings();
             $payment_method = $_POST['payment_method'] ?? 'cod';
