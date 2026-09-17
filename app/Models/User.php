@@ -57,4 +57,9 @@ class User {
         $stmt = $this->db->prepare("UPDATE elogin SET password = ? WHERE id = ?");
         return $stmt->execute([$hashedPassword, $id]);
     }
+
+    public function updateRole(int $id, string $role): bool {
+        $stmt = $this->db->prepare("UPDATE elogin SET role = ? WHERE id = ?");
+        return $stmt->execute([$role, $id]);
+    }
 }
