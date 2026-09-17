@@ -54,9 +54,13 @@ class AdminSettingController {
                     'gateway_api_key' => trim($_POST['gateway_api_key'] ?? ''),
                     'gateway_integration_id' => trim($_POST['gateway_integration_id'] ?? ''),
                     'gateway_iframe_id' => trim($_POST['gateway_iframe_id'] ?? ''),
-                   'gateway_hmac_secret' => trim($_POST['gateway_hmac_secret'] ?? ''),
+                    'gateway_hmac_secret' => trim($_POST['gateway_hmac_secret'] ?? ''),
                     'gateway_integration_id_wallet' => trim($_POST['gateway_integration_id_wallet'] ?? ''),
-                    'timezone' => trim($_POST['timezone'] ?? 'Africa/Cairo')
+                    'timezone' => trim($_POST['timezone'] ?? 'Africa/Cairo'),
+                    'google_client_id' => trim($_POST['google_client_id'] ?? ''),
+                    'google_client_secret' => trim($_POST['google_client_secret'] ?? ''),
+                    'turnstile_site_key' => trim($_POST['turnstile_site_key'] ?? ''),
+                    'turnstile_secret_key' => trim($_POST['turnstile_secret_key'] ?? '')
                 ]);
                 
                 $_SESSION['toast_msg'] = 'تم حفظ الإعدادات بنجاح!';

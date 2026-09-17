@@ -78,6 +78,25 @@
         <label>رقم نافذة الدفع (Iframe ID):</label>
         <input type="text" name="gateway_iframe_id" value="<?php echo htmlspecialchars($site_settings['gateway_iframe_id'] ?? ''); ?>">
       </div>
+      <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
+      <h3 style="color:#0f172a; margin-bottom: 15px;"><i class="fa-solid fa-shield-halved" style="color:#38bdf8;"></i> إعدادات تسجيل الدخول وحماية الحسابات</h3>
+      
+      <div class="form_row">
+        <label>معرف عميل جوجل (Google Client ID):</label>
+        <input type="text" name="google_client_id" value="<?php echo htmlspecialchars($site_settings['google_client_id'] ?? ''); ?>">
+      </div>
+      <div class="form_row">
+        <label>الرقم السري لعميل جوجل (Google Client Secret):</label>
+        <input type="password" name="google_client_secret" value="<?php echo htmlspecialchars($site_settings['google_client_secret'] ?? ''); ?>">
+      </div>
+      <div class="form_row">
+        <label>مفتاح الموقع كلاودفلير (Turnstile Site Key):</label>
+        <input type="text" name="turnstile_site_key" value="<?php echo htmlspecialchars($site_settings['turnstile_site_key'] ?? ''); ?>">
+      </div>
+      <div class="form_row">
+        <label>المفتاح السري كلاودفلير (Turnstile Secret Key):</label>
+        <input type="password" name="turnstile_secret_key" value="<?php echo htmlspecialchars($site_settings['turnstile_secret_key'] ?? ''); ?>">
+      </div>
       <br>
       <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> حفظ التعديلات</button>
     </form>

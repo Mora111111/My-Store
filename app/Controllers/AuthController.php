@@ -152,13 +152,22 @@ public function login(): void
         exit;
     }
 
-    private const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
-    private const GOOGLE_CLIENT_SECRET = 'YOUR_GOOGLE_CLIENT_SECRET';
     private const GOOGLE_REDIRECT_URI = 'https://my-store-pz2s.onrender.com/auth/google/callback';
 
-    public function googleLogin(): void {
+    public function googleLogin(): void
+    {
+        require_once APP_DIR . '/Models/Setting.php';
+        $settingModel = new Setting();
+        $settings = $settingModel->getSettings();
+
+        // التحقق من أن المشتري قام بإدخال مفاتيحه
+        if (empty($settings['google_client_id'])) {
+            header('Location: /login?error=تسجيل الدخول بجوجل غير مفعل حالياً');
+            exit;
+        }
+
         $url = 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query([
-            'client_id' => self::GOOGLE_CLIENT_ID,
+            'client_id' => $settings['google_client_id'],
             'redirect_uri' => self::GOOGLE_REDIRECT_URI,
             'response_type' => 'code',
             'scope' => 'email profile',
@@ -169,13 +178,18 @@ public function login(): void
         exit;
     }
 
-    public function googleCallback(): void {
+    public function googleCallback(): void
+    {
+        require_once APP_DIR . '/Models/Setting.php';
+        $settingModel = new Setting();
+        $settings = $settingModel->getSettings();
+
         if (isset($_GET['code'])) {
             $ch = curl_init('https://oauth2.googleapis.com/token');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                'client_id' => self::GOOGLE_CLIENT_ID,
-                'client_secret' => self::GOOGLE_CLIENT_SECRET,
+                'client_id' => $settings['google_client_id'],
+                'client_secret' => $settings['google_client_secret'],
                 'redirect_uri' => self::GOOGLE_REDIRECT_URI,
                 'grant_type' => 'authorization_code',
                 'code' => $_GET['code']

@@ -1,21 +1,32 @@
 <?php
+
 class Setting {
     private PDO $db;
+    protected string $table = 'settings';
+
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
     }
+
+    // جلب كافة الإعدادات (ستعود كمصفوفة تمثل الصف الأول والوحيد)
     public function getSettings() {
-        $stmt = $this->db->query("SELECT * FROM settings WHERE id = 1");
-        return $stmt->fetch();
+        $stmt = $this->db->query("SELECT * FROM {$this->table} WHERE id = 1 LIMIT 1");
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
     }
+
+    // تحديث الإعدادات
     public function update(array $data): bool {
-        $stmt = $this->db->prepare("UPDATE settings SET about_text = ?, phone1 = ?, phone2 = ?, email = ?, address = ?, shipping_cost = ?, facebook_link = ?, maintenance_mode = ?, global_discount = ?, enable_online_payment = ?, gateway_api_key = ?, gateway_integration_id = ?, gateway_iframe_id = ?, gateway_hmac_secret = ?, gateway_integration_id_wallet = ?, timezone = ? WHERE id = 1");
-        return $stmt->execute([
-            $data['about_text'], $data['phone1'], $data['phone2'], $data['email'], 
-            $data['address'], $data['shipping_cost'], $data['facebook_link'], 
-            $data['maintenance_mode'], $data['global_discount'], $data['enable_online_payment'],
-            $data['gateway_api_key'], $data['gateway_integration_id'], $data['gateway_iframe_id'],
-            $data['gateway_hmac_secret'], $data['gateway_integration_id_wallet'], $data['timezone']
-        ]);
+        $fields = '';
+        foreach ($data as $key => $value) {
+            $fields .= "{$key} = :{$key}, ";
+        }
+        $fields = rtrim($fields, ', ');
+
+        $stmt = $this->db->prepare("UPDATE {$this->table} SET {$fields} WHERE id = 1");
+        return $stmt->execute($data);
+    }
+
+    public function updateSettings(array $data): bool {
+        return $this->update($data);
     }
 }
