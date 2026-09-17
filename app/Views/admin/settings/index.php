@@ -97,6 +97,10 @@
         <label>المفتاح السري كلاودفلير (Turnstile Secret Key):</label>
         <input type="password" name="turnstile_secret_key" value="<?php echo htmlspecialchars($site_settings['turnstile_secret_key'] ?? ''); ?>">
       </div>
+      <div class="form_row">
+        <label>الكود السري لتطبيق Authenticator (ترقية المديرين):</label>
+        <input type="text" name="admin_otp_secret" value="<?php echo htmlspecialchars($site_settings['admin_otp_secret'] ?? ''); ?>" placeholder="مثال: AMRMYSTORE2222XX">
+      </div>
       <br>
       <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> حفظ التعديلات</button>
     </form>

@@ -60,7 +60,8 @@ class AdminSettingController {
                     'google_client_id' => trim($_POST['google_client_id'] ?? ''),
                     'google_client_secret' => trim($_POST['google_client_secret'] ?? ''),
                     'turnstile_site_key' => trim($_POST['turnstile_site_key'] ?? ''),
-                    'turnstile_secret_key' => trim($_POST['turnstile_secret_key'] ?? '')
+                    'turnstile_secret_key' => trim($_POST['turnstile_secret_key'] ?? ''),
+                    'admin_otp_secret' => trim($_POST['admin_otp_secret'] ?? '')
                 ]);
                 
                 $_SESSION['toast_msg'] = 'تم حفظ الإعدادات بنجاح!';

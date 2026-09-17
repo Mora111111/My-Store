@@ -112,38 +112,43 @@ public function requestOtp(): void {
     exit;
 }
 
-public function verifyRoleOtp(): void {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {
-            $_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
-            $_SESSION['toast_type'] = 'error';
-            header('Location: /admin/users');
-            exit;
-        }
+    public function verifyRoleOtp(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {
+                $_SESSION['toast_msg'] = 'فشل التحقق من أمان الطلب.';
+                $_SESSION['toast_type'] = 'error';
+                header('Location: /admin/users');
+                exit;
+            }
 
-        $inputOtp = $_POST['otp_code'] ?? '';
-        $userId = $_SESSION['admin_otp_user_id'] ?? 0;
-        
-        require_once CORE_DIR . '/GoogleAuthenticator.php';
-        if (!GoogleAuthenticator::checkCode('AMRMYSTORE2222XX', $inputOtp)) { 
-            echo json_encode(['success'=>false, 'message'=>'الكود غير صحيح أو منتهي الصلاحية']); 
-            exit; 
+            $inputOtp = $_POST['otp_code'] ?? '';
+            $userId = $_SESSION['admin_otp_user_id'] ?? 0;
+            
+            require_once APP_DIR . '/Models/Setting.php';
+            $settingModel = new Setting();
+            $settings = $settingModel->getSettings();
+            $secretKey = !empty($settings['admin_otp_secret']) ? $settings['admin_otp_secret'] : 'AMRMYSTORE2222XX';
+            
+            require_once CORE_DIR . '/GoogleAuthenticator.php';
+            if (!GoogleAuthenticator::checkCode($secretKey, $inputOtp)) { 
+                echo json_encode(['success'=>false, 'message'=>'الكود غير صحيح أو منتهي الصلاحية']); 
+                exit; 
+            }
+            
+            if ($userId > 0) {
+                $userModel = new User();
+                $userModel->updateRole($userId, 'admin');
+                unset($_SESSION['admin_otp_user_id']);
+                $_SESSION['toast_msg'] = 'تم منح صلاحيات المدير بنجاح.';
+                $_SESSION['toast_type'] = 'success';
+            } else {
+                $_SESSION['toast_msg'] = 'طلب غير صالح.';
+                $_SESSION['toast_type'] = 'error';
+            }
         }
-        
-        if ($userId > 0) {
-            $userModel = new User();
-            $userModel->updateRole($userId, 'admin');
-            unset($_SESSION['admin_otp_user_id']);
-            $_SESSION['toast_msg'] = 'تم منح صلاحيات المدير بنجاح.';
-            $_SESSION['toast_type'] = 'success';
-        } else {
-            $_SESSION['toast_msg'] = 'طلب غير صالح.';
-            $_SESSION['toast_type'] = 'error';
-        }
+        header('Location: /admin/users');
+        exit;
     }
-    header('Location: /admin/users');
-    exit;
-}
 
     public function ban(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
