@@ -57,7 +57,13 @@
           <label for="accept">أوافق على جميع الشروط والأحكام.</label>
         </div>
 
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAAE6g1Fdz_dXPnmd4" style="margin-bottom: 15px; display: flex; justify-content: center;"></div>
+        <?php 
+        require_once APP_DIR . '/Models/Setting.php';
+        $turnstile_settings = (new Setting())->getSettings();
+        if(!empty($turnstile_settings['turnstile_site_key'])): 
+        ?>
+            <div class="cf-turnstile" data-sitekey="<?= htmlspecialchars($turnstile_settings['turnstile_site_key']) ?>" style="margin-bottom: 15px; display: flex; justify-content: center;"></div>
+        <?php endif; ?>
 
         <input type="submit" class="btn-submit" value="إنشاء حساب">
         <p class="signup-text">

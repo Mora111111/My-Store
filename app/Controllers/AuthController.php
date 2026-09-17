@@ -65,7 +65,7 @@ public function login(): void
 
     public function showSignup(): void
     {
-        $error = "";
+        $error = $_GET['error'] ?? "";
         $success = "";
         require_once APP_DIR . '/Views/layouts/header.php';
         require_once APP_DIR . '/Views/pages/signup.php';
@@ -78,12 +78,33 @@ public function login(): void
         $success = "";
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            require_once APP_DIR . '/Models/Setting.php';
+            $settingModel = new Setting();
+            $settings = $settingModel->getSettings();
+
+            if (!empty($settings['turnstile_secret_key']) && isset($_POST['cf-turnstile-response'])) {
+                $ch = curl_init('https://challenges.cloudflare.com/turnstile/v0/siteverify');
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                    'secret' => $settings['turnstile_secret_key'],
+                    'response' => $_POST['cf-turnstile-response']
+                ]));
+                $verify_response = curl_exec($ch);
+                curl_close($ch);
+                $verify_data = json_decode($verify_response, true);
+                
+                if (empty($verify_data['success'])) {
+                    header('Location: /signup?error=فشل التحقق الأمني');
+                    exit;
+                }
+            }
+
             $username = trim($_POST['username'] ?? '');
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
             $confirm_password = $_POST['confirm_password'] ?? '';
             $accept = $_POST['accept'] ?? '';
-            $turnstile_response = $_POST['cf-turnstile-response'] ?? '';
 
             if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
                 $error = "الرجاء تعبئة جميع الحقول.";
@@ -96,45 +117,22 @@ public function login(): void
             } elseif ($password !== $confirm_password) {
                 $error = "كلمات المرور غير متطابقة.";
             } else {
-                $turnstile_secret = '0x4AAAAAAE6g1I4o1QA8uOHnemJ29zNiqyQ';
-                $verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
-                $data = [
-                    'secret' => $turnstile_secret,
-                    'response' => $turnstile_response,
-                    'remoteip' => $_SERVER['REMOTE_ADDR']
-                ];
-                
-                $options = [
-                    'http' => [
-                        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                        'method'  => 'POST',
-                        'content' => http_build_query($data)
-                    ]
-                ];
-                $context  = stream_context_create($options);
-                $result = file_get_contents($verify_url, false, $context);
-                $cf_data = json_decode($result);
-
-                if (!$cf_data || !$cf_data->success) {
-                    $error = "فشل التحقق الأمني. يرجى التحقق من أنك لست روبوت والمحاولة مجدداً.";
+                $username = htmlspecialchars($username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                $userModel = new User();
+                if ($userModel->findByEmail($email)) {
+                    $error = "هذا البريد الإلكتروني مسجل بالفعل.";
                 } else {
-                    $username = htmlspecialchars($username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                    $userModel = new User();
-                    if ($userModel->findByEmail($email)) {
-                        $error = "هذا البريد الإلكتروني مسجل بالفعل.";
+                    $created = $userModel->create([
+                        'name' => $username,
+                        'email' => $email,
+                        'password' => $password,
+                        'role' => 'user'
+                    ]);
+                    if ($created) {
+                        header('Location: /login?registered=1');
+                        exit;
                     } else {
-                        $created = $userModel->create([
-                            'name' => $username,
-                            'email' => $email,
-                            'password' => $password,
-                            'role' => 'user'
-                        ]);
-                        if ($created) {
-                            header('Location: /login?registered=1');
-                            exit;
-                        } else {
-                            $error = "حدث خطأ أثناء التسجيل. الرجاء المحاولة مرة أخرى.";
-                        }
+                        $error = "حدث خطأ أثناء التسجيل. الرجاء المحاولة مرة أخرى.";
                     }
                 }
             }
