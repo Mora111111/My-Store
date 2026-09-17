@@ -83,6 +83,7 @@ public function login(): void
             $password = $_POST['password'] ?? '';
             $confirm_password = $_POST['confirm_password'] ?? '';
             $accept = $_POST['accept'] ?? '';
+            $turnstile_response = $_POST['cf-turnstile-response'] ?? '';
 
             if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
                 $error = "الرجاء تعبئة جميع الحقول.";
@@ -95,22 +96,45 @@ public function login(): void
             } elseif ($password !== $confirm_password) {
                 $error = "كلمات المرور غير متطابقة.";
             } else {
-                $username = htmlspecialchars($username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                $userModel = new User();
-                if ($userModel->findByEmail($email)) {
-                    $error = "هذا البريد الإلكتروني مسجل بالفعل.";
+                $turnstile_secret = '0x4AAAAAAE6g1I4o1QA8uOHnemJ29zNiqyQ';
+                $verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+                $data = [
+                    'secret' => $turnstile_secret,
+                    'response' => $turnstile_response,
+                    'remoteip' => $_SERVER['REMOTE_ADDR']
+                ];
+                
+                $options = [
+                    'http' => [
+                        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                        'method'  => 'POST',
+                        'content' => http_build_query($data)
+                    ]
+                ];
+                $context  = stream_context_create($options);
+                $result = file_get_contents($verify_url, false, $context);
+                $cf_data = json_decode($result);
+
+                if (!$cf_data || !$cf_data->success) {
+                    $error = "فشل التحقق الأمني. يرجى التحقق من أنك لست روبوت والمحاولة مجدداً.";
                 } else {
-                    $created = $userModel->create([
-                        'name' => $username,
-                        'email' => $email,
-                        'password' => $password,
-                        'role' => 'user'
-                    ]);
-                    if ($created) {
-                        header('Location: /login?registered=1');
-                        exit;
+                    $username = htmlspecialchars($username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                    $userModel = new User();
+                    if ($userModel->findByEmail($email)) {
+                        $error = "هذا البريد الإلكتروني مسجل بالفعل.";
                     } else {
-                        $error = "حدث خطأ أثناء التسجيل. الرجاء المحاولة مرة أخرى.";
+                        $created = $userModel->create([
+                            'name' => $username,
+                            'email' => $email,
+                            'password' => $password,
+                            'role' => 'user'
+                        ]);
+                        if ($created) {
+                            header('Location: /login?registered=1');
+                            exit;
+                        } else {
+                            $error = "حدث خطأ أثناء التسجيل. الرجاء المحاولة مرة أخرى.";
+                        }
                     }
                 }
             }
@@ -125,6 +149,76 @@ public function login(): void
     {
         Session::destroy();
         header('Location: /');
+        exit;
+    }
+
+    private const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
+    private const GOOGLE_CLIENT_SECRET = 'YOUR_GOOGLE_CLIENT_SECRET';
+    private const GOOGLE_REDIRECT_URI = 'https://my-store-pz2s.onrender.com/auth/google/callback';
+
+    public function googleLogin(): void {
+        $url = 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query([
+            'client_id' => self::GOOGLE_CLIENT_ID,
+            'redirect_uri' => self::GOOGLE_REDIRECT_URI,
+            'response_type' => 'code',
+            'scope' => 'email profile',
+            'access_type' => 'online',
+            'prompt' => 'select_account'
+        ]);
+        header('Location: ' . $url);
+        exit;
+    }
+
+    public function googleCallback(): void {
+        if (isset($_GET['code'])) {
+            $ch = curl_init('https://oauth2.googleapis.com/token');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                'client_id' => self::GOOGLE_CLIENT_ID,
+                'client_secret' => self::GOOGLE_CLIENT_SECRET,
+                'redirect_uri' => self::GOOGLE_REDIRECT_URI,
+                'grant_type' => 'authorization_code',
+                'code' => $_GET['code']
+            ]));
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $data = json_decode($response, true);
+
+            if (isset($data['access_token'])) {
+                $ch2 = curl_init('https://www.googleapis.com/oauth2/v2/userinfo');
+                curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch2, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $data['access_token']]);
+                $userInfoJson = curl_exec($ch2);
+                curl_close($ch2);
+                $userInfo = json_decode($userInfoJson, true);
+
+                if (isset($userInfo['email'])) {
+                    $userModel = new User();
+                    $existingUser = $userModel->findByEmail($userInfo['email']);
+                    
+                    if ($existingUser) {
+                        Session::set('user_id', $existingUser['id']);
+                        Session::set('user_name', $existingUser['name']);
+                        Session::set('user_role', $existingUser['role']);
+                    } else {
+                        $randomPassword = bin2hex(random_bytes(8));
+                        $userModel->create([
+                            'name' => $userInfo['name'] ?? 'مستخدم جوجل',
+                            'email' => $userInfo['email'],
+                            'password' => $randomPassword,
+                            'role' => 'user'
+                        ]);
+                        $newUser = $userModel->findByEmail($userInfo['email']);
+                        Session::set('user_id', $newUser['id']);
+                        Session::set('user_name', $newUser['name']);
+                        Session::set('user_role', $newUser['role']);
+                    }
+                    header('Location: /');
+                    exit;
+                }
+            }
+        }
+        header('Location: /login?error=حدث خطأ أثناء تسجيل الدخول بواسطة جوجل');
         exit;
     }
 }

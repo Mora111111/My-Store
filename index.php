@@ -87,6 +87,8 @@ $router->add('POST', '/my-messages/send', 'UserProfileController@sendMessage');
 $router->add('POST', '/toggle-favorite', 'UserProfileController@toggleFavorite');
 $router->add('GET', '/login', 'AuthController@showLogin');
 $router->add('POST', '/login', 'AuthController@login');
+$router->add('GET', '/auth/google/login', 'AuthController@googleLogin');
+$router->add('GET', '/auth/google/callback', 'AuthController@googleCallback');
 $router->add('GET', '/signup', 'AuthController@showSignup');
 $router->add('POST', '/signup', 'AuthController@register');
 $router->add('GET', '/logout', 'AuthController@logout');

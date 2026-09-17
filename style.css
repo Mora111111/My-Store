@@ -1007,6 +1007,8 @@ a {
   border-radius: 6px;
   transition: 0.3s;
   cursor: pointer;
+  color: #333;
+  text-decoration: none;
 }
 
 .social-btn:hover {

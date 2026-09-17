@@ -3,11 +3,11 @@
             <div class="form-title">تسجيل الدخول</div>
 
             <div class="social-form">
-                <button class="social-btn">
+                <a href="/auth/google/login" class="social-btn btn-google">
                     Google
                     <img src="/images/logos/google.svg" alt="google" class="social-icon">
-                </button>
-                <button class="social-btn">
+                </a>
+                <button type="button" class="social-btn">
                     Apple
                     <img src="/images/logos/apple.svg" alt="Apple" class="social-icon">
                 </button>
