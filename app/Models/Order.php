@@ -35,15 +35,13 @@ class Order {
         return $stmt->fetchAll();
     }
 
+    public function findById(int $id) {
+        $stmt = $this->db->prepare("SELECT * FROM orders WHERE id = ? LIMIT 1");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function updateStatus(int $id, string $status, ?string $adminMessage = null): bool {
-        $checkStmt = $this->db->prepare("SELECT status FROM orders WHERE id = ?");
-        $checkStmt->execute([$id]);
-        $currentStatus = $checkStmt->fetchColumn();
-
-        if ($currentStatus === 'ملغي') {
-            return false; 
-        }
-
         $stmt = $this->db->prepare("UPDATE orders SET status = ?, admin_message = ? WHERE id = ?");
         return $stmt->execute([$status, $adminMessage, $id]);
     }

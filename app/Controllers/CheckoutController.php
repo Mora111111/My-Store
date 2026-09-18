@@ -18,6 +18,15 @@ class CheckoutController {
 
     public function process(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // --- حاجز منع تكرار الطلبات (Double Click Prevention) ---
+            if (isset($_SESSION['last_checkout_time']) && (time() - $_SESSION['last_checkout_time']) < 5) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'error' => 'تم استلام طلبك بالفعل، يرجى الانتظار للحظات.']);
+                exit;
+            }
+            $_SESSION['last_checkout_time'] = time();
+            // ---------------------------------------------------------
+
             $orderModel = new Order();
             $productsJson = $_POST['products'] ?? '[]';
             $cartProducts = json_decode($productsJson, true);

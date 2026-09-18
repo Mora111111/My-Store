@@ -102,6 +102,12 @@ class Product {
         return $stmt->rowCount() > 0;
     }
 
+    // دالة إرجاع الكمية للمخزن عند إلغاء الطلب
+    public function restock(int $id, int $amount): bool {
+        $stmt = $this->db->prepare("UPDATE products SET quantity = quantity + ? WHERE id = ?");
+        return $stmt->execute([$amount, $id]);
+    }
+
     public static function calculateDiscount(array $product, array $activeCoupons = []): array {
         $basePrice = floatval($product['price'] ?? 0);
         $finalPrice = $basePrice;

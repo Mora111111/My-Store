@@ -25,11 +25,29 @@ class AdminOrderController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $orderModel = new Order();
             $id = intval($_POST['order_id'] ?? 0);
-            $status = $_POST['new_status'] ?? '';
+            $newStatus = trim($_POST['new_status'] ?? '');
             $adminMessage = trim($_POST['admin_message'] ?? '');
             
-            if ($orderModel->updateStatus($id, $status, $adminMessage)) {
-                $_SESSION['toast_msg'] = 'تم تحديث حالة الطلب بنجاح.';
+            // جلب بيانات الطلب القديمة قبل التحديث لمعرفة حالته السابقة
+            $oldOrder = $orderModel->findById($id);
+            $oldStatus = $oldOrder ? strtolower(trim($oldOrder['status'])) : '';
+            
+            if ($oldOrder && $orderModel->updateStatus($id, $newStatus, $adminMessage)) {
+                
+                // الكلمات الدلالية لحالات الإلغاء (يمكنك تعديلها حسب المسميات في متجرك)
+                $cancelledStatuses = ['cancelled', 'rejected', 'ملغي', 'مرفوض', 'مسترجع'];
+                $currentStatusLow = strtolower($newStatus);
+                
+                // إذا تم تحويل الطلب من حالة "ناجحة" إلى "ملغية" -> إرجاع الكمية للمخزن
+                if (in_array($currentStatusLow, $cancelledStatuses) && !in_array($oldStatus, $cancelledStatuses)) {
+                    $this->adjustStock($oldOrder['products'], 'restock');
+                }
+                // إذا تم تحويل الطلب من حالة "ملغية" إلى "ناجحة" (عن طريق الخطأ مثلاً) -> خصم الكمية مجدداً
+                else if (!in_array($currentStatusLow, $cancelledStatuses) && in_array($oldStatus, $cancelledStatuses)) {
+                    $this->adjustStock($oldOrder['products'], 'deduct');
+                }
+
+                $_SESSION['toast_msg'] = 'تم تحديث حالة الطلب والمخزون بنجاح.';
                 $_SESSION['toast_type'] = 'success';
             } else {
                 $_SESSION['toast_msg'] = 'حدث خطأ أثناء تحديث حالة الطلب.';
@@ -38,6 +56,26 @@ class AdminOrderController {
         }
         header('Location: /admin/orders');
         exit;
+    }
+
+    // دالة مساعدة لضبط المخزون ديناميكياً
+    private function adjustStock($productsJson, $operation): void {
+        $products = json_decode($productsJson, true);
+        if (is_array($products)) {
+            $productModel = new Product();
+            foreach ($products as $item) {
+                $qty = (int)($item['quantity'] ?? 1);
+                $id = (int)($item['id'] ?? 0);
+                
+                if ($id > 0) {
+                    if ($operation === 'restock') {
+                        $productModel->restock($id, $qty);
+                    } else {
+                        $productModel->deductStock($id, $qty);
+                    }
+                }
+            }
+        }
     }
 
     public function delete(): void {
@@ -53,6 +91,7 @@ class AdminOrderController {
             $id = intval($_POST['id'] ?? 0);
             
             if ($id > 0) {
+                // خطوة اختيارية: يمكنك استدعاء adjustStock('restock') هنا إذا كنت تريد إرجاع الكمية عند الحذف النهائي للطلب
                 $orderModel->delete($id);
                 $_SESSION['toast_msg'] = 'تم حذف الطلب بنجاح.';
                 $_SESSION['toast_type'] = 'success';
