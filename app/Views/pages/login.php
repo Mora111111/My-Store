@@ -7,10 +7,6 @@
                     Google
                     <img src="/images/logos/google.svg" alt="google" class="social-icon">
                 </a>
-                <button type="button" class="social-btn">
-                    Apple
-                    <img src="/images/logos/apple.svg" alt="Apple" class="social-icon">
-                </button>
             </div>
 
             <p class="separator"><span>أو</span></p>
