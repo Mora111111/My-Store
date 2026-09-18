@@ -30,8 +30,13 @@ function isActive($path) {
     .header { background: #fff; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; }
     .header h3 { font-size: 24px; font-weight: 700; color: #0f172a; display: flex; align-items: center; }
     .header h3 i { margin-left: 12px; }
-    .logout-btn { background: #fff; color: #ef4444; border: 1.5px solid #fee2e2; padding: 12px 24px; border-radius: 40px; text-decoration: none; font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px; transition: all 0.25s; }
+    
+    .header-actions { display: flex; gap: 15px; align-items: center; }
+    .logout-btn { background: #fff; color: #ef4444; border: 1.5px solid #fee2e2; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: all 0.25s; }
     .logout-btn:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
+    .view-store-btn { background: #fff; color: #3b82f6; border: 1.5px solid #dbeafe; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: all 0.25s; }
+    .view-store-btn:hover { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+
     .content-area { padding: 35px 40px; }
     .card { background: #fff; padding: 30px 35px; border-radius: 28px; box-shadow: 0 15px 30px -10px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; margin-bottom: 35px; overflow-x: auto; }
     .card h2 { color: #0f172a; font-size: 24px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
@@ -46,6 +51,7 @@ function isActive($path) {
     .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(56,189,248,0.3); }
     .btn-update { background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 30px; cursor: pointer; font-weight: 500; font-size: 13px; transition: 0.2s; }
     .btn-update:hover { background: #2563eb; }
+    
     .modal-overlay, .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); justify-content: center; align-items: center; }
     .modal-content { background: #fff; padding: 35px; border-radius: 32px; width: 520px; max-width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); position: relative; }
     .close-modal { position: absolute; top: 20px; left: 20px; font-size: 24px; cursor: pointer; color: #94a3b8; transition: 0.2s; }
@@ -56,8 +62,8 @@ function isActive($path) {
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #38bdf8; background: #fff; box-shadow: 0 0 0 4px rgba(56,189,248,0.1); }
     .status-badge { padding: 6px 14px; border-radius: 40px; font-size: 13px; font-weight: 600; display: inline-block; }
     .badge { background: #e0f2fe; color: #0369a1; padding: 6px 14px; border-radius: 40px; font-size: 13px; font-weight: 600; }
-    .badge-success { background-color: #d1fae5; color: #065f46; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
-    .badge-warning { background-color: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+    .badge-success { background: #d1fae5; color: #065f46; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+    .badge-warning { background: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
     .main-content::-webkit-scrollbar { width: 8px; }
     .main-content::-webkit-scrollbar-track { background: #f1f5f9; }
     .main-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 20px; }
@@ -65,7 +71,7 @@ function isActive($path) {
     .btn-ai-reply:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-ai-reply:disabled { background: #cbd5e1; cursor: not-allowed; opacity: 1; transform: none; box-shadow: none; }
     .date-badge { color: #64748b; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; padding: 6px 12px; border-radius: 8px; border: 1px solid #e2e8f0; white-space: nowrap; }
- 
+  
     /* Product & Modal Specific Styles */
     .ai-magic-btn { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
     .ai-magic-btn:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); }
@@ -114,6 +120,7 @@ function isActive($path) {
     
     .btn-unban, .btn-success { background: #10b981; box-shadow: 0 4px 8px rgba(16,185,129,0.15); }
     .btn-unban:hover, .btn-success:hover { background: #059669; transform: translateY(-1px); }
+    
     /* التنسيقات الموحدة (DRY) */
     .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; margin-bottom: 40px; }
     .stat-card { background: #ffffff; padding: 28px 20px; border-radius: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; transition: all 0.3s; border: 1px solid #f1f5f9; position: relative; overflow: hidden; }
@@ -184,11 +191,20 @@ function isActive($path) {
     <a href="/admin/settings" class="<?= isActive('/admin/settings') ?>">
         <i class="fa-solid fa-gear"></i><span>الإعدادات</span>
     </a>
-  </div>
+</div>
 
-  <div class="main-content">
+<div class="main-content">
     <div class="header">
       <h3><i class="fa-solid <?= $pageIcon ?? 'fa-cog' ?>" style="color:#38bdf8;"></i><?= $pageTitle ?? 'لوحة الإدارة' ?></h3>
-      <a href="/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i>تسجيل الخروج</a>
+      
+      <div class="header-actions">
+          <a href="/" target="_blank" class="view-store-btn" title="فتح واجهة المتجر في نافذة جديدة">
+              <i class="fa-solid fa-store"></i> تجربة المستخدم
+          </a>
+          <a href="/logout" class="logout-btn">
+              <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
+          </a>
+      </div>
+      
     </div>
     <div class="content-area">
