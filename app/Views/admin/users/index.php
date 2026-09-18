@@ -61,6 +61,14 @@
     </div>
   </div>
 
+    <form method="GET" action="/admin/users" style="margin-bottom: 25px; display: flex; gap: 10px; background: #fff; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+        <input type="text" name="search" placeholder="ابحث باسم المستخدم أو البريد الإلكتروني..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>" style="flex: 1; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 12px; outline: none; font-family: inherit;">
+        <button type="submit" class="btn-submit" style="padding: 12px 24px; border-radius: 12px;"><i class="fa-solid fa-magnifying-glass"></i> بحث</button>
+        <?php if (!empty($_GET['search'])): ?>
+            <a href="/admin/users" class="cancel-btn" style="padding: 12px 24px; display: flex; align-items: center; border-radius: 12px; background: #f1f5f9;">إلغاء</a>
+        <?php endif; ?>
+    </form>
+
   <div class="card">
     <table>
       <thead>

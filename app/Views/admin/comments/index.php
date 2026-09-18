@@ -28,7 +28,16 @@
               <span style="font-weight:700; color:#1e293b; font-size:14px;"><?php echo htmlspecialchars($row['product_title']); ?></span>
             </div>
           </td>
-          <td><span class="user-badge"><i class="fa-solid fa-user"></i> <?php echo $safe_name; ?></span></td>
+          <td>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <span class="user-badge" style="width: fit-content;"><i class="fa-solid fa-user"></i> <?php echo $safe_name; ?></span>
+                  <?php if (!empty($row['customer_email'])): ?>
+                      <span style="font-size: 12px; color: #64748b; margin-right: 5px;"><i class="fa-solid fa-envelope"></i> <?php echo htmlspecialchars($row['customer_email']); ?></span>
+                  <?php else: ?>
+                      <span style="font-size: 12px; color: #cbd5e1; margin-right: 5px;">زائر (لا يوجد إيميل)</span>
+                  <?php endif; ?>
+              </div>
+          </td>
           <td>
             <div style="margin-bottom:6px; color:#f1c40f; font-size:12px;">
                 <?php for($i=1; $i<=5; $i++) echo $i <= $u_rating ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>'; ?>

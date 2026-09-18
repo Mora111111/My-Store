@@ -9,7 +9,8 @@ class AdminCommentController {
 
     public function index(): void {
         $commentModel = new Comment();
-        $comments = $commentModel->getAll();
+        // جلب التعليقات مع إيميل المستخدم
+        $comments = $commentModel->getAllWithUserEmail();
         $showSearch = true;
         $toast_msg = $_SESSION['toast_msg'] ?? '';
         $toast_type = $_SESSION['toast_type'] ?? '';

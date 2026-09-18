@@ -17,6 +17,18 @@ class Comment {
         ");
         return $stmt->fetchAll();
     }
+
+    public function getAllWithUserEmail(): array {
+        $stmt = $this->db->query("
+            SELECT c.*, p.title as product_title, p.image_url,
+                   e.email as customer_email
+            FROM product_comments c
+            JOIN products p ON c.product_id = p.id
+            LEFT JOIN elogin e ON c.customer_name = e.name
+            ORDER BY c.created_at DESC
+        ");
+        return $stmt->fetchAll();
+    }
     public function reply(int $id, string $reply): bool {
         $stmt = $this->db->prepare("UPDATE product_comments SET admin_reply = ? WHERE id = ?");
         return $stmt->execute([$reply, $id]);

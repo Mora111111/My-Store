@@ -9,7 +9,13 @@ class AdminUserController {
 
     public function index(): void {
         $userModel = new User();
-        $users = $userModel->getAll();
+        $searchQuery = trim($_GET['search'] ?? '');
+        
+        if (!empty($searchQuery)) {
+            $users = $userModel->searchByNameOrEmail($searchQuery);
+        } else {
+            $users = $userModel->getAll();
+        }
         $totalUsers = count($users);
         $totalAdmins = count(array_filter($users, function($u) { return ($u['role'] ?? '') === 'admin'; }));
         $showSearch = true;

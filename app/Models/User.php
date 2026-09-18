@@ -10,6 +10,28 @@ class User {
         return $stmt->fetch();
     }
 
+    public function searchByNameOrEmail(string $keyword): array {
+        $words = array_filter(explode(' ', trim($keyword)));
+        
+        if (empty($words)) {
+            return $this->getAll();
+        }
+        
+        $conditions = [];
+        $params = [];
+        
+        foreach ($words as $word) {
+            $conditions[] = "(name LIKE ? OR email LIKE ?)";
+            $params[] = '%' . $word . '%';
+            $params[] = '%' . $word . '%';
+        }
+        
+        $sql = "SELECT * FROM elogin WHERE " . implode(' AND ', $conditions) . " ORDER BY id DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
     public function create(array $data): int|false {
         $name = htmlspecialchars($data['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $stmt = $this->db->prepare("INSERT INTO elogin (name, full_name, email, password, role) VALUES (?, ?, ?, ?, ?)");
