@@ -34,6 +34,10 @@
         <input type="number" name="old_price" step="0.01" min="0" value="<?php echo htmlspecialchars($product['old_price'] ?? '0'); ?>">
       </div>
       <div class="form-group">
+        <label>الكمية المتاحة في المخزن:</label>
+        <input type="number" name="quantity" min="0" value="<?php echo htmlspecialchars($product['quantity'] ?? '10'); ?>" required>
+      </div>
+      <div class="form-group">
         <label>الوصف التفصيلي للمنتج:</label>
         <textarea name="description" rows="8" required><?php echo htmlspecialchars($product['description'] ?? ''); ?></textarea>
       </div>

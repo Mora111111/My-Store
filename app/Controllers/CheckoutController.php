@@ -34,99 +34,73 @@ class CheckoutController {
             $activeCoupons = $activeCouponsRaw;
             
             $appliedCoupon = null;
-            $couponError = false;
-            
             if (!empty($_POST['applied_promo_code'])) {
                 $db = Database::getInstance()->getConnection();
                 $stmt = $db->prepare("SELECT * FROM coupons WHERE code = ? AND status = 1 AND show_strikethrough = 0 LIMIT 1");
                 $stmt->execute([trim($_POST['applied_promo_code'])]);
                 $appliedCoupon = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                if (!$appliedCoupon) {
-                    $couponError = true;
-                }
-            }
-            
-            if ($couponError) {
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'error' => 'كوبون الخصم غير صالح أو انتهت صلاحيته. يرجى تحديث الصفحة.']);
-                exit;
             }
             
             $subtotal = 0;
-            $fixedDiscountAll = 0;
             $secureProductsArray = [];
 
             if (is_array($cartProducts)) {
                 foreach ($cartProducts as $cartItem) {
                     $dbProduct = $productModel->findById((int)$cartItem['id']);
-                    if ($dbProduct) {
-                        $basePrice = floatval($dbProduct['price']);
-                        $qty = max(1, intval($cartItem['number'] ?? $cartItem['quantity'] ?? 1));
-                        $finalPrice = $basePrice;
-                        $promoAppliedToItem = false;
+                    if (!$dbProduct) continue;
 
-                        if ($appliedCoupon) {
-                            if ($appliedCoupon['target_type'] === 'specific_product' && $appliedCoupon['target_product_id'] == $dbProduct['id']) {
-                                $promoAppliedToItem = true;
-                                if ($appliedCoupon['discount_type'] === 'percentage') {
-                                    $finalPrice = $basePrice - ($basePrice * ($appliedCoupon['discount_value'] / 100));
-                                } else {
-                                    $finalPrice = $basePrice - $appliedCoupon['discount_value'];
-                                }
-                            } elseif ($appliedCoupon['target_type'] === 'all') {
-                                $promoAppliedToItem = true;
-                                if ($appliedCoupon['discount_type'] === 'percentage') {
-                                    $finalPrice = $basePrice - ($basePrice * ($appliedCoupon['discount_value'] / 100));
-                                } else {
-                                    $fixedDiscountAll = $appliedCoupon['discount_value'];
-                                }
-                            }
-                        }
-
-                        if (!$promoAppliedToItem) {
-                            foreach ($activeCoupons as $c) {
-                                if ($c['target_type'] === 'all' || ($c['target_type'] === 'specific_product' && $c['target_product_id'] == $dbProduct['id'])) {
-                                    if ($c['discount_type'] === 'percentage') {
-                                        $finalPrice = $basePrice - ($basePrice * ($c['discount_value'] / 100));
-                                    } else {
-                                        $finalPrice = $basePrice - $c['discount_value'];
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-
-                        $finalPrice = max(0, $finalPrice);
-                        $subtotal += ($finalPrice * $qty);
-
-                        $secureProductsArray[] = [
-                            'id' => $dbProduct['id'],
-                            'src' => $dbProduct['image_url'],
-                            'title' => $dbProduct['title'],
-                            'price' => number_format($finalPrice, 2, '.', '') . ' ج.م',
-                            'quantity' => $qty
-                        ];
+                    $qty = max(1, intval($cartItem['number'] ?? $cartItem['quantity'] ?? 1));
+                    
+                    // --- التحقق من الكمية المتوفرة في المخزن ---
+                    if ((int)$dbProduct['quantity'] < $qty) {
+                        header('Content-Type: application/json');
+                        echo json_encode([
+                            'success' => false, 
+                            'error' => 'عذراً، الكمية المطلوبة من "' . $dbProduct['title'] . '" غير متوفرة. المتاح حالياً: ' . $dbProduct['quantity']
+                        ]);
+                        exit;
                     }
+
+                    $basePrice = floatval($dbProduct['price']);
+
+                    $manualPrice = null;
+                    if ($appliedCoupon) {
+                        $matchesTarget = $appliedCoupon['target_type'] === 'all'
+                            || ($appliedCoupon['target_type'] === 'specific_product' && $appliedCoupon['target_product_id'] == $dbProduct['id']);
+                        if ($matchesTarget) {
+                            $manualPrice = $appliedCoupon['discount_type'] === 'percentage'
+                                ? $basePrice - ($basePrice * ($appliedCoupon['discount_value'] / 100))
+                                : $basePrice - $appliedCoupon['discount_value'];
+                            $manualPrice = max(0, $manualPrice);
+                        }
+                    }
+
+                    if ($manualPrice !== null) {
+                        $finalPrice = $manualPrice;
+                    } else {
+                        $discountResult = Product::calculateDiscount($dbProduct, $activeCoupons);
+                        $finalPrice = $discountResult['final_price'];
+                    }
+
+                    $subtotal += ($finalPrice * $qty);
+
+                    $secureProductsArray[] = [
+                        'id' => $dbProduct['id'],
+                        'src' => $dbProduct['image_url'],
+                        'title' => $dbProduct['title'],
+                        'price' => number_format($finalPrice, 2, '.', '') . ' ج.م',
+                        'quantity' => $qty
+                    ];
                 }
             }
 
-            if ($fixedDiscountAll > 0) {
-                $subtotal -= $fixedDiscountAll;
-                $subtotal = max(0, $subtotal);
-            }
-
-            
-
             $site_settings = $settingModel->getSettings();
             $payment_method = $_POST['payment_method'] ?? 'cod';
-            
             if (in_array($payment_method, ['online_card', 'online_wallet'])) {
                 $shipping = 0;
             } else {
                 $shipping = floatval($site_settings['shipping_cost'] ?? 0);
             }
-            
             $server_total = $subtotal + $shipping;
 
             $data = [
@@ -145,19 +119,23 @@ class CheckoutController {
                 'transaction_id' => null
             ];
 
+            // إتمام الطلب وخصم الكمية
             $orderId = $orderModel->create($data);
             if ($orderId) {
-                if (in_array($payment_method, ['online_card', 'online_wallet'])) {
-                    $redirectUrl = '/payment/pay?order_id=' . $orderId;
-                } else {
-                    $redirectUrl = '/my-orders';
+                // خصم الكميات من قاعدة البيانات بعد نجاح الطلب
+                foreach ($secureProductsArray as $item) {
+                    $productModel->deductStock((int)$item['id'], (int)$item['quantity']);
                 }
+                
+                $redirectUrl = in_array($payment_method, ['online_card', 'online_wallet']) 
+                    ? '/payment/pay?order_id=' . $orderId 
+                    : '/my-orders';
 
                 header('Content-Type: application/json');
                 echo json_encode(['success' => true, 'redirect' => $redirectUrl]);
                 exit;
             }
-            
+
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'error' => 'Database error']);
             exit;

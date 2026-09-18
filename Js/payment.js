@@ -287,10 +287,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                 localStorage.removeItem("activeCoupon");
 
                                 const popup = document.querySelector(".popup");
-                                window.location.href = data.redirect;
-                            } else {
-                                // إذا كان الدفع عند الاستلام، نظهر نافذة النجاح الخضراء المعتادة
-                                const popup = document.querySelector(".popup");
                                 if (popup) {
                                     popup.classList.add("modal_active");
                                     layer.classList.add("layer_active");

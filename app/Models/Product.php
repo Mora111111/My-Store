@@ -61,7 +61,7 @@ class Product {
     }
 
     public function create(array $data): bool {
-        $stmt = $this->db->prepare("INSERT INTO products (title, price, old_price, category_class, description, image_url, image_2, image_3, image_4) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO products (title, price, old_price, category_class, description, image_url, image_2, image_3, image_4, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
             $data['title'],
             $data['price'],
@@ -71,23 +71,60 @@ class Product {
             $data['image_url'] ?? '',
             $data['image_2'] ?? '',
             $data['image_3'] ?? '',
-            $data['image_4'] ?? ''
+            $data['image_4'] ?? '',
+            (int)($data['quantity'] ?? 10)
         ]);
     }
 
     public function update(int $id, array $data): bool {
         $fields = [];
         $values = [];
-        foreach (['title', 'price', 'old_price', 'category_class', 'description', 'image_url', 'image_2', 'image_3', 'image_4'] as $col) {
-            if (array_key_exists($col, $data)) {
+        $allowedFields = ['title', 'price', 'old_price', 'category_class', 'description', 'image_url', 'image_2', 'image_3', 'image_4', 'quantity'];
+        
+        foreach ($allowedFields as $col) {
+            if (isset($data[$col])) {
                 $fields[] = "$col = ?";
-                $values[] = $data[$col];
+                $values[] = $col === 'quantity' ? (int)$data[$col] : $data[$col];
             }
         }
+        
         if (empty($fields)) return false;
+        
         $values[] = $id;
-        $stmt = $this->db->prepare("UPDATE products SET " . implode(', ', $fields) . " WHERE id = ?");
+        $sql = "UPDATE products SET " . implode(', ', $fields) . " WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
         return $stmt->execute($values);
+    }
+
+    public function deductStock(int $id, int $amount): bool {
+        $stmt = $this->db->prepare("UPDATE products SET quantity = quantity - ? WHERE id = ? AND quantity >= ?");
+        $stmt->execute([$amount, $id, $amount]);
+        return $stmt->rowCount() > 0;
+    }
+
+    public static function calculateDiscount(array $product, array $activeCoupons = []): array {
+        $basePrice = floatval($product['price'] ?? 0);
+        $finalPrice = $basePrice;
+        $discountValue = 0;
+
+        foreach ($activeCoupons as $c) {
+            if ($c['target_type'] === 'all' || ($c['target_type'] === 'specific_product' && (int)$c['target_product_id'] === (int)$product['id'])) {
+                if ($c['discount_type'] === 'percentage') {
+                    $discountValue = $basePrice * ($c['discount_value'] / 100);
+                    $finalPrice = $basePrice - $discountValue;
+                } else {
+                    $discountValue = floatval($c['discount_value']);
+                    $finalPrice = $basePrice - $discountValue;
+                }
+                break;
+            }
+        }
+
+        $finalPrice = max(0, $finalPrice);
+        return [
+            'final_price' => $finalPrice,
+            'discount' => $discountValue
+        ];
     }
 
     public function delete(int $id): bool {

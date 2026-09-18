@@ -39,6 +39,7 @@ class AdminProductController {
                 'old_price' => floatval($_POST['old_price'] ?? 0),
                 'category_class' => trim($_POST['category_class'] ?? ''),
                 'description' => trim($_POST['description'] ?? ''),
+                'quantity' => intval($_POST['quantity'] ?? 10)
             ];
 
             $imageFields = ['image' => 'image_url', 'image_2' => 'image_2', 'image_3' => 'image_3', 'image_4' => 'image_4'];
@@ -111,7 +112,8 @@ class AdminProductController {
                 'category_class' => trim($_POST['category_class'] ?? ''),
                 'price' => floatval($_POST['price'] ?? 0),
                 'old_price' => floatval($_POST['old_price'] ?? 0),
-                'description' => trim($_POST['description'] ?? '')
+                'description' => trim($_POST['description'] ?? ''),
+                'quantity' => intval($_POST['quantity'] ?? 10)
             ];
 
             $imageFields = ['image' => 'image_url', 'image_2' => 'image_2', 'image_3' => 'image_3', 'image_4' => 'image_4'];

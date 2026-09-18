@@ -79,6 +79,10 @@
         <label>سعر المنتج قبل الشطب </label>
         <input type="number" name="old_price" step="0.01" min="0" value="0" placeholder="اتركه 0 إذا لم يكن هناك خصم">
       </div>
+      <div class="form-group">
+        <label>الكمية المتاحة في المخزن:</label>
+        <input type="number" name="quantity" min="0" value="10" required>
+      </div>
       </div>
 
       <div class="form-group">
