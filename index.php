@@ -16,6 +16,8 @@ define('ROOT_DIR', __DIR__);
 define('APP_DIR', __DIR__ . '/app');
 define('CORE_DIR', __DIR__ . '/core');
 
+require_once CORE_DIR . '/Language.php';
+
 spl_autoload_register(function ($class) {
     $directories = [
         __DIR__ . '/core',
@@ -50,6 +52,8 @@ try {
     date_default_timezone_set('Africa/Cairo'); // توقيت افتراضي في حالة الخطأ
 }
 
+Language::load();
+
 Session::trackOnline();
 
 if (Session::isLoggedIn()) {
@@ -70,6 +74,7 @@ if (Session::isLoggedIn()) {
 $router = new Router();
 
 $router->add('GET', '/', 'HomeController@index');
+$router->add('GET', '/switch-lang', 'LanguageController@switch');
 $router->add('GET', '/products', 'ProductController@index');
 $router->add('GET', '/about', 'PageController@about');
 $router->add('GET', '/contact', 'PageController@contact');

@@ -40,7 +40,7 @@ public function login(): void
                     Session::set('user_id', $user['id']);
                     Session::set('user_name', $user['name']);
                     Session::set('user_role', $user['role']);
-                    
+                    Session::set('lang', $user['preferred_lang'] ?? 'ar');
                     if ($user['role'] === 'admin') {
                         header('Location: /admin');
                     } else {
@@ -212,6 +212,7 @@ public function login(): void
                         Session::set('user_id', $existingUser['id']);
                         Session::set('user_name', $existingUser['name']);
                         Session::set('user_role', $existingUser['role']);
+                        Session::set('lang', $existingUser['preferred_lang'] ?? 'ar');
                     } else {
                         $randomPassword = bin2hex(random_bytes(8));
                         $userModel->create([
@@ -224,6 +225,7 @@ public function login(): void
                         Session::set('user_id', $newUser['id']);
                         Session::set('user_name', $newUser['name']);
                         Session::set('user_role', $newUser['role']);
+                        Session::set('lang', $newUser['preferred_lang'] ?? 'ar');
                     }
                     header('Location: /');
                     exit;
