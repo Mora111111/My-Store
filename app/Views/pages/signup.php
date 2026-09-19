@@ -2,7 +2,7 @@
 
 <div class="form_account">
   <div class="form-container container">
-    <div class="form-title">إنشاء حساب</div>
+    <div class="form-title"><?= lang('create_account') ?></div>
 
       <div class="social-form">
           <a href="/auth/google/login" class="social-btn btn-google">
@@ -15,7 +15,7 @@
           </button>
       </div>
 
-      <p class="separator"><span>أو</span></p>
+      <p class="separator"><span><?= lang('or_separator') ?></span></p>
 
       <?php if (!empty($error)): ?>
           <div style="color: #d9534f; text-align: center; margin-bottom: 15px; font-weight: bold; background: #ffe6e6; padding: 10px; border-radius: 5px;">
@@ -33,28 +33,28 @@
         <?= CSRF::getField() ?>
         
         <div class="input-wrapper" >
-          <input type="text" name="username" placeholder="أسم المستخدم" required class="input input-user" value="<?php echo isset($username) ? htmlspecialchars($username) : ''; ?>">
+          <input type="text" name="username" placeholder="<?= lang('username_placeholder') ?>" required class="input input-user" value="<?php echo isset($username) ? htmlspecialchars($username) : ''; ?>">
           <i class="fa-solid fa-user icon_form"></i>
         </div>
 
         <div class="input-wrapper" >
-          <input type="email" name="email" placeholder="عنوان البريد الألكتروني" required class="input input-mail" value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>">
+          <input type="email" name="email" placeholder="<?= lang('email_placeholder') ?>" required class="input input-mail" value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>">
           <i class="fa-solid fa-envelope icon_form"></i>
         </div>
 
         <div class="input-wrapper">
-          <input type="password" name="password" placeholder="كلمة المرور" required class="input">
+          <input type="password" name="password" placeholder="<?= lang('password_placeholder') ?>" required class="input">
           <i class="fa-regular fa-eye-slash icon_form showPss"></i>
         </div>
 
         <div class="input-wrapper m-none">
-          <input type="password" name="confirm_password" placeholder="تأكيد كلمة المرور" required class="input input-pass">
+          <input type="password" name="confirm_password" placeholder="<?= lang('confirm_password_placeholder') ?>" required class="input input-pass">
           <i class="fa-regular fa-eye-slash icon_form showPss"></i>
         </div>
 
         <div class="box-accept">
           <input type="checkbox" name="accept" value="yes" id="accept" required>
-          <label for="accept">أوافق على جميع الشروط والأحكام.</label>
+          <label for="accept"><?= lang('agree_terms') ?></label>
         </div>
 
         <?php 
@@ -65,10 +65,10 @@
             <div class="cf-turnstile" data-sitekey="<?= htmlspecialchars($turnstile_settings['turnstile_site_key']) ?>" style="margin-bottom: 15px; display: flex; justify-content: center;"></div>
         <?php endif; ?>
 
-        <input type="submit" class="btn-submit" value="إنشاء حساب">
+        <input type="submit" class="btn-submit" value="<?= lang('create_account') ?>">
         <p class="signup-text">
-          لديك حساب بالفعل؟
-          <a href="/login"> تسجيل الدخول</a>
+          <?= lang('already_have_account') ?>
+          <a href="/login"> <?= lang('login') ?></a>
         </p>
       </form>
   </div>

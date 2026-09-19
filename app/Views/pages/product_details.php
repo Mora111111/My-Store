@@ -3,7 +3,7 @@
      <div class="product-gallery" style="display: flex; flex-direction: column; gap: 15px;">
        <div class="box_img main-image-container" style="height: 400px; background: #fff; padding: 10px; border-radius: 12px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; position: relative;">
            <?php if($has_coupon_discount): ?>
-           <div style="position: absolute; top: 20px; right: 20px; background: #ef4444; color: #fff; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">خصم <?php echo $discount_pct_badge; ?>%</div>
+           <div style="position: absolute; top: 20px; right: 20px; background: #ef4444; color: #fff; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><?= lang('discount_text') ?> <?php echo $discount_pct_badge; ?>%</div>
            <?php endif; ?>
            <img id="mainProductImage" src="<?= Product::getImageUrl($product['image_url']) ?>" alt="<?= htmlspecialchars($product['title']) ?>" class="card_image" style="max-height: 100%; max-width: 100%; object-fit: contain; transition: 0.3s;" />
        </div>
@@ -40,15 +40,15 @@
         </div>
 
         <p class="product_details_price card_price" style="font-size: 28px; font-weight: bold; margin-bottom: 30px; display: inline-flex; align-items: center; gap: 12px;">
-            <span><?php echo number_format($final_price, 2); ?> ج.م</span>
+            <span><?php echo number_format($final_price, 2); ?> <?= lang('currency_egp') ?></span>
             <?php if($has_coupon_discount): ?>
-                <del style="color: #94a3b8; font-size: 0.7em; font-weight: normal;"><?php echo number_format($original_price, 2); ?> ج.م</del>
+                <del style="color: #94a3b8; font-size: 0.7em; font-weight: normal;"><?php echo number_format($original_price, 2); ?> <?= lang('currency_egp') ?></del>
             <?php endif; ?>
         </p>
 
         <?php if (!empty($product['description'])): ?>
         <div style="text-align: right; background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.8; color: #555; border: 1px solid #eee;">
-            <h3 style="margin-top:0; color:#2c3e50; border-bottom: 2px solid var(--main-color); display: inline-block; padding-bottom: 5px; font-size: 18px;"><i class="fa-solid fa-circle-info"></i> <?= lang('product_specs') ?? 'مواصفات وتفاصيل المنتج' ?></h3>
+            <h3 style="margin-top:0; color:#2c3e50; border-bottom: 2px solid var(--main-color); display: inline-block; padding-bottom: 5px; font-size: 18px;"><i class="fa-solid fa-circle-info"></i> <?= lang('product_specs') ?></h3>
             <div style="margin-top: 15px; font-size: 15px;">
                 <?php echo nl2br(strip_tags(langField($product, 'description'))); ?>
             </div>
@@ -64,7 +64,7 @@
             }
             $isFavorited = in_array($product['id'], $favoriteIds);
             ?>
-            <button class="heart-action-btn" data-product-id="<?php echo $product['id']; ?>" style="font-size: 26px; color: #e74c3c; cursor: pointer; transition: 0.3s; padding: 10px 15px; border: 1px solid #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #fff;" title="إضافة للمفضلة">
+            <button class="heart-action-btn" data-product-id="<?php echo $product['id']; ?>" style="font-size: 26px; color: #e74c3c; cursor: pointer; transition: 0.3s; padding: 10px 15px; border: 1px solid #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #fff;" title="<?= lang('add_to_favorites') ?>">
                 <i class="<?php echo $isFavorited ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
             </button>
         </div>
@@ -74,7 +74,7 @@
 
   <div id="comments-section" class="container" style="margin-bottom: 60px;">
     <div class="card" style="max-width: 800px; margin: 0 auto; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 10px;">
-        <h2 style="color: #2c3e50; margin-top:0; border-bottom: 2px solid #eee; padding-bottom: 15px;">آراء وتقييمات العملاء <i class="fa-solid fa-comments" style="color: var(--main-color);"></i></h2>
+        <h2 style="color: #2c3e50; margin-top:0; border-bottom: 2px solid #eee; padding-bottom: 15px;"><?= lang('customer_reviews') ?> <i class="fa-solid fa-comments" style="color: var(--main-color);"></i></h2>
 
         <div class="comments-list grid_content" style="margin-top: 25px; margin-bottom: 40px;">
             <?php if (!empty($comments)): ?>
@@ -82,8 +82,8 @@
                     <div class="testimonial_box" style="padding: 30px 20px; position: relative;">
                         <i class="fa-solid fa-quote-left quote_icon"></i>
                         <div style="cursor: pointer;" onclick='openCommentModal(<?php echo htmlspecialchars(json_encode($c['customer_name']), ENT_QUOTES, "UTF-8"); ?>, <?php echo htmlspecialchars(json_encode($c['comment_text']), ENT_QUOTES, "UTF-8"); ?>)'>
-    <p style="min-height: 50px; font-size: 14px; line-height: 1.8; color: #555; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;" title="انقر لقراءة التعليق بالكامل"><?php echo nl2br(htmlspecialchars($c['comment_text'])); ?></p>
-    <span style="color: var(--main-color); font-size: 12px; font-weight: bold;">اقرأ المزيد...</span>
+    <p style="min-height: 50px; font-size: 14px; line-height: 1.8; color: #555; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;" title="<?= lang('click_to_read_full') ?>"><?php echo nl2br(htmlspecialchars($c['comment_text'])); ?></p>
+    <span style="color: var(--main-color); font-size: 12px; font-weight: bold;"><?= lang('read_more') ?></span>
 </div>
                         <div class="rating" style="margin-bottom: 15px; font-size: 14px;">
                             <?php 
@@ -101,7 +101,7 @@
                         
                         <?php if (!empty($c['admin_reply'])): ?>
                             <div style="margin-top: 20px; padding: 12px; background: #f8fafc; border-radius: 8px; border-top: 3px solid #38bdf8; text-align: right;">
-                                <strong style="color: #0ea5e9; display:block; margin-bottom: 5px; font-size: 13px;"><i class="fa-solid fa-headset"></i> رد المتجر:</strong>
+                                <strong style="color: #0ea5e9; display:block; margin-bottom: 5px; font-size: 13px;"><i class="fa-solid fa-headset"></i> <?= lang('store_reply') ?></strong>
                                 <p style="margin: 0; color: #475569; line-height: 1.6; font-size: 13px;"><?php echo nl2br(htmlspecialchars($c['admin_reply'])); ?></p>
                             </div>
                         <?php endif; ?>
@@ -110,22 +110,22 @@
             <?php else: ?>
                 <div style="grid-column: 1 / -1; text-align:center; padding: 40px; background: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                     <i class="fa-regular fa-comment-dots" style="font-size: 40px; color: #cbd5e1; margin-bottom: 15px;"></i>
-                    <p style="color:#64748b; margin: 0; font-size: 16px; font-weight: bold;">لا توجد تعليقات حتى الآن. كن أول من يشاركنا رأيه!</p>
+                    <p style="color:#64748b; margin: 0; font-size: 16px; font-weight: bold;"><?= lang('no_comments_yet') ?></p>
                 </div>
             <?php endif; ?>
         </div>
 
         <div style="background: #fff; padding: 25px; border-radius: 8px; border: 1px solid #eee;">
-            <h3 style="margin-top:0; margin-bottom: 20px; color:#333;"><i class="fa-solid fa-pen"></i> أضف تقييمك للمنتج</h3>
+            <h3 style="margin-top:0; margin-bottom: 20px; color:#333;"><i class="fa-solid fa-pen"></i> <?= lang('add_your_review') ?></h3>
             <?php if (!Session::isLoggedIn()): ?>
                 <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
                     <i class="fa-solid fa-lock" style="font-size: 30px; color: #94a3b8; margin-bottom: 10px;"></i>
-                    <p style="color: #475569; font-size: 16px; margin: 0;">يجب عليك <a href="/login" style="color: var(--main-color); font-weight: bold;">تسجيل الدخول</a> وشراء المنتج لتتمكن من إضافة تقييم.</p>
+                    <p style="color: #475569; font-size: 16px; margin: 0;"><?= lang('login_to_review') ?></p>
                 </div>
             <?php elseif (!isset($hasPurchased) || !$hasPurchased): ?>
                 <div style="text-align: center; padding: 20px; background: #fef2f2; border-radius: 8px; border: 1px dashed #fca5a5;">
                     <i class="fa-solid fa-cart-circle-xmark" style="font-size: 30px; color: #f87171; margin-bottom: 10px;"></i>
-                    <p style="color: #991b1b; font-size: 16px; margin: 0;">عذراً نظام التقييم متاح فقط للمشترين المؤكدين يجب إتمام شراء هذا المنتج لتتمكن من تقييمه</p>
+                    <p style="color: #991b1b; font-size: 16px; margin: 0;"><?= lang('purchase_to_review') ?></p>
                 </div>
             
             <?php else: ?>
@@ -138,7 +138,7 @@
                 <form method="POST" action="/product?id=<?php echo $id; ?>#comments-section">
                     <?= CSRF::getField() ?>
                     <div style="margin-bottom: 15px;">
-                        <label style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">تقييمك للمنتج:</label>
+                        <label style="display:block; margin-bottom:5px; color:#555; font-weight:bold;"><?= lang('your_rating') ?></label>
                         <div class="star-rating-input">
                             <input type="radio" id="star5" name="user_rating" value="5" checked><label for="star5"><i class="fa-solid fa-star"></i></label>
                             <input type="radio" id="star4" name="user_rating" value="4"><label for="star4"><i class="fa-solid fa-star"></i></label>
@@ -148,14 +148,14 @@
                         </div>
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <label style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">الاسم :</label>
+                        <label style="display:block; margin-bottom:5px; color:#555; font-weight:bold;"><?= lang('reviewer_name') ?></label>
                         <input type="text" name="customer_name" required value="<?= htmlspecialchars(explode(' ', Session::get('user_name'))[0]) ?>" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 15px; box-sizing: border-box;">
                     </div>
                     <div style="margin-bottom: 20px;">
-                        <label style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">نص التقييم:</label>
-                        <textarea name="comment_text" required placeholder="اكتب رأيك بصدق هنا ليفيد الآخرين..." rows="5" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 15px; resize: vertical; box-sizing: border-box;"></textarea>
+                        <label style="display:block; margin-bottom:5px; color:#555; font-weight:bold;"><?= lang('review_text') ?></label>
+                        <textarea name="comment_text" required placeholder="<?= lang('review_placeholder') ?>" rows="5" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 15px; resize: vertical; box-sizing: border-box;"></textarea>
                     </div>
-                    <button type="submit" name="submit_comment" style="background: var(--main-color); color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-size: 16px; font-family: inherit; font-weight: bold; transition: 0.3s; width: 100%;"><i class="fa-solid fa-paper-plane"></i> إرسال التقييم</button>
+                    <button type="submit" name="submit_comment" style="background: var(--main-color); color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-size: 16px; font-family: inherit; font-weight: bold; transition: 0.3s; width: 100%;"><i class="fa-solid fa-paper-plane"></i> <?= lang('submit_review') ?></button>
                 </form>
             <?php endif; ?>
         </div>

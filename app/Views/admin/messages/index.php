@@ -1,13 +1,13 @@
 <div class="card">
-    <h2 style="margin-top:0;"><i class="fa-solid fa-inbox"></i> الرسائل الواردة (الزوار)</h2>
+    <h2 style="margin-top:0;"><i class="fa-solid fa-inbox"></i> <?= lang('visitor_messages_heading') ?></h2>
     <table>
       <thead>
         <tr>
-          <th>المرسل</th>
-          <th>بيانات التواصل</th>
-          <th>الرسالة</th>
-          <th>التاريخ</th>
-          <th>الإجراءات</th>
+          <th><?= lang('col_sender') ?></th>
+          <th><?= lang('col_contact_info') ?></th>
+          <th><?= lang('col_message') ?></th>
+          <th><?= lang('col_date') ?></th>
+          <th><?= lang('col_actions') ?></th>
         </tr>
       </thead>
       <tbody>
@@ -35,54 +35,54 @@
           <td><span class="date-badge"><?= date('Y-m-d', strtotime($row['created_at'])) ?></span></td>
           <td>
             <div class="actions-flex">
-              <form method="POST" action="/admin/messages/delete" style="display:inline;" onsubmit="return confirm('حذف هذه الرسالة؟');">
+              <form method="POST" action="/admin/messages/delete" style="display:inline;" onsubmit="return confirm('<?= lang('confirm_delete_msg') ?>');">
                 <?= CSRF::getField() ?>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
                 <input type="hidden" name="type" value="contact">
-                <button type="submit" class="btn-delete"><i class="fa-solid fa-trash"></i> حذف</button>
+                <button type="submit" class="btn-delete"><i class="fa-solid fa-trash"></i> <?= lang('btn_delete') ?></button>
               </form>
             </div>
           </td>
         </tr>
         <?php endforeach; ?>
       <?php else: ?>
-        <tr><td colspan="5" style="text-align:center; padding:40px; color:#94a3b8;">لا توجد رسائل زوار.</td></tr>
+        <tr><td colspan="5" style="text-align:center; padding:40px; color:#94a3b8;"><?= lang('no_visitor_messages') ?></td></tr>
       <?php endif; ?>
       </tbody>
     </table>
 </div>
 
 <div class="card">
-    <h2 style="margin-top:0;"><i class="fa-solid fa-user-tag"></i> تذاكر المستخدمين المسجلين</h2>
+    <h2 style="margin-top:0;"><i class="fa-solid fa-user-tag"></i> <?= lang('user_tickets_heading') ?></h2>
     <table>
       <thead>
         <tr>
-          <th>المستخدم</th>
-          <th>الموضوع</th>
-          <th>الرسالة</th>
-          <th>الرد</th>
-          <th>التاريخ</th>
-          <th>الإجراءات</th>
+          <th><?= lang('menu_users') ?></th>
+          <th><?= lang('col_subject') ?></th>
+          <th><?= lang('col_message') ?></th>
+          <th><?= lang('col_reply') ?></th>
+          <th><?= lang('col_date') ?></th>
+          <th><?= lang('col_actions') ?></th>
         </tr>
       </thead>
       <tbody>
       <?php if (!empty($user_messages)): ?>
         <?php foreach ($user_messages as $row):
           $reply_text = $row['reply'] ?? '';
-          $status_badge = !empty($reply_text) ? '<span class="badge-success"><i class="fa-solid fa-check"></i> تم الرد</span>' : '<span class="badge-warning"><i class="fa-solid fa-clock"></i> معلق</span>';
+          $status_badge = !empty($reply_text) ? '<span class="badge-success"><i class="fa-solid fa-check"></i> ' . lang('status_replied_badge') . '</span>' : '<span class="badge-warning"><i class="fa-solid fa-clock"></i> ' . lang('status_pending_badge') . '</span>';
         ?>
         <tr>
           <td><span class="user-badge"><i class="fa-solid fa-user"></i> ID: <?= $row['user_id'] ?></span></td>
-          <td style="font-weight:600;"><?= htmlspecialchars($row['subject'] ?? 'بدون عنوان') ?></td>
+          <td style="font-weight:600;"><?= htmlspecialchars($row['subject'] ?? lang('no_subject')) ?></td>
           <td><div class="message-content"><?= nl2br(htmlspecialchars($row['message'])) ?></div></td>
           <td><?= $status_badge ?></td>
           <td><span class="date-badge"><?= date('Y-m-d', strtotime($row['created_at'])) ?></span></td>
           <td>
             <div class="actions-flex">
               <button type="button" class="btn-reply" onclick="openReplyModal(<?= $row['id'] ?>, 'user', <?= htmlspecialchars(json_encode($reply_text)) ?>, <?= htmlspecialchars(json_encode($row['message'])) ?>)">
-                <i class="fa-solid fa-reply"></i> <?= !empty($reply_text) ? 'تعديل' : 'رد' ?>
+                <i class="fa-solid fa-reply"></i> <?= !empty($reply_text) ? lang('btn_edit') : lang('btn_reply') ?>
               </button>
-              <form method="POST" action="/admin/messages/delete" style="display:inline;" onsubmit="return confirm('حذف هذه التذكرة؟');">
+              <form method="POST" action="/admin/messages/delete" style="display:inline;" onsubmit="return confirm('<?= lang('confirm_delete_ticket') ?>');">
                 <?= CSRF::getField() ?>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
                 <input type="hidden" name="type" value="user">
@@ -93,7 +93,7 @@
         </tr>
         <?php endforeach; ?>
       <?php else: ?>
-        <tr><td colspan="6" style="text-align:center; padding:40px; color:#94a3b8;">لا توجد تذاكر مستخدمين.</td></tr>
+        <tr><td colspan="6" style="text-align:center; padding:40px; color:#94a3b8;"><?= lang('no_user_tickets') ?></td></tr>
       <?php endif; ?>
       </tbody>
     </table>
@@ -104,13 +104,13 @@
     <div class="modal-header-modern">
       <h3 class="modal-title-modern">
         <div class="icon-wrapper-modern"><i class="fa-solid fa-reply"></i></div>
-        إدارة الرد على الرسالة
+        <?= lang('manage_reply_title') ?>
       </h3>
       <i class="fa-solid fa-xmark close-btn-modern" onclick="closeReplyModal()"></i>
     </div>
     <div class="modal-body-modern">
       <div style="background:#f8fafc; padding:15px; border-radius:12px; margin-bottom:20px; border-right:4px solid #3b82f6;">
-        <strong style="color:#1e293b; font-size:13px;"><i class="fa-solid fa-envelope-open-text"></i> نص الرسالة الواردة:</strong>
+        <strong style="color:#1e293b; font-size:13px;"><i class="fa-solid fa-envelope-open-text"></i> <?= lang('incoming_message_text') ?></strong>
         <p id="display_full_message" style="margin:8px 0 0 0; color:#475569; line-height:1.6; font-size:14px; max-height:150px; overflow-y:auto; padding-right:5px; white-space:pre-wrap;"></p>
       </div>
       <form method="POST" action="/admin/messages/reply">
@@ -118,15 +118,15 @@
         <input type="hidden" name="type" id="modal_msg_type">
         <input type="hidden" name="msg_id" id="modal_msg_id">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <label style="font-weight:700; color:#1e293b;">اكتب ردك هنا:</label>
+            <label style="font-weight:700; color:#1e293b;"><?= lang('write_reply_label') ?></label>
             <button type="button" id="aiMessageBtn" class="btn-ai-reply" style="margin-bottom:0;">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> اقتراح رد ذكي
+                <i class="fa-solid fa-wand-magic-sparkles"></i> <?= lang('ai_suggest_reply_btn') ?>
             </button>
         </div>
-        <textarea name="reply_text" id="modal_reply_text" class="textarea-modern" placeholder="اكتب الرد الرسمي للمتجر..." required></textarea>
+        <textarea name="reply_text" id="modal_reply_text" class="textarea-modern" placeholder="<?= lang('reply_textarea_ph') ?>" required></textarea>
         <div class="modal-footer-modern">
-          <button type="button" class="btn-cancel-modern" onclick="closeReplyModal()">إلغاء</button>
-          <button type="submit" class="btn-save-modern"><i class="fa-solid fa-paper-plane"></i> إرسال وحفظ الرد</button>
+          <button type="button" class="btn-cancel-modern" onclick="closeReplyModal()"><?= lang('cancel_btn') ?></button>
+          <button type="submit" class="btn-save-modern"><i class="fa-solid fa-paper-plane"></i> <?= lang('send_save_reply_btn') ?></button>
         </div>
       </form>
     </div>
@@ -155,7 +155,7 @@ aiBtn.addEventListener('click', async () => {
   const csrfToken = document.querySelector('input[name="csrf_token"]').value;
   
   const originalHtml = aiBtn.innerHTML;
-  aiBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التوليد...';
+  aiBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <?= lang("ai_generating") ?>';
   aiBtn.disabled = true;
   
   try {
@@ -168,7 +168,7 @@ aiBtn.addEventListener('click', async () => {
     if (data.reply) replyInput.value = data.reply;
     else if (data.error) alert(data.error);
   } catch (e) {
-    alert('خطأ في الاتصال بالذكاء الاصطناعي');
+    alert('<?= lang("ai_connection_error") ?>');
   } finally {
     aiBtn.innerHTML = originalHtml;
     aiBtn.disabled = false;

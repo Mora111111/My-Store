@@ -20,25 +20,25 @@
 
 <section class="messages_container">
     <div class="container">
-      <h2 style="margin-bottom: 30px; text-align: center;">صندوق الرسائل والردود</h2>
+      <h2 style="margin-bottom: 30px; text-align: center;"><?= lang('messages_inbox_title') ?></h2>
 
       <?php if(isset($_GET['success'])): ?>
-          <div class="alert-success">تم إرسال رسالتك بنجاح! سيتم الرد عليها في أقرب وقت.</div>
+          <div class="alert-success"><?= lang('message_sent_success') ?></div>
       <?php endif; ?>
 
       <div class="new-message-card">
-          <h3><i class="fa-solid fa-pen"></i> إرسال رسالة جديدة</h3>
+          <h3><i class="fa-solid fa-pen"></i> <?= lang('send_new_message') ?></h3>
           <form method="POST" action="/my-messages/send">
               <?= CSRF::getField() ?>
               <div class="form-group">
-                  <label>الموضوع</label>
-                  <input type="text" name="subject" placeholder="عنوان الرسالة" required>
+                  <label><?= lang('message_subject_label') ?></label>
+                  <input type="text" name="subject" placeholder="<?= lang('message_subject_placeholder') ?>" required>
               </div>
               <div class="form-group">
-                  <label>الرسالة</label>
-                  <textarea name="message" rows="4" placeholder="اكتب رسالتك هنا..." required></textarea>
+                  <label><?= lang('message_body_label') ?></label>
+                  <textarea name="message" rows="4" placeholder="<?= lang('message_body_placeholder') ?>" required></textarea>
               </div>
-              <button type="submit" class="btn-send"><i class="fa-solid fa-paper-plane"></i> إرسال</button>
+              <button type="submit" class="btn-send"><i class="fa-solid fa-paper-plane"></i> <?= lang('send_btn') ?></button>
           </form>
       </div>
 
@@ -46,7 +46,7 @@
         <?php foreach ($messages as $row): ?>
           <div class="msg_card">
             <div class="msg_header">
-              <strong><i class="fa-solid fa-envelope"></i> <?php echo htmlspecialchars($row['subject'] ?? 'بدون عنوان'); ?></strong>
+              <strong><i class="fa-solid fa-envelope"></i> <?php echo htmlspecialchars($row['subject'] ?? lang('no_subject')); ?></strong>
               <small><?php echo isset($row['created_at']) ? date('Y-m-d', strtotime($row['created_at'])) : ''; ?></small>
             </div>
 
@@ -56,12 +56,12 @@
 
             <?php if (!empty($row['reply'])): ?>
               <div class="bot_reply_box">
-                <strong><i class="fa-solid fa-robot reply_icon"></i> رد الدعم:</strong><br>
+                <strong><i class="fa-solid fa-robot reply_icon"></i> <?= lang('support_reply_label') ?></strong><br>
                 <?php echo nl2br(htmlspecialchars($row['reply'])); ?>
               </div>
             <?php else: ?>
               <div class="no_reply">
-                <i class="fa-solid fa-clock"></i> جاري مراجعة رسالتك من قبل فريق الدعم...
+                <i class="fa-solid fa-clock"></i> <?= lang('support_reviewing_msg') ?>
               </div>
             <?php endif; ?>
           </div>
@@ -69,7 +69,7 @@
       <?php else: ?>
         <div style="text-align: center; padding: 50px;">
             <i class="fa-regular fa-folder-open" style="font-size: 50px; color: #ccc;"></i>
-            <p>لا توجد رسائل سابقة لديك.</p>
+            <p><?= lang('no_previous_messages') ?></p>
         </div>
       <?php endif; ?>
 

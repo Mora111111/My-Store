@@ -52,20 +52,20 @@
     <div class="item_payment address"></div>
     
     <div class="item_payment" id="order-review-section">
-      <h4 class="title_payment">المنتجات في طلبك</h4>
+      <h4 class="title_payment"><?= lang('order_products_title') ?></h4>
       <div id="review-products-container" style="display: flex; flex-direction: column; gap: 15px;"></div>
     </div>
 
     <div class="item_payment">
-      <h4 class="title_payment">طرق السداد</h4>
+      <h4 class="title_payment"><?= lang('payment_methods_title') ?></h4>
       <div class="payment-methods-container" style="display: flex; flex-direction: column; gap: 15px;">
         
         <label style="display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 2px solid var(--main-color); border-radius: 12px; cursor: pointer; background: #f8fafc; transition: 0.3s;" id="label_cod">
             <div style="display: flex; align-items: center; gap: 15px;">
                 <input type="radio" name="payment_method" value="cod" checked style="width: 20px; height: 20px; accent-color: var(--main-color);">
                 <div>
-                    <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع نقداً عند الاستلام (COD)</h5>
-                    <span style="font-size: 13px; color: #64748b;">سيتم تطبيق مصاريف الشحن المعتادة.</span>
+                    <h5 style="margin: 0; font-size: 16px; color: #0f172a;"><?= lang('cod_title') ?></h5>
+                    <span style="font-size: 13px; color: #64748b;"><?= lang('cod_desc') ?></span>
                 </div>
             </div>
             <i class="fa-solid fa-hand-holding-dollar" style="font-size: 24px; color: #64748b;"></i>
@@ -76,8 +76,8 @@
             <div style="display: flex; align-items: center; gap: 15px;">
                 <input type="radio" name="payment_method" value="online_card" style="width: 20px; height: 20px; accent-color: var(--main-color);">
                 <div>
-                    <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع بالبطاقة البنكية (فيزا / ماستركارد)</h5>
-                    <span style="font-size: 13px; color: #10b981; font-weight: bold;">شحن مجاني!</span>
+                    <h5 style="margin: 0; font-size: 16px; color: #0f172a;"><?= lang('online_card_title') ?></h5>
+                    <span style="font-size: 13px; color: #10b981; font-weight: bold;"><?= lang('free_shipping_badge') ?></span>
                 </div>
             </div>
             <div style="display: flex; gap: 5px;">
@@ -90,8 +90,8 @@
             <div style="display: flex; align-items: center; gap: 15px;">
                 <input type="radio" name="payment_method" value="online_wallet" style="width: 20px; height: 20px; accent-color: var(--main-color);">
                 <div>
-                    <h5 style="margin: 0; font-size: 16px; color: #0f172a;">الدفع بالمحافظ الإلكترونية (فودافون كاش وغيرها)</h5>
-                    <span style="font-size: 13px; color: #10b981; font-weight: bold;">شحن مجاني!</span>
+                    <h5 style="margin: 0; font-size: 16px; color: #0f172a;"><?= lang('online_wallet_title') ?></h5>
+                    <span style="font-size: 13px; color: #10b981; font-weight: bold;"><?= lang('free_shipping_badge') ?></span>
                 </div>
             </div>
             <div style="display: flex; gap: 5px;">
@@ -106,32 +106,32 @@
 
   <div class="content_payment">
     <div class="item_payment" id="item-payment">
-      <h4 class="title_payment">الملخص</h4>
+      <h4 class="title_payment"><?= lang('summary_title') ?></h4>
       <div class="boxs_order_total">
         <div class="box_order_total">
-          <span>إجمالي الطلب</span>
+          <span><?= lang('order_total_title') ?></span>
           <span class="order_total cart-total-price"></span>
         </div>
         <div class="box_order_total">
-          <span>تكاليف الشحن</span>
-          <span id="display-shipping-cost"><?php echo isset($site_settings['shipping_cost']) && $site_settings['shipping_cost'] > 0 ?$site_settings['shipping_cost'] . ' ج.م' : 'مجاني'; ?></span>
+          <span><?= lang('shipping_costs_title') ?></span>
+          <span id="display-shipping-cost"><?php echo isset($site_settings['shipping_cost']) && $site_settings['shipping_cost'] > 0 ?$site_settings['shipping_cost'] . ' ' . lang('currency_egp') : lang('free_text'); ?></span>
         </div>
         <div class="box_order_total" id="discount-row" style="color: #10b981; font-weight: bold; display: none;">
-          <span id="discount-title">كوبون الخصم</span>
-          <span id="display-discount-amount">- 0 ج.م</span>
+          <span id="discount-title"><?= lang('discount_coupon_title') ?></span>
+          <span id="display-discount-amount">- 0 <?= lang('currency_egp') ?></span>
         </div>
       </div>
       <div class="boxs_order_total">
         <div class="box_order_total">
-          <span>الإجمالي</span>
+          <span><?= lang('final_total_title') ?></span>
           <span class="order_total final-total-price"></span>
         </div>
-        <button class="order_btn">تأكيد الطلب</button>
+        <button class="order_btn"><?= lang('confirm_order_btn') ?></button>
       </div>
     </div>
     <div class="item_payment item_payment_safety">
       <img src="/images/logos/logo.png" alt="Safety Logo" />
-      <p>يحافظ MY Store على أمان معلوماتك ومدفوعاتك</p>
+      <p><?= lang('secure_payment_msg') ?></p>
       <img src="/images/payment/payment_5.png" alt="Safety" />
     </div>
   </div>
@@ -139,29 +139,29 @@
   <!-- Address Modals -->
   <div class="container_modal" id="modal-add-address">
     <div class="modal_header">
-      <h4 class="modal_title">إضافة عنوان الشحن</h4>
+      <h4 class="modal_title"><?= lang('add_shipping_address') ?></h4>
     </div>
     <div class="modal_body">
       <div class="form_section">
         <?= CSRF::getField() ?>
         <div class="form_body">
-          <div class="form_title">البيانات الشخصية</div>
+          <div class="form_title"><?= lang('personal_details') ?></div>
           <div class="form_box_modal">
-            <input type="text" name="full_name" placeholder="* اسم العميل" required class="form_input input_user" />
-            <input type="text" name="phone" placeholder="* رقم الهاتف" required class="form_input input_tel" />
+            <input type="text" name="full_name" placeholder="<?= lang('customer_name_ph') ?>" required class="form_input input_user" />
+            <input type="text" name="phone" placeholder="<?= lang('phone_number_ph') ?>" required class="form_input input_tel" />
           </div>
-          <div class="form_title">العنوان</div>
+          <div class="form_title"><?= lang('address_details') ?></div>
           <div class="form_box_modal">
-            <input type="text" name="address_line1" placeholder="* الشارع، المنزل/الشقة/الوحدة السكنية" required class="form_input input_address_street" />
-            <input type="text" name="address_line2" placeholder="* الشقة، الجناح، الوحدة، إلخ..." required class="form_input input_address_unit" />
+            <input type="text" name="address_line1" placeholder="<?= lang('street_ph') ?>" required class="form_input input_address_street" />
+            <input type="text" name="address_line2" placeholder="<?= lang('unit_ph') ?>" required class="form_input input_address_unit" />
           </div>
           <div class="form_box_modal">
-            <input type="text" name="city" placeholder="* المدينة" required class="form_input input_address_city" />
-            <input type="text" name="governorate" placeholder="* المحافظة" required class="form_input input_address_boycott" />
-            <input type="text" name="zip_code" placeholder="* الرقم البريدي" required class="form_input input_address_postal" />
+            <input type="text" name="city" placeholder="<?= lang('city_ph') ?>" required class="form_input input_address_city" />
+            <input type="text" name="governorate" placeholder="<?= lang('governorate_ph') ?>" required class="form_input input_address_boycott" />
+            <input type="text" name="zip_code" placeholder="<?= lang('zip_code_ph') ?>" required class="form_input input_address_postal" />
           </div>
           <div class="form_box_modal" style="justify-content: center;">
-            <input type="button" value="إضافة عنوان الشحن" class="send_btn" id="btn-save-address" />
+            <input type="button" value="<?= lang('add_shipping_address') ?>" class="send_btn" id="btn-save-address" />
           </div>
           <i class="fa-solid fa-xmark close_modal"></i>
         </div>
@@ -171,29 +171,29 @@
 
   <div class="container_modal modal_change" id="modal-edit-address">
     <div class="modal_header">
-      <h4 class="modal_title">تعديل عنوان الشحن</h4>
+      <h4 class="modal_title"><?= lang('edit_shipping_address') ?></h4>
     </div>
     <div class="modal_body">
       <div class="form_section">
         <div class="form_body">
-          <div class="form_title">البيانات الشخصية</div>
+          <div class="form_title"><?= lang('personal_details') ?></div>
           <div class="form_box_modal">
-            <input type="text" placeholder="* اسم العميل" required class="form_input input_user_change" />
-            <input type="text" placeholder="* رقم الهاتف" required class="form_input input_tel_change" />
+            <input type="text" placeholder="<?= lang('customer_name_ph') ?>" required class="form_input input_user_change" />
+            <input type="text" placeholder="<?= lang('phone_number_ph') ?>" required class="form_input input_tel_change" />
           </div>
-          <div class="form_title">العنوان</div>
+          <div class="form_title"><?= lang('address_details') ?></div>
           <div class="form_box_modal">
-            <input type="text" placeholder="* الشارع، المنزل/الشقة/الوحدة السكنية" required class="form_input input_address_street_change" />
-            <input type="text" placeholder="* الشقة، الجناح، الوحدة، إلخ..." required class="form_input input_address_unit_change" />
+            <input type="text" placeholder="<?= lang('street_ph') ?>" required class="form_input input_address_street_change" />
+            <input type="text" placeholder="<?= lang('unit_ph') ?>" required class="form_input input_address_unit_change" />
           </div>
           <div class="form_box_modal">
-            <input type="text" placeholder="* المدينة" required class="form_input input_address_city_change" />
-            <input type="text" placeholder="* المحافظة" required class="form_input input_address_boycott_change " />
-            <input type="text" placeholder="* الرقم البريدي" required class="form_input input_address_postal_change" />
+            <input type="text" placeholder="<?= lang('city_ph') ?>" required class="form_input input_address_city_change" />
+            <input type="text" placeholder="<?= lang('governorate_ph') ?>" required class="form_input input_address_boycott_change " />
+            <input type="text" placeholder="<?= lang('zip_code_ph') ?>" required class="form_input input_address_postal_change" />
           </div>
           <div class="box_change_btn">
-            <button class="change_modal_btn done_change_btn" id="btn-update-address">تأكيد</button>
-            <button class="change_modal_btn close_change_btn" id="btn-cancel-edit">إلغاء</button>
+            <button class="change_modal_btn done_change_btn" id="btn-update-address"><?= lang('confirm_btn') ?></button>
+            <button class="change_modal_btn close_change_btn" id="btn-cancel-edit"><?= lang('cancel_btn') ?></button>
           </div>
         </div>
       </div>
@@ -203,9 +203,9 @@
   <div class="container_modal popup" id="modal-success">
     <div class="popup_content">
       <i class="fa-solid fa-circle-check popup_icon" style="font-size: 70px; color: #10b981;"></i>
-      <p class="popup_p" style="font-size: 24px; font-weight: bold; margin: 20px 0;">تم تأكيد الطلب بنجاح</p>
+      <p class="popup_p" style="font-size: 24px; font-weight: bold; margin: 20px 0;"><?= lang('order_success_msg') ?></p>
     </div>
-    <button class="popup_btn" style="background: #10b981; color: white; border: none; padding: 15px 40px; border-radius: 40px; font-size: 20px; font-weight: bold; cursor: pointer;" onclick="localStorage.removeItem('cards'); window.location.href='/my-orders'">حسناً</button>
+    <button class="popup_btn" style="background: #10b981; color: white; border: none; padding: 15px 40px; border-radius: 40px; font-size: 20px; font-weight: bold; cursor: pointer;" onclick="localStorage.removeItem('cards'); window.location.href='/my-orders'"><?= lang('ok_btn') ?></button>
   </div>
 </div>
 
@@ -234,7 +234,7 @@
             cartItems.forEach(item => {
                 let rawImg = item.img || item.image || item.image_url || item.imgSrc || item.productImg || item.src || 'images/logos/logo.png';
                 let productImg = rawImg.startsWith('http') ? rawImg : '<?= BASE_URL ?>' + rawImg.replace(/^\/+/, '');
-                let productTitle = item.title || item.name || item.productName || 'منتج إلكتروني';
+                let productTitle = item.title || item.name || item.productName || '<?= lang("electronic_product") ?>';
                 let productId = item.id || item.productId || item.product_id || item.Id || item.ID;
                 let qty = parseInt(item.number || item.quantity || item.qty || 1);
 
@@ -250,14 +250,14 @@
                                 <div class="card_title_wrapper" style="margin-bottom: 5px;">
                                     <p style="margin: 0; font-weight: bold; color: #0f172a; font-size: 16px;">${productTitle}</p>
                                 </div>
-                                <p style="margin: 0; font-size: 14px; color: #64748b;">الكمية: ${qty}</p>
+                                <p style="margin: 0; font-size: 14px; color: #64748b;"><?= lang('quantity_text') ?>${qty}</p>
                             </div>
                         </a>
-                        <div style="font-weight: bold; color: #f97316; font-size: 17px;">${(numericPrice * qty).toFixed(2)} ج.م</div>
+                        <div style="font-weight: bold; color: #f97316; font-size: 17px;">${(numericPrice * qty).toFixed(2)} <?= lang('currency_egp') ?></div>
                     </div>
                 `;
             });
-            subTotalElements.forEach(el => { el.textContent = calculatedSubTotal.toFixed(2) + ' ج.م'; });
+            subTotalElements.forEach(el => { el.textContent = calculatedSubTotal.toFixed(2) + ' <?= lang("currency_egp") ?>'; });
         }
 
         const updateFinalTotal = () => {
@@ -265,7 +265,7 @@
             let currentShipping = (currentMethod === 'online_card' || currentMethod === 'online_wallet') ? 0 : baseShippingCost;
             
             if (displayShippingCost) {
-                displayShippingCost.textContent = currentShipping > 0 ? currentShipping.toFixed(2) + ' ج.م' : 'مجاني';
+                displayShippingCost.textContent = currentShipping > 0 ? currentShipping.toFixed(2) + ' <?= lang("currency_egp") ?>' : '<?= lang("free_text") ?>';
             }
             
             let baseSubTotal = calculatedSubTotal;
@@ -275,7 +275,7 @@
             }
             
             let finalTotal = baseSubTotal + currentShipping;
-            finalTotalElements.forEach(el => { el.textContent = finalTotal.toFixed(2) + ' ج.م'; });
+            finalTotalElements.forEach(el => { el.textContent = finalTotal.toFixed(2) + ' <?= lang("currency_egp") ?>'; });
         };
 
         updateFinalTotal();
@@ -317,8 +317,8 @@
 
                 addressDiv.innerHTML = `
                     <div class="address_details" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <h4 class="title_payment">عنوان الشحن</h4>
-                        <span class="change_address" id="btn-open-edit-modal" style="color:var(--main-color); cursor:pointer; font-weight:bold;"><i class="fa-solid fa-pen"></i> تعديل</span>
+                        <h4 class="title_payment"><?= lang('shipping_address_title') ?></h4>
+                        <span class="change_address" id="btn-open-edit-modal" style="color:var(--main-color); cursor:pointer; font-weight:bold;"><i class="fa-solid fa-pen"></i> <?= lang('edit_text') ?></span>
                     </div>
                     <div class="content_address" style="background:#f8fafc; padding:15px; border-radius:8px; line-height:1.8; border:1px solid #e2e8f0;">
                         <h5 id="user-Address" style="margin:0; font-size:16px; color:#0f172a;">${savedAddress.full_name}</h5>
@@ -328,7 +328,7 @@
                         <span id="unity-Address">${savedAddress.address_line2}</span><br>
                         <span id="city-Address">${savedAddress.city}</span> - 
                         <span id="boycott-Address">${savedAddress.governorate}</span><br>
-                        <span style="color:#64748b;">الرمز البريدي: </span><span id="postal-Address">${savedAddress.zip_code}</span>
+                        <span style="color:#64748b;"><?= lang('zip_code_label') ?></span><span id="postal-Address">${savedAddress.zip_code}</span>
                     </div>
                 `;
 
@@ -351,9 +351,9 @@
                 }, 100);
             } else {
                 addressDiv.innerHTML = `
-                  <h4 class="title_payment">عنوان الشحن</h4>
+                  <h4 class="title_payment"><?= lang('shipping_address_title') ?></h4>
                   <div class="box_address" id="btn-open-add-modal" style="cursor:pointer; background:#f8fafc; padding:15px; border-radius:8px; border:2px dashed #cbd5e1; text-align:center;">
-                    <span style="color:#3b82f6; font-weight:bold;"><i class="fa-solid fa-plus"></i> إضافة عنوان الشحن</span>
+                    <span style="color:#3b82f6; font-weight:bold;"><i class="fa-solid fa-plus"></i> <?= lang('add_shipping_address') ?></span>
                   </div>
                 `;
                 setTimeout(() => {
@@ -413,8 +413,8 @@
 
                 addressDiv.innerHTML = `
                     <div class="address_details" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <h4 class="title_payment">عنوان الشحن</h4>
-                        <span class="change_address" id="btn-open-edit-modal" style="color:var(--main-color); cursor:pointer; font-weight:bold;"><i class="fa-solid fa-pen"></i> تعديل</span>
+                        <h4 class="title_payment"><?= lang('shipping_address_title') ?></h4>
+                        <span class="change_address" id="btn-open-edit-modal" style="color:var(--main-color); cursor:pointer; font-weight:bold;"><i class="fa-solid fa-pen"></i> <?= lang('edit_text') ?></span>
                     </div>
                     <div class="content_address" style="background:#f8fafc; padding:15px; border-radius:8px; line-height:1.8; border:1px solid #e2e8f0;">
                         <h5 id="user-Address" style="margin:0; font-size:16px; color:#0f172a;">${inputs[0].value}</h5>
@@ -424,7 +424,7 @@
                         <span id="unity-Address">${inputs[3].value}</span><br>
                         <span id="city-Address">${inputs[4].value}</span> - 
                         <span id="boycott-Address">${inputs[5].value}</span><br>
-                        <span style="color:#64748b;">الرمز البريدي: </span><span id="postal-Address">${inputs[6].value}</span>
+                        <span style="color:#64748b;"><?= lang('zip_code_label') ?></span><span id="postal-Address">${inputs[6].value}</span>
                     </div>
                 `;
 
@@ -497,7 +497,7 @@
                 }
 
                 if (!cartItems || cartItems.length === 0) {
-                    alert("عربة التسوق فارغة!");
+                    alert("<?= lang('cart_empty_alert') ?>");
                     window.location.href = "/products";
                     return;
                 }
@@ -528,7 +528,7 @@
                 })));
 
                 orderBtn.disabled = true;
-                orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التنفيذ...';
+                orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <?= lang("processing_btn") ?>';
                 
                 fetch("/checkout/process", {
                     method: "POST",
@@ -556,20 +556,20 @@
                                 }
                             }
                         } else {
-                            alert("حدث خطأ أثناء تسجيل الطلب: " + (data.error || ""));
+                            alert("<?= lang('order_error_msg') ?>" + (data.error || ""));
                             orderBtn.disabled = false;
-                            orderBtn.textContent = "تأكيد الطلب";
+                            orderBtn.textContent = "<?= lang('confirm_order_btn') ?>";
                         }
                     } catch (e) {
-                        alert("فشل استجابة السيرفر. برجاء المحاولة مرة أخرى.");
+                        alert("<?= lang('server_error_msg') ?>");
                         orderBtn.disabled = false;
-                        orderBtn.textContent = "تأكيد الطلب";
+                        orderBtn.textContent = "<?= lang('confirm_order_btn') ?>";
                     }
                 })
                 .catch(err => {
-                    alert("حدث خطأ في الاتصال: " + err.message);
+                    alert("<?= lang('connection_error_msg') ?>" + err.message);
                     orderBtn.disabled = false;
-                    orderBtn.textContent = "تأكيد الطلب";
+                    orderBtn.textContent = "<?= lang('confirm_order_btn') ?>";
                 });
             });
         }

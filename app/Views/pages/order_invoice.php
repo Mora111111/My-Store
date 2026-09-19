@@ -1,8 +1,8 @@
 <?php
 $payMethod = in_array($order['payment_method'] ?? 'cod', ['online', 'online_card', 'online_wallet']) 
-    ? 'إلكتروني (بطاقة بنكية / محفظة)' 
-    : 'الدفع نقداً عند الاستلام (COD)';
-$payStatus = ($order['payment_status'] ?? 'pending') === 'paid' ? 'مدفوع' : 'معلق';
+    ? lang('invoice_payment_online') 
+    : lang('invoice_payment_cod');
+$payStatus = ($order['payment_status'] ?? 'pending') === 'paid' ? lang('invoice_status_paid') : lang('invoice_status_pending');
 $transactionId = !empty($order['transaction_id']) ? $order['transaction_id'] : '#' . $order['id'];
 ?>
 
@@ -180,43 +180,43 @@ $transactionId = !empty($order['transaction_id']) ? $order['transaction_id'] : '
   <div class="invoice-card">
     <div class="invoice-header">
       <div class="invoice-title">
-        <h2>فاتورة شراء رسمية #<?= $order['id'] ?></h2>
-        <span>تاريخ الإصدار: <?= date('Y-m-d h:i A', strtotime($order['created_at'])) ?></span>
+        <h2><?= lang('invoice_title_official') ?><?= $order['id'] ?></h2>
+        <span><?= lang('invoice_issue_date') ?><?= date('Y-m-d h:i A', strtotime($order['created_at'])) ?></span>
       </div>
       <div class="invoice-actions no-print">
-        <button onclick="window.print()" class="btn-print"><i class="fa-solid fa-print"></i> طباعة الفاتورة</button>
-        <a href="/my-orders" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة لطلباتي</a>
+        <button onclick="window.print()" class="btn-print"><i class="fa-solid fa-print"></i> <?= lang('invoice_print_btn') ?></button>
+        <a href="/my-orders" class="btn-back"><i class="fa-solid fa-arrow-right"></i> <?= lang('invoice_back_btn') ?></a>
       </div>
     </div>
 
     <div class="invoice-body">
       <div class="invoice-grid">
         <div class="info-box">
-          <h4><i class="fa-solid fa-user" style="color:#0ea5e9;"></i> بيانات العميل</h4>
-          <p><strong>الاسم:</strong> <?= htmlspecialchars($order['full_name']) ?></p>
-          <p><strong>الهاتف:</strong> <span style="direction:ltr; display:inline-block;"><?= htmlspecialchars($order['phone']) ?></span></p>
-          <p><strong>حالة الطلب:</strong> <?= htmlspecialchars($order['status']) ?></p>
+          <h4><i class="fa-solid fa-user" style="color:#0ea5e9;"></i> <?= lang('invoice_customer_data') ?></h4>
+          <p><strong><?= lang('invoice_name') ?></strong> <?= htmlspecialchars($order['full_name']) ?></p>
+          <p><strong><?= lang('invoice_phone') ?></strong> <span style="direction:ltr; display:inline-block;"><?= htmlspecialchars($order['phone']) ?></span></p>
+          <p><strong><?= lang('invoice_order_status') ?></strong> <?= htmlspecialchars($order['status']) ?></p>
         </div>
 
         <div class="info-box">
-          <h4><i class="fa-solid fa-truck-fast" style="color:#ec4899;"></i> عنوان التوصيل</h4>
-          <p><strong>المنطقة:</strong> <?= htmlspecialchars($order['governorate']) ?> - <?= htmlspecialchars($order['city']) ?></p>
-          <p><strong>العنوان 1:</strong> <?= htmlspecialchars($order['address_line1']) ?></p>
-          <p><strong>العنوان 2:</strong> <?= htmlspecialchars($order['address_line2'] ?: 'لا يوجد') ?></p>
-          <p><strong>الرمز البريدي:</strong> <?= htmlspecialchars($order['zip_code'] ?: 'لا يوجد') ?></p>
+          <h4><i class="fa-solid fa-truck-fast" style="color:#ec4899;"></i> <?= lang('invoice_shipping_address') ?></h4>
+          <p><strong><?= lang('invoice_region') ?></strong> <?= htmlspecialchars($order['governorate']) ?> - <?= htmlspecialchars($order['city']) ?></p>
+          <p><strong><?= lang('invoice_address1') ?></strong> <?= htmlspecialchars($order['address_line1']) ?></p>
+          <p><strong><?= lang('invoice_address2') ?></strong> <?= htmlspecialchars($order['address_line2'] ?: lang('invoice_none')) ?></p>
+          <p><strong><?= lang('invoice_zip_code') ?></strong> <?= htmlspecialchars($order['zip_code'] ?: lang('invoice_none')) ?></p>
         </div>
 
         <div class="info-box">
-          <h4><i class="fa-solid fa-credit-card" style="color:#f59e0b;"></i> تفاصيل السداد</h4>
-          <p><strong>طريقة الدفع:</strong> <?= $payMethod ?></p>
-          <p><strong>حالة الدفع:</strong> <?= $payStatus ?></p>
-          <p><strong>رقم العملية:</strong> <span style="font-family: monospace; color: #64748b;"><?= htmlspecialchars($transactionId) ?></span></p>
+          <h4><i class="fa-solid fa-credit-card" style="color:#f59e0b;"></i> <?= lang('invoice_payment_details') ?></h4>
+          <p><strong><?= lang('invoice_payment_method') ?></strong> <?= $payMethod ?></p>
+          <p><strong><?= lang('invoice_payment_state') ?></strong> <?= $payStatus ?></p>
+          <p><strong><?= lang('invoice_transaction_id') ?></strong> <span style="font-family: monospace; color: #64748b;"><?= htmlspecialchars($transactionId) ?></span></p>
         </div>
       </div>
 
       <?php if (!empty($order['admin_message'])): ?>
       <div style="background: #eef2ff; border-right: 4px solid #6366f1; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
-        <h4 style="margin: 0 0 10px 0; color: #4338ca; font-size: 16px;"><i class="fa-solid fa-bell"></i> رسالة وتحديث من الإدارة:</h4>
+        <h4 style="margin: 0 0 10px 0; color: #4338ca; font-size: 16px;"><i class="fa-solid fa-bell"></i> <?= lang('invoice_admin_msg') ?></h4>
         <p style="margin: 0; color: #3730a3; font-size: 15px; line-height: 1.6; font-weight: 500;"><?= nl2br(htmlspecialchars($order['admin_message'])) ?></p>
       </div>
       <?php endif; ?>
@@ -224,17 +224,17 @@ $transactionId = !empty($order['transaction_id']) ? $order['transaction_id'] : '
       <table class="invoice-table">
         <thead>
           <tr>
-            <th>المنتج</th>
-            <th>سعر الوحدة</th>
-            <th style="text-align:center;">الكمية</th>
-            <th style="text-align:left;">المجموع الفرعي</th>
+            <th><?= lang('invoice_product_col') ?></th>
+            <th><?= lang('invoice_unit_price_col') ?></th>
+            <th style="text-align:center;"><?= lang('invoice_quantity_col') ?></th>
+            <th style="text-align:left;"><?= lang('invoice_subtotal_col') ?></th>
           </tr>
         </thead>
         <tbody>
           <?php if (!empty($products)): foreach ($products as $item): 
-            $title = $item['title'] ?? 'منتج غير معروف';
+            $title = $item['title'] ?? lang('electronic_product');
             $qty = (int)($item['quantity'] ?? $item['number'] ?? 1);
-            $cleanPrice = (float)str_replace([',', 'ج.م', ' '], '', $item['price'] ?? 0);
+            $cleanPrice = (float)str_replace([',', 'ج.م', ' ', lang('currency_egp')], '', $item['price'] ?? 0);
             $subtotal = $cleanPrice * $qty;
             $rawSrc = $item['src'] ?? 'images/logos/logo.png';
             $imgUrl = str_starts_with($rawSrc, 'http') ? $rawSrc : BASE_URL . ltrim($rawSrc, '/');
@@ -246,17 +246,17 @@ $transactionId = !empty($order['transaction_id']) ? $order['transaction_id'] : '
                 <span style="font-weight:700; color:#0f172a;"><?= htmlspecialchars($title) ?></span>
               </div>
             </td>
-            <td><?= number_format($cleanPrice, 2) ?> ج.م</td>
+            <td><?= number_format($cleanPrice, 2) ?> <?= lang('currency_egp') ?></td>
             <td style="text-align:center; font-weight:700;"><?= $qty ?></td>
-            <td style="text-align:left; font-weight:800; color:#0f172a;"><?= number_format($subtotal, 2) ?> ج.م</td>
+            <td style="text-align:left; font-weight:800; color:#0f172a;"><?= number_format($subtotal, 2) ?> <?= lang('currency_egp') ?></td>
           </tr>
           <?php endforeach; endif; ?>
         </tbody>
       </table>
 
       <div class="invoice-total-card">
-        <span>المبلغ الإجمالي المستحق:</span>
-        <strong><?= number_format((float)$order['total_price'], 2) ?> ج.م</strong>
+        <span><?= lang('invoice_total_amount_due') ?></span>
+        <strong><?= number_format((float)$order['total_price'], 2) ?> <?= lang('currency_egp') ?></strong>
       </div>
     </div>
   </div>

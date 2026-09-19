@@ -2,43 +2,43 @@
     <div class="contact_box container">
       
       <div class="contact form">
-        <h3 class="title">أرسل لنا رسالة</h3>
+        <h3 class="title"><?= lang('send_us_message') ?></h3>
 
         <form action="/contact" method="POST">
           <?= CSRF::getField() ?>
           <div class="form_box">
             <div class="row_50">
               <div class="input_box">
-                <span>الأسم الأول</span>
-                <input type="text" name="first_name" placeholder="الاسم الأول" required />
+                <span><?= lang('first_name_label') ?></span>
+                <input type="text" name="first_name" placeholder="<?= lang('first_name_placeholder') ?>" required />
               </div>
               <div class="input_box">
-                <span>الأسم الأخير</span>
-                <input type="text" name="last_name" placeholder="الاسم الأخير" required />
+                <span><?= lang('last_name_label') ?></span>
+                <input type="text" name="last_name" placeholder="<?= lang('last_name_placeholder') ?>" required />
               </div>
             </div>
 
             <div class="row_50">
               <div class="input_box">
-                <span>الإيميل/المسجل به فقط</span>
-                <input type="email" name="email" placeholder="البريد الإلكتروني" required />
+                <span><?= lang('email_registered_only') ?></span>
+                <input type="email" name="email" placeholder="<?= lang('email_placeholder') ?? 'البريد الإلكتروني' ?>" required />
               </div>
               <div class="input_box">
-                <span>رقم الهاتف / واتساب</span>
-                <input type="text" name="phone" placeholder="رقم الهاتف" required />
-              </div>
-            </div>
-
-            <div class="row_100">
-              <div class="input_box">
-                <span>الرسالة</span>
-                <textarea name="message" placeholder="اكتب رسالتك أو استفسارك هنا..." required></textarea>
+                <span><?= lang('phone_whatsapp') ?></span>
+                <input type="text" name="phone" placeholder="<?= lang('phone_placeholder') ?>" required />
               </div>
             </div>
 
             <div class="row_100">
               <div class="input_box">
-                <input type="submit" value="ارسال" />
+                <span><?= lang('message_label') ?></span>
+                <textarea name="message" placeholder="<?= lang('message_placeholder') ?>" required></textarea>
+              </div>
+            </div>
+
+            <div class="row_100">
+              <div class="input_box">
+                <input type="submit" value="<?= lang('send_btn') ?>" />
               </div>
             </div>
           </div>
@@ -46,14 +46,14 @@
       </div>
 
       <div class="contact info">
-        <h3 class="title">تواصل معنا</h3>
+        <h3 class="title"><?= lang('connect_with_us') ?></h3>
         <div>
           <i class="fa-solid fa-phone footer-icon"></i>
-          <a href="javascript:void(0);">رقم التواصل الاول</a>
+          <a href="javascript:void(0);"><?= lang('contact_number_1') ?></a>
         </div>
         <div>
           <i class="fa-solid fa-phone footer-icon"></i>
-          <a href="javascript:void(0);">رقم التواصل الثاني</a>
+          <a href="javascript:void(0);"><?= lang('contact_number_2') ?></a>
         </div>
         <div>
           <i class="fa-solid fa-envelope footer-icon"></i>
@@ -61,7 +61,7 @@
         </div>
         <div>
           <i class="fa-solid fa-location-dot footer-icon"></i>
-          <a href="javascript:void(0);">المحافظات - مصر</a>
+          <a href="javascript:void(0);"><?= lang('governorates_egypt') ?></a>
         </div>
       </div>
 

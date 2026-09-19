@@ -124,7 +124,7 @@
   <div class="b-card c-products">
     <div class="b-icon-wrapper"><i class="fa-solid fa-boxes-stacked"></i></div>
     <div class="b-info">
-      <h3>إجمالي المنتجات</h3>
+      <h3><?= lang('total_products') ?></h3>
       <p><?= $productsCount ?></p>
     </div>
   </div>
@@ -132,7 +132,7 @@
   <div class="b-card c-categories">
     <div class="b-icon-wrapper"><i class="fa-solid fa-layer-group"></i></div>
     <div class="b-info">
-      <h3>الأقسام النشطة</h3>
+      <h3><?= lang('active_categories') ?></h3>
       <p><?= $categoriesCount ?></p>
     </div>
   </div>
@@ -140,7 +140,7 @@
   <div class="b-card c-orders">
     <div class="b-icon-wrapper"><i class="fa-solid fa-bag-shopping"></i></div>
     <div class="b-info">
-      <h3>طلبات الشراء</h3>
+      <h3><?= lang('purchase_orders') ?></h3>
       <p><?= $ordersCount ?></p>
     </div>
   </div>
@@ -148,7 +148,7 @@
   <div class="b-card c-comments">
     <div class="b-icon-wrapper"><i class="fa-solid fa-comment-dots"></i></div>
     <div class="b-info">
-      <h3>تعليقات العملاء</h3>
+      <h3><?= lang('customer_comments') ?></h3>
       <p><?= $commentsCount ?></p>
     </div>
   </div>
@@ -156,7 +156,7 @@
   <div class="b-card c-messages">
     <div class="b-icon-wrapper"><i class="fa-solid fa-envelope-open-text"></i></div>
     <div class="b-info">
-      <h3>رسائل الزوار</h3>
+      <h3><?= lang('visitor_messages') ?></h3>
       <p><?= $messagesCount ?></p>
     </div>
   </div>
@@ -164,7 +164,7 @@
   <div class="b-card c-visitors">
     <div class="b-icon-wrapper"><i class="fa-solid fa-globe"></i></div>
     <div class="b-info">
-      <h3>المتصلين حالياً</h3>
+      <h3><?= lang('online_users') ?></h3>
       <p><?= $onlineUsersCount ?></p>
     </div>
   </div>
@@ -172,14 +172,14 @@
 </div>
 
 <div class="welcome-card">
-  <h2>متابعة المتجر <?= htmlspecialchars(explode(' ', Session::get('user_name'))[0] ?? '') ?> 🛒</h2>
-  <p>شاشة الإحصائيات السريعة الخاصة بالمتجر يمكنك من خلال القائمة الجانبية التحكم الكامل في كل أجزاء الموقع :</p>
+  <h2><?= lang('store_tracking') ?> <?= htmlspecialchars(explode(' ', Session::get('user_name'))[0] ?? '') ?> 🛒</h2>
+  <p><?= lang('dashboard_quick_stats') ?></p>
   <ul>
-    <li><strong>إدارة المنتجات والأقسام:</strong> إضافة منتجات جديدة للأقسام المتاحة أو حذفها والتعديل عليها.</li>
-    <li><strong>تعليقات العملاء:</strong> متابعة آراء العملاء على المنتجات والرد عليها باحترافية لتفعيل الثقة.</li>
-    <li><strong>طلبات الشراء:</strong> متابعة الطلبات الجديدة التي قام بها العملاء وتحديث حالتها.</li>
-    <li><strong>رسائل الزوار:</strong> قراءة استفسارات ورسائل العملاء الواردة من صفحة "اتصل بنا".</li>
-    <li><strong>إدارة المستخدمين:</strong> إمكانية التحكم في الحسابات (حظر، فك الحظر، ترقية مدير).</li>
-    <li><strong>الإعدادات:</strong> التحكم في إعدادات الموقع الأساسية ومظهر المتجر وبوابات الدفع.</li>
+    <li><strong><?= lang('admin_products_title') ?></strong> <?= lang('admin_products_desc') ?></li>
+    <li><strong><?= lang('admin_comments_title') ?></strong> <?= lang('admin_comments_desc') ?></li>
+    <li><strong><?= lang('admin_orders_title') ?></strong> <?= lang('admin_orders_desc') ?></li>
+    <li><strong><?= lang('admin_messages_title') ?></strong> <?= lang('admin_messages_desc') ?></li>
+    <li><strong><?= lang('admin_users_title') ?></strong> <?= lang('admin_users_desc') ?></li>
+    <li><strong><?= lang('admin_settings_title') ?></strong> <?= lang('admin_settings_desc') ?></li>
   </ul>
 </div>

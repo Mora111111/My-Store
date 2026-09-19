@@ -1,14 +1,14 @@
 <div class="card">
-    <h2 style="margin-top:0;"><i class="fa-solid fa-comments"></i> إدارة تعليقات وتقييمات العملاء</h2>
+    <h2 style="margin-top:0;"><i class="fa-solid fa-comments"></i> <?= lang('admin_comments_title') ?></h2>
     <table>
       <thead>
         <tr>
-          <th>المنتج</th>
-          <th>العميل</th>
-          <th>التعليق والتقييم</th>
-          <th>الحالة</th>
-          <th>التاريخ</th>
-          <th>الإجراءات</th>
+          <th><?= lang('col_product') ?></th>
+          <th><?= lang('col_customer') ?></th>
+          <th><?= lang('col_comment_rating') ?></th>
+          <th><?= lang('col_status') ?></th>
+          <th><?= lang('col_date') ?></th>
+          <th><?= lang('col_actions') ?></th>
         </tr>
       </thead>
       <tbody>
@@ -17,7 +17,7 @@
           $safe_name = htmlspecialchars($row['customer_name']);
           $safe_comment = htmlspecialchars($row['comment_text']);
           $safe_reply = htmlspecialchars($row['admin_reply'] ?? '');
-          $status_badge = !empty($row['admin_reply']) ? "<span class='badge-success'><i class='fa-solid fa-circle-check'></i> تم الرد</span>" : "<span class='badge-warning'><i class='fa-solid fa-clock'></i> معلق</span>";
+          $status_badge = !empty($row['admin_reply']) ? "<span class='badge-success'><i class='fa-solid fa-circle-check'></i> " . lang('status_replied') . "</span>" : "<span class='badge-warning'><i class='fa-solid fa-clock'></i> " . lang('status_pending') . "</span>";
           
           $u_rating = isset($row['user_rating']) ? (int)$row['user_rating'] : 5;
         ?>
@@ -34,7 +34,7 @@
                   <?php if (!empty($row['customer_email'])): ?>
                       <span style="font-size: 12px; color: #64748b; margin-right: 5px;"><i class="fa-solid fa-envelope"></i> <?php echo htmlspecialchars($row['customer_email']); ?></span>
                   <?php else: ?>
-                      <span style="font-size: 12px; color: #cbd5e1; margin-right: 5px;">زائر (لا يوجد إيميل)</span>
+                      <span style="font-size: 12px; color: #cbd5e1; margin-right: 5px;"><?= lang('guest_no_email') ?></span>
                   <?php endif; ?>
               </div>
           </td>
@@ -49,9 +49,9 @@
           <td>
             <div class="actions-flex">
               <button onclick="openReplyModal(<?php echo $row['id']; ?>, '<?php echo $safe_name; ?>', <?php echo htmlspecialchars(json_encode($safe_comment)); ?>, <?php echo htmlspecialchars(json_encode($safe_reply)); ?>)" class="btn-reply">
-                <i class="fa-solid fa-reply"></i> <?php echo !empty($safe_reply) ? 'تعديل' : 'رد'; ?>
+                <i class="fa-solid fa-reply"></i> <?php echo !empty($safe_reply) ? lang('btn_edit') : lang('btn_reply'); ?>
               </button>
-              <form method="POST" action="/admin/comments/delete" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من حذف هذا التعليق؟');">
+              <form method="POST" action="/admin/comments/delete" style="display:inline;" onsubmit="return confirm('<?= lang('confirm_delete_comment') ?>');">
                 <?= CSRF::getField() ?>
                 <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
                 <button type="submit" class="btn-delete"><i class="fa-solid fa-trash"></i></button>
@@ -61,7 +61,7 @@
         </tr>
         <?php endforeach; ?>
       <?php else: ?>
-        <tr><td colspan="6" style="text-align:center; padding:50px; color:#94a3b8;">لا توجد تعليقات حتى الآن.</td></tr>
+        <tr><td colspan="6" style="text-align:center; padding:50px; color:#94a3b8;"><?= lang('no_comments_found') ?></td></tr>
       <?php endif; ?>
       </tbody>
     </table>
@@ -72,13 +72,13 @@
     <div class="modal-header-modern">
       <h3 class="modal-title-modern">
         <div class="icon-wrapper-modern"><i class="fa-solid fa-comment-dots"></i></div>
-        الرد على تعليق العميل
+        <?= lang('reply_to_customer') ?>
       </h3>
       <i class="fa-solid fa-xmark close-btn-modern" onclick="closeReplyModal()"></i>
     </div>
     <div class="modal-body-modern">
       <div style="background:#f8fafc; padding:15px; border-radius:12px; margin-bottom:20px; border-right:4px solid #3b82f6;">
-        <strong style="color:#1e293b; font-size:13px;">تعليق العميل (<span id="display_customer"></span>):</strong>
+        <strong style="color:#1e293b; font-size:13px;"><?= lang('customer_comment_label') ?> (<span id="display_customer"></span>):</strong>
         <p id="display_comment" style="margin:8px 0 0 0; color:#475569; line-height:1.6; font-size:14px; max-height:130px; overflow-y:auto; padding-right:5px; white-space:pre-wrap;"></p>
         <input type="hidden" id="hidden_comment_text">
       </div>
@@ -86,15 +86,15 @@
         <?= CSRF::getField() ?>
         <input type="hidden" name="comment_id" id="modal_comment_id">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <label style="font-weight:700; color:#1e293b;">رد الإدارة الرسمي:</label>
+          <label style="font-weight:700; color:#1e293b;"><?= lang('official_admin_reply') ?></label>
           <button type="button" id="aiSuggestBtn" class="btn-ai-reply" style="margin-bottom:0;">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> اقتراح رد ذكي
+            <i class="fa-solid fa-wand-magic-sparkles"></i> <?= lang('ai_suggest_reply') ?>
           </button>
         </div>
-        <textarea name="admin_reply" id="modal_admin_reply" class="textarea-modern" placeholder="اكتب ردك للعميل هنا..." required></textarea>
+        <textarea name="admin_reply" id="modal_admin_reply" class="textarea-modern" placeholder="<?= lang('write_reply_placeholder') ?>" required></textarea>
         <div class="modal-footer-modern">
-          <button type="button" class="btn-cancel-modern" onclick="closeReplyModal()">إلغاء</button>
-          <button type="submit" class="btn-save-modern"><i class="fa-solid fa-paper-plane"></i> حفظ ونشر الرد</button>
+          <button type="button" class="btn-cancel-modern" onclick="closeReplyModal()"><?= lang('cancel_btn') ?></button>
+          <button type="submit" class="btn-save-modern"><i class="fa-solid fa-paper-plane"></i> <?= lang('btn_save_publish') ?></button>
         </div>
       </form>
     </div>
@@ -124,7 +124,7 @@ aiBtn.addEventListener('click', async () => {
   const csrfToken = document.querySelector('input[name="csrf_token"]').value;
   
   const originalHtml = aiBtn.innerHTML;
-  aiBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التفكير...';
+  aiBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <?= lang('ai_thinking') ?>';
   aiBtn.disabled = true;
   
   try {
@@ -138,7 +138,7 @@ aiBtn.addEventListener('click', async () => {
     if (data.reply) replyInput.value = data.reply;
     else if (data.error) alert(data.error);
   } catch (e) {
-    alert('حدث خطأ في الاتصال بالذكاء الاصطناعي');
+    alert('<?= lang('ai_connection_error') ?>');
   } finally {
     aiBtn.innerHTML = originalHtml;
     aiBtn.disabled = false;

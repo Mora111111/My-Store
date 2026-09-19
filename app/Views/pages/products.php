@@ -9,9 +9,9 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
 ?>
   <div class="all_products container">
     <div class="category_filter">
-      <h2 class="all_products_title">منتجاتنا</h2>
+      <h2 class="all_products_title"><?= lang('our_products') ?></h2>
       <div class="filter_btns">
-        <button class="filter_btn active_btn" id="all">الكل</button>
+        <button class="filter_btn active_btn" id="all"><?= lang('all_filter') ?></button>
         <?php foreach ($categories as $catName):
             $catId = $catMap[$catName] ?? '';
         ?>
@@ -63,7 +63,7 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
         <div class="card all <?php echo $css_class; ?>" style="position: relative;">
           <?php if($has_coupon_discount): ?>
           <div style="position: absolute; top: 15px; right: 15px; background: #ef4444; color: #fff; padding: 5px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-              خصم <?php echo $discount_pct_badge; ?>%
+              <?= lang('discount_text') ?> <?php echo $discount_pct_badge; ?>%
           </div>
           <?php endif; ?>
           <div class="box_img">
@@ -77,13 +77,13 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
                 <div class="rating"><?php echo $stars_html; ?></div>
             </div>
             <p class="card_price" style="display: inline-flex; align-items: center; gap: 8px;">
-                <span style="font-weight: 700; color: #0f172a;"><?php echo number_format($final_price, 2); ?> ج.م</span>
+                <span style="font-weight: 700; color: #0f172a;"><?php echo number_format($final_price, 2); ?> <?= lang('currency_egp') ?></span>
                 <?php if($has_coupon_discount): ?>
-                    <del style="color: #ef4444; font-size: 0.85em; font-weight: normal;"><?php echo htmlspecialchars($row['price']); ?> ج.م</del>
+                    <del style="color: #ef4444; font-size: 0.85em; font-weight: normal;"><?php echo htmlspecialchars($row['price']); ?> <?= lang('currency_egp') ?></del>
                 <?php endif; ?>
             </p>
             <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
-                <button class="card_btn" id="add_to_card" data-id="<?php echo $row['id']; ?>" style="flex: 1; margin: 0; padding: 10px 15px;">أضافة إلي العربة</button>
+                <button class="card_btn" id="add_to_card" data-id="<?php echo $row['id']; ?>" style="flex: 1; margin: 0; padding: 10px 15px;"><?= lang('add_to_cart') ?></button>
                 <?php 
                 $favoriteIds = [];
                 if (Session::isLoggedIn()) {
@@ -102,7 +102,7 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
           endforeach;
       else:
       ?>
-        <h3 style='text-align:center; width:100%; color:#777; margin-top:50px;'>عذراً، جاري تحديث المخزن وإضافة منتجات جديدة قريباً..</h3>
+        <h3 style='text-align:center; width:100%; color:#777; margin-top:50px;'><?= lang('store_updating_msg') ?></h3>
       <?php endif; ?>
     </div>
   </div>

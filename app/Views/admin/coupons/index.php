@@ -1,30 +1,30 @@
 <div class="card">
   <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h2 style="margin-bottom:0;"><i class="fa-solid fa-tags"></i> إدارة كوبونات الخصم</h2>
-    <button onclick="document.getElementById('addCouponModal').style.display='flex';" class="btn-submit" style="text-decoration:none; border:none; cursor:pointer;"><i class="fa-solid fa-plus"></i> إضافة كود جديد</button>
+    <h2 style="margin-bottom:0;"><i class="fa-solid fa-tags"></i> <?= lang('manage_coupons') ?></h2>
+    <button onclick="document.getElementById('addCouponModal').style.display='flex';" class="btn-submit" style="text-decoration:none; border:none; cursor:pointer;"><i class="fa-solid fa-plus"></i> <?= lang('add_new_code') ?></button>
   </div>
 </div>
 
 <div class="card">
   <table>
     <tr>
-      <th>كود الخصم</th>
-      <th>القيمة</th>
-      <th>الاستهداف</th>
-      <th>شطب السعر</th>
-      <th>الحالة</th>
-      <th>الإجراءات</th>
+      <th><?= lang('coupon_code') ?></th>
+      <th><?= lang('discount_value') ?></th>
+      <th><?= lang('coupon_target') ?></th>
+      <th><?= lang('strikethrough_price') ?></th>
+      <th><?= lang('coupon_status') ?></th>
+      <th><?= lang('col_actions') ?></th>
     </tr>
     <?php if (!empty($coupons)): ?>
       <?php foreach ($coupons as $row): ?>
       <tr>
         <td style="font-weight:700; font-family: monospace; font-size: 16px; color:#3b82f6;"><?= htmlspecialchars($row['code']) ?></td>
-        <td style="font-weight:600;"><?= $row['discount_value'] ?> <?= $row['discount_type'] === 'percentage' ? '%' : 'ج.م' ?></td>
+        <td style="font-weight:600;"><?= $row['discount_value'] ?> <?= $row['discount_type'] === 'percentage' ? '%' : lang('currency_egp') ?></td>
         <td>
           <?php if($row['target_type'] === 'all'): ?>
-            <span class="badge" style="background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; padding:6px 14px; font-size:13px;"><i class="fa-solid fa-store" style="margin-left:5px;"></i> المتجر بالكامل</span>
+            <span class="badge" style="background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; padding:6px 14px; font-size:13px;"><i class="fa-solid fa-store" style="margin-left:5px;"></i> <?= lang('entire_store') ?></span>
           <?php else: ?>
-            <span class="badge" style="background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; padding:6px 14px; font-size:13px;"><i class="fa-solid fa-box-open" style="margin-left:5px;"></i> منتج محدد</span>
+            <span class="badge" style="background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; padding:6px 14px; font-size:13px;"><i class="fa-solid fa-box-open" style="margin-left:5px;"></i> <?= lang('specific_product') ?></span>
           <?php endif; ?>
         </td>
         <td><?= $row['show_strikethrough'] ? '<i class="fa-solid fa-check" style="color:#10b981;"></i>' : '<i class="fa-solid fa-xmark" style="color:#ef4444;"></i>' ?></td>
@@ -35,18 +35,18 @@
                 <input type="hidden" name="current_status" value="<?= $row['status'] ?>">
                 <button type="submit" style="background:none; border:none; cursor:pointer; font-family:inherit;">
                     <?php if($row['status']): ?>
-                        <span class="badge-success"><i class="fa-solid fa-toggle-on"></i> فعال</span>
+                        <span class="badge-success"><i class="fa-solid fa-toggle-on"></i> <?= lang('status_active') ?></span>
                     <?php else: ?>
-                        <span class="badge" style="background:#fee2e2; color:#991b1b;"><i class="fa-solid fa-toggle-off"></i> معطل</span>
+                        <span class="badge" style="background:#fee2e2; color:#991b1b;"><i class="fa-solid fa-toggle-off"></i> <?= lang('status_disabled') ?></span>
                     <?php endif; ?>
                 </button>
             </form>
         </td>
         <td>
-          <form method="POST" action="/admin/coupons/delete" style="display:inline-block;" onsubmit="return confirm('هل أنت متأكد من حذف هذا الكود نهائياً؟');">
+          <form method="POST" action="/admin/coupons/delete" style="display:inline-block;" onsubmit="return confirm('<?= lang('confirm_delete_coupon') ?>');">
             <?= CSRF::getField() ?>
             <input type="hidden" name="id" value="<?= $row['id'] ?>">
-            <button type="submit" class="action-btn btn-delete" style="cursor:pointer;"><i class="fa-solid fa-trash"></i> حذف</button>
+            <button type="submit" class="action-btn btn-delete" style="cursor:pointer;"><i class="fa-solid fa-trash"></i> <?= lang('btn_delete') ?></button>
           </form>
         </td>
       </tr>
@@ -57,8 +57,8 @@
               <div style="background: #f8fafc; display: inline-flex; justify-content: center; align-items: center; width: 100px; height: 100px; border-radius: 50%; margin-bottom: 20px; border: 1px dashed #cbd5e1;">
                  <i class="fa-solid fa-tags" style="font-size:40px; color:#cbd5e1;"></i>
               </div>
-              <br><span style="font-size: 18px; font-weight: 700; color: #475569;">لا توجد كوبونات خصم حتى الآن</span>
-              <p style="margin-top: 8px; font-size: 14px;">قم بإضافة كوبونات خصم جديدة لزيادة مبيعات متجرك.</p>
+              <br><span style="font-size: 18px; font-weight: 700; color: #475569;"><?= lang('no_coupons_yet') ?></span>
+              <p style="margin-top: 8px; font-size: 14px;"><?= lang('add_coupons_desc') ?></p>
           </td>
       </tr>
     <?php endif; ?>
@@ -67,50 +67,50 @@
 
 <div class="modal-overlay" id="addCouponModal">
   <div class="modal-content" style="max-width: 600px;">
-    <h2 style="margin:0 0 20px 0; color:#0f172a;"><i class="fa-solid fa-tag" style="color:#38bdf8; margin-left:8px;"></i>إضافة كود خصم</h2>
+    <h2 style="margin:0 0 20px 0; color:#0f172a;"><i class="fa-solid fa-tag" style="color:#38bdf8; margin-left:8px;"></i><?= lang('add_coupon_title') ?></h2>
     <form action="/admin/coupons/store" method="POST">
       <?= CSRF::getField() ?>
       <div class="form-group">
-        <label>كود الخصم (مثال: WINTER20):</label>
-        <input type="text" name="code" required placeholder="ادخل الكود باللغة الإنجليزية" style="text-transform: uppercase;">
+        <label><?= lang('coupon_code_label') ?></label>
+        <input type="text" name="code" required placeholder="<?= lang('enter_english_code') ?>" style="text-transform: uppercase;">
       </div>
       
       <div style="display:flex; gap:15px;">
           <div class="form-group" style="flex:1;">
-            <label>نوع الخصم:</label>
+            <label><?= lang('discount_type_label') ?></label>
             <select name="discount_type" required>
-              <option value="percentage">نسبة مئوية (%)</option>
-              <option value="fixed">مبلغ ثابت (ج.م)</option>
+              <option value="percentage"><?= lang('percentage_type') ?></option>
+              <option value="fixed"><?= lang('fixed_amount_type') ?> (<?= lang('currency_egp') ?>)</option>
             </select>
           </div>
           <div class="form-group" style="flex:1;">
-            <label>قيمة الخصم:</label>
-            <input type="number" name="discount_value" step="0.01" min="0.01" required placeholder="مثال: 20">
+            <label><?= lang('discount_value_label') ?></label>
+            <input type="number" name="discount_value" step="0.01" min="0.01" required placeholder="<?= lang('value_example') ?>">
           </div>
       </div>
 
       <div class="form-group">
-        <label>استهداف الخصم:</label>
+        <label><?= lang('target_type_label') ?></label>
         <select name="target_type" id="targetTypeSelect" required onchange="toggleProductSelect()">
-          <option value="all">كل منتجات المتجر</option>
-          <option value="specific_product">منتج محدد فقط</option>
+          <option value="all"><?= lang('all_products_target') ?></option>
+          <option value="specific_product"><?= lang('specific_product_target') ?></option>
         </select>
       </div>
 
       <div class="form-group" id="productSelectWrapper" style="display:none; position:relative;">
-        <label>اختر المنتج المستهدف:</label>
+        <label><?= lang('choose_target_product') ?></label>
         <input type="hidden" name="target_product_id" id="hidden_target_product_id">
         <div style="position: relative;">
-            <input type="text" id="product_search_input" placeholder="🔍 ابحث باسم المنتج لفرز القائمة..." autocomplete="off" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; font-family: inherit; font-size: 14px; transition: 0.3s; background: #fafbfc;">
+            <input type="text" id="product_search_input" placeholder="<?= lang('search_product_placeholder') ?>" autocomplete="off" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; font-family: inherit; font-size: 14px; transition: 0.3s; background: #fafbfc;">
         </div>
         
         <div id="product_dropdown_list" style="display:none; position:absolute; width:100%; max-height:250px; overflow-y:auto; background:#fff; border:1px solid #e2e8f0; border-radius:12px; top:calc(100% + 5px); left:0; z-index:1000; box-shadow:0 10px 25px rgba(0,0,0,0.1);">
           <?php if(!empty($products)): foreach($products as $p): ?>
-            <div class="product-option" data-id="<?= $p['id'] ?>" data-title="<?= htmlspecialchars($p['title']) ?>" style="padding:10px 15px; cursor:pointer; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; gap:12px; transition:0.2s;">
+            <div class="product-option" data-id="<?= $p['id'] ?>" data-title="<?= htmlspecialchars(langField($p, 'title')) ?>" style="padding:10px 15px; cursor:pointer; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; gap:12px; transition:0.2s;">
                <img src="<?= Product::getImageUrl($p['image_url']) ?>" style="width:40px; height:40px; border-radius:8px; object-fit:contain; border:1px solid #f1f5f9;">
                <div style="flex:1; display:flex; flex-direction:column;">
-                   <span style="font-weight:700; font-size:14px; color:#0f172a;"><?= htmlspecialchars($p['title']) ?></span>
-                   <span style="color:#ef4444; font-weight:bold; font-size:13px; direction:ltr; text-align:left;"><?= $p['price'] ?> ج.م</span>
+                   <span style="font-weight:700; font-size:14px; color:#0f172a;"><?= htmlspecialchars(langField($p, 'title')) ?></span>
+                   <span style="color:#ef4444; font-weight:bold; font-size:13px; direction:ltr; text-align:left;"><?= $p['price'] ?> <?= lang('currency_egp') ?></span>
                </div>
             </div>
           <?php endforeach; endif; ?>
@@ -119,12 +119,12 @@
 
       <div class="form-group" style="display:flex; align-items:center; gap:10px; background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #e2e8f0;">
           <input type="checkbox" name="show_strikethrough" id="showStrike" value="1" style="width:20px; height:20px; cursor:pointer;" checked>
-          <label for="showStrike" style="margin:0; cursor:pointer; font-weight:bold; color:#0f172a;">تطبيق علامة "شطب السعر القديم" على المنتجات المستهدفة فوراً</label>
+          <label for="showStrike" style="margin:0; cursor:pointer; font-weight:bold; color:#0f172a;"><?= lang('apply_strikethrough_label') ?></label>
       </div>
 
       <div style="display:flex; gap:10px; margin-top:25px;">
-        <button type="submit" class="btn-submit" style="flex:2;">حفظ الكود</button>
-        <button type="button" class="btn-cancel" style="flex:1;" onclick="document.getElementById('addCouponModal').style.display='none';">إلغاء</button>
+        <button type="submit" class="btn-submit" style="flex:2;"><?= lang('save_code_btn') ?></button>
+        <button type="button" class="btn-cancel" style="flex:1;" onclick="document.getElementById('addCouponModal').style.display='none';"><?= lang('cancel_btn') ?></button>
       </div>
     </form>
   </div>
@@ -174,7 +174,7 @@ options.forEach(option => {
         const title = this.getAttribute('data-title');
         
         hiddenInput.value = id;
-        searchInput.value = title; // إظهار الاسم في المربع
+        searchInput.value = title; 
         dropdownList.style.display = 'none';
     });
     

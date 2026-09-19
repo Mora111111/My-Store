@@ -7,20 +7,20 @@ $footerSettings =$footerSettingModel->getSettings();
   <div class="cart_content"></div>
   <div class="promo-code-section" id="promo-section" style="display: none; padding: 15px 20px; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; margin-bottom: 15px; background: #f8fafc;">
       <div style="display: flex; gap: 8px;">
-          <input type="text" id="promo_code_input" placeholder="<?= lang('have_promo_code') ?? 'لديك كود خصم؟' ?>" style="flex: 1; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-family: inherit; font-size: 14px; text-transform: uppercase;">
-          <button id="apply_promo_btn" style="background: #0f172a; color: #fff; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.3s;"><?= lang('apply_promo') ?></button>
+          <input type="text" id="promo_code_input" placeholder="<?= lang('have_promo_code') ?>" style="flex: 1; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-family: inherit; font-size: 14px; text-transform: uppercase;">
+          <button id="apply_promo_btn" style="background: #0f172a; color: #fff; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.3s;"><?= lang('promo_apply') ?></button>
       </div>
       <p id="promo_message" style="margin: 8px 0 0 0; font-size: 13px; font-weight: bold;"></p>
   </div>
   <div class="total">
-    <div class="total_title"><?= lang('total_title') ?? 'الاجمالي' ?></div>
-    <div class="total_price">0.00 ج.م</div>
+    <div class="total_title"><?= lang('total_title') ?></div>
+    <div class="total_price">0.00 <?= lang('currency_egp') ?></div>
   </div>
-  <a href="/checkout" class="btn_buy"><?= lang('checkout') ?? 'شراء' ?></a>
+  <a href="/checkout" class="btn_buy"><?= lang('checkout') ?></a>
   <div class="cart_empty">
     <div><img src="/images/Cart-img.png" alt="Empty Cart"></div>
     <p><?= lang('cart_empty') ?></p>
-    <a href="/products" class="btn_shopping"><?= lang('shop_now') ?? 'إستكشف المنتجات' ?></a>
+    <a href="/products" class="btn_shopping"><?= lang('shop_now') ?></a>
   </div>
   <i class="fa-solid fa-xmark" id="cart-close"></i>
 </div>
@@ -29,34 +29,34 @@ $footerSettings =$footerSettingModel->getSettings();
   <div class="footer_container container grid_content">
     <div class="footer_item">
       <h3 class="footer_title"><?= lang('footer_about') ?></h3>
-      <p class="footer_p"><?php echo !empty($footerSettings['about_text']) ? htmlspecialchars($footerSettings['about_text']) : 'نحن متجر على الإنترنت نقدم أفضل المنتجات ذات الجودة العالية والتسليم السريع'; ?></p>
+      <p class="footer_p"><?php echo !empty($footerSettings['about_text']) ? htmlspecialchars(langField($footerSettings, 'about_text')) : lang('maintenance_desc'); ?></p>
       <img src="/images/logos/logo-white.png" alt="" class="footer_img">
     </div>
     <div class="footer_item">
-      <h3 class="footer_title">الحساب</h3>
+      <h3 class="footer_title"><?= lang('account') ?></h3>
       <ul class="footer_list">
         <li class="footer_li">
-          <a href="/login" class="footer_link">تسجيل الدخول</a>
+          <a href="/login" class="footer_link"><?= lang('login') ?></a>
         </li>
         <li class="footer_li">
-          <a href="/signup" class="footer_link">إنشاء حساب</a>
+          <a href="/signup" class="footer_link"><?= lang('create_account') ?></a>
         </li>
         <li class="footer_li">
-          <a href="/" class="footer_link">الرئيسية</a>
+          <a href="/" class="footer_link"><?= lang('home') ?></a>
         </li>
         <li class="footer_li">
-          <a href="/products" class="footer_link">المنتجات</a>
+          <a href="/products" class="footer_link"><?= lang('products') ?></a>
         </li>
       </ul>
     </div>
     <div class="footer_item">
-      <h3 class="footer_title">الروابط</h3>
+      <h3 class="footer_title"><?= lang('footer_links') ?></h3>
       <ul class="footer_list">
         <li class="footer_li">
-          <a href="/services" class="footer_link">الخدمات</a>
+          <a href="/services" class="footer_link"><?= lang('services') ?></a>
         </li>
         <li class="footer_li">
-          <a href="/about" class="footer_link">من نحن</a>
+          <a href="/about" class="footer_link"><?= lang('about') ?></a>
         </li>
         <li class="footer_li">
           <a href="/#features" class="footer_link"><?= lang('featured_products') ?></a>
@@ -65,16 +65,16 @@ $footerSettings =$footerSettingModel->getSettings();
           <a href="/#latest" class="footer_link"><?= lang('latest_products') ?></a>
         </li>
         <li class="footer_li">
-          <a href="/contact" class="footer_link">اتصل بنا</a>
+          <a href="/contact" class="footer_link"><?= lang('contact_us') ?></a>
         </li>
       </ul>
     </div>
     <div class="footer_item">
-      <h3 class="footer_title">اتصل بنا</h3>
+      <h3 class="footer_title"><?= lang('contact_us') ?></h3>
       <ul class="footer_list">
         <li class="footer_li">
           <i class="fa-solid fa-phone footer-icon"></i>
-          <span style="direction: ltr; display: inline-block;"><?php echo !empty($footerSettings['phone1']) ? htmlspecialchars($footerSettings['phone1']) : 'رقم التواصل الاول'; ?></span>
+          <span style="direction: ltr; display: inline-block;"><?php echo !empty($footerSettings['phone1']) ? htmlspecialchars($footerSettings['phone1']) : lang('contact_number_1'); ?></span>
         </li>
         <?php if(!empty($footerSettings['phone2'])): ?>
         <li class="footer_li">
@@ -88,18 +88,18 @@ $footerSettings =$footerSettingModel->getSettings();
         </li>
         <li class="footer_li">
           <i class="fa-solid fa-location-dot footer-icon"></i>
-          <span><?php echo !empty($footerSettings['address']) ? htmlspecialchars($footerSettings['address']) : 'المحافظات - مصر'; ?></span>
+          <span><?php echo !empty($footerSettings['address']) ? htmlspecialchars(langField($footerSettings, 'address')) : lang('governorates_egypt'); ?></span>
         </li>
         <?php if(!empty($footerSettings['facebook_link'])): ?>
         <li class="footer_li">
           <i class="fa-brands fa-facebook footer-icon" style="color: #1877F2;"></i>
-          <a href="<?php echo htmlspecialchars($footerSettings['facebook_link']); ?>" target="_blank" style="color: var(--color-tow); text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='var(--main-color)'" onmouseout="this.style.color='var(--color-tow)'">تابعنا على فيسبوك</a>
+          <a href="<?php echo htmlspecialchars($footerSettings['facebook_link']); ?>" target="_blank" style="color: var(--color-tow); text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='var(--main-color)'" onmouseout="this.style.color='var(--color-tow)'"><?= lang('follow_us_facebook') ?></a>
         </li>
         <?php endif; ?>
       </ul>
     </div>
   </div>
-  <p class="copyright container">جميع الحقوق محفوظة.MY Store &copy; 2025 - 2026</p>
+  <p class="copyright container"><?= lang('copyright') ?></p>
 </footer>
 
 <script src="/Js/app.js"></script>
@@ -164,7 +164,7 @@ document.getElementById('apply_promo_btn')?.addEventListener('click', async func
     const code = codeInput.value.trim();
 
     if (!code) {
-        msgEl.textContent = 'يرجى إدخال الكود';
+        msgEl.textContent = '<?= lang("promo_enter_code") ?>';
         msgEl.style.color = '#ef4444';
         return;
     }
@@ -206,10 +206,10 @@ document.getElementById('apply_promo_btn')?.addEventListener('click', async func
             if (typeof updateTotalPrice === 'function') updateTotalPrice();
         }
     } catch (error) {
-        msgEl.textContent = 'خطأ في الاتصال';
+        msgEl.textContent = '<?= lang("promo_connection_error") ?>';
     } finally {
         this.disabled = false;
-        this.textContent = 'تطبيق';
+        this.textContent = '<?= lang("promo_apply") ?>';
     }
 });
 </script>

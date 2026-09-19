@@ -6,7 +6,7 @@ if (empty($_SESSION['maintenance_passed'])) {
     if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== 'zoro' || $_SERVER['PHP_AUTH_PW'] !== '112233') {
         header('WWW-Authenticate: Basic realm="Maintenance Mode"');
         header('HTTP/1.0 401 Unauthorized');
-        die('<h2 style="text-align:center; margin-top:50px; font-family:sans-serif; direction:rtl;">الموقع تحت الصيانة مؤقتاً. جاري التحديث...</h2>');
+        die('<h2 style="text-align:center; margin-top:50px; font-family:sans-serif;">الموقع تحت الصيانة مؤقتاً. جاري التحديث...<br><br>Site is temporarily under maintenance. Updating...</h2>');
     } else {
         $_SESSION['maintenance_passed'] = true;
     }
@@ -65,7 +65,7 @@ if (Session::isLoggedIn()) {
         Session::remove('user_id');
         Session::remove('user_name');
         Session::remove('user_role');
-        Session::set('login_error', 'تعرض حسابك للحظر يمكنك مراسلتنا عبر البريد الالكتروني ');
+        Session::set('login_error', lang('account_banned_msg'));
         header('Location: /login');
         exit;
     }

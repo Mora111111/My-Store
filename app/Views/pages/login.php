@@ -1,6 +1,6 @@
     <div class="form_account">
         <div class="form-container container">
-            <div class="form-title">تسجيل الدخول</div>
+            <div class="form-title"><?= lang('login') ?></div>
 
             <div class="social-form">
                 <a href="/auth/google/login" class="social-btn btn-google">
@@ -9,7 +9,7 @@
                 </a>
             </div>
 
-            <p class="separator"><span>أو</span></p>
+            <p class="separator"><span><?= lang('or_separator') ?></span></p>
 
             <?php if (Session::get('login_error')): ?>
                 <div style="color: #d9534f; text-align: center; margin-bottom: 15px; font-weight: bold;"><?php echo htmlspecialchars(Session::get('login_error')); ?></div>
@@ -18,22 +18,22 @@
             <form action="/login" method="POST" class="form">
                 <?= CSRF::getField() ?>
                 <div class="input-wrapper" >
-                    <input type="email" name="email" placeholder="عنوان البريد الألكتروني" required class="input input-mail">
+                    <input type="email" name="email" placeholder="<?= lang('email_placeholder') ?>" required class="input input-mail">
                     <i class="fa-solid fa-envelope icon_form"></i>
                 </div>
 
                 <div class="input-wrapper m-none">
-                    <input type="password" name="password" placeholder="كلمة المرور" required class="input input-mail">
+                    <input type="password" name="password" placeholder="<?= lang('password_placeholder') ?>" required class="input input-mail">
                     <i class="fa-regular fa-eye-slash icon_form showPss"></i>
                 </div>
 
-                <a href="/forgot-password" class="forgot-pass-link">هل نسيت كلمة المرور؟</a>
+                <a href="/forgot-password" class="forgot-pass-link"><?= lang('forgot_password') ?></a>
 
-                <input type="submit" class="btn-submit" value="تسجيل الدخول">
+                <input type="submit" class="btn-submit" value="<?= lang('login') ?>">
 
                 <p class="signup-text">
-                    ليس لديك حساب؟
-                    <a href="/signup">إنشاء حساب</a>
+                    <?= lang('dont_have_account') ?>
+                    <a href="/signup"><?= lang('create_account') ?></a>
                 </p>
             </form>
 

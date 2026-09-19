@@ -1,4 +1,7 @@
 <?php
+$currentLang = $_SESSION['lang'] ?? 'ar';
+$pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
+
 $maintenanceSetting = new Setting();
 $sysSettings = $maintenanceSetting->getSettings();
 if (!empty($sysSettings['maintenance_mode'])) {
@@ -7,14 +10,13 @@ if (!empty($sysSettings['maintenance_mode'])) {
     $isLoginRoute = ($currentUri === '/login');
 
     if (!$isAdmin && !$isLoginRoute) {
-        echo '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>الموقع تحت الصيانة</title><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet"><style>body{font-family: "Tajawal", sans-serif; background:#f8fafc; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; padding:20px;} .box{text-align:center; background:#fff; padding:50px 30px; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.05); max-width:500px;} h1{color:#0f172a; font-size:28px; margin-bottom:15px;} p{color:#64748b; font-size:18px; line-height:1.6;}</style></head><body><div class="box"><img src="/images/logos/logo.png" alt="Logo" style="max-height:80px; margin-bottom:20px;"><h1>نعود إليكم قريباً 🛠️</h1><p>المتجر مغلق حالياً لإجراء بعض التحديثات وأعمال الصيانة لتقديم تجربة تسوق أفضل.<br>شكراً لتفهمكم!</p></div></body></html>';
+        $m_title = lang('maintenance_title');
+        $m_heading = lang('maintenance_heading');
+        $m_desc = lang('maintenance_desc');
+        echo '<!DOCTYPE html><html lang="' . $currentLang . '" dir="' . $pageDir . '"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' . $m_title . '</title><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet"><style>body{font-family: "Tajawal", sans-serif; background:#f8fafc; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; padding:20px;} .box{text-align:center; background:#fff; padding:50px 30px; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.05); max-width:500px;} h1{color:#0f172a; font-size:28px; margin-bottom:15px;} p{color:#64748b; font-size:18px; line-height:1.6;}</style></head><body><div class="box"><img src="/images/logos/logo.png" alt="Logo" style="max-height:80px; margin-bottom:20px;"><h1>' . $m_heading . '</h1><p>' . $m_desc . '</p></div></body></html>';
         exit;
     }
 }
-
-// قراءة اللغة والاتجاه من الجلسة
-$currentLang = $_SESSION['lang'] ?? 'ar';
-$pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
 ?>
 <!DOCTYPE html>
 <html lang="<?= $currentLang ?>" dir="<?= $pageDir ?>">
@@ -120,15 +122,15 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
               </a>
               <div class="profile-menu" id="profile-menu" style="<?= $pageDir === 'rtl' ? 'left:-15px; right:auto;' : 'right:-15px; left:auto;' ?>">
                 <div class="profile-header">
-                  <?= lang('hello') ?? 'مرحباً' ?>، <span><?php echo (isset($_SESSION['user_name']) && !empty(trim($_SESSION['user_name']))) ? htmlspecialchars(explode(' ', trim($_SESSION['user_name']))[0]) : 'ضيف'; ?></span> 👋
+                  <?= lang('hello') ?>، <span><?php echo (isset($_SESSION['user_name']) && !empty(trim($_SESSION['user_name']))) ? htmlspecialchars(explode(' ', trim($_SESSION['user_name']))[0]) : lang('guest_user'); ?></span> 👋
                 </div>
                 <ul class="profile-links">
                   <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                    <li><a href="/admin"><i class="fa-solid fa-gauge"></i> <?= lang('dashboard') ?? 'لوحة الإدارة' ?></a></li>
+                    <li><a href="/admin"><i class="fa-solid fa-gauge"></i> <?= lang('dashboard') ?></a></li>
                   <?php else: ?>
-                    <li><a href="/profile"><i class="fa-solid fa-user-gear"></i> <?= lang('profile') ?? 'الملف الشخصي' ?></a></li>
-                    <li><a href="/my-orders"><i class="fa-solid fa-box-open"></i> <?= lang('my_orders') ?? 'طلباتي' ?></a></li>
-                    <li><a href="/my-messages"><i class="fa-solid fa-envelope"></i> <?= lang('my_messages') ?? 'رسائلي' ?></a></li>
+                    <li><a href="/profile"><i class="fa-solid fa-user-gear"></i> <?= lang('profile') ?></a></li>
+                    <li><a href="/my-orders"><i class="fa-solid fa-box-open"></i> <?= lang('my_orders') ?></a></li>
+                    <li><a href="/my-messages"><i class="fa-solid fa-envelope"></i> <?= lang('my_messages') ?></a></li>
                   <?php endif; ?>
                   <li><a href="/logout" class="logout-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> <?= lang('logout') ?></a></li>
                 </ul>
@@ -156,10 +158,10 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
 
               <?php if (isset($_SESSION['user_id'])): ?>
                   <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                      <a href="/admin" class="mob-btn"><i class="fa-solid fa-gauge"></i> <?= lang('dashboard') ?? 'لوحة الإدارة' ?></a>
+                      <a href="/admin" class="mob-btn"><i class="fa-solid fa-gauge"></i> <?= lang('dashboard') ?></a>
                   <?php else: ?>
-                      <a href="/profile" class="mob-btn"><i class="fa-solid fa-user-gear"></i> <?= lang('profile') ?? 'حسابي' ?></a>
-                      <a href="/my-orders" class="mob-btn"><i class="fa-solid fa-box-open"></i> <?= lang('my_orders') ?? 'طلباتي' ?></a>
+                      <a href="/profile" class="mob-btn"><i class="fa-solid fa-user-gear"></i> <?= lang('profile') ?></a>
+                      <a href="/my-orders" class="mob-btn"><i class="fa-solid fa-box-open"></i> <?= lang('my_orders') ?></a>
                   <?php endif; ?>
                   <a href="/logout" class="mob-btn" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ef4444;"></i> <?= lang('logout') ?></a>
               <?php else: ?>
@@ -187,7 +189,7 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
 
       <form action="/products" method="GET" class="safe-search">
           <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-          <input type="text" name="search" placeholder="<?= lang('search_placeholder') ?? 'ابحث عن منتجك هنا...' ?>" value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
+          <input type="text" name="search" placeholder="<?= lang('search_placeholder') ?>" value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
       </form>
 
       <a href="/" class="safe-logo">
