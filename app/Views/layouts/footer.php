@@ -3,24 +3,24 @@ $footerSettingModel = new Setting();
 $footerSettings =$footerSettingModel->getSettings();
 ?>
 <div class="cart">
-  <h2 class="cart_title">عربة التسوق</h2>
+  <h2 class="cart_title"><?= lang('cart_title') ?></h2>
   <div class="cart_content"></div>
   <div class="promo-code-section" id="promo-section" style="display: none; padding: 15px 20px; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; margin-bottom: 15px; background: #f8fafc;">
       <div style="display: flex; gap: 8px;">
-          <input type="text" id="promo_code_input" placeholder="لديك كود خصم؟" style="flex: 1; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-family: inherit; font-size: 14px; text-transform: uppercase;">
-          <button id="apply_promo_btn" style="background: #0f172a; color: #fff; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.3s;">تطبيق</button>
+          <input type="text" id="promo_code_input" placeholder="<?= lang('have_promo_code') ?? 'لديك كود خصم؟' ?>" style="flex: 1; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-family: inherit; font-size: 14px; text-transform: uppercase;">
+          <button id="apply_promo_btn" style="background: #0f172a; color: #fff; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.3s;"><?= lang('apply_promo') ?></button>
       </div>
       <p id="promo_message" style="margin: 8px 0 0 0; font-size: 13px; font-weight: bold;"></p>
   </div>
   <div class="total">
-    <div class="total_title">الاجمالي</div>
+    <div class="total_title"><?= lang('total_title') ?? 'الاجمالي' ?></div>
     <div class="total_price">0.00 ج.م</div>
   </div>
-  <a href="/checkout" class="btn_buy">شراء</a>
+  <a href="/checkout" class="btn_buy"><?= lang('checkout') ?? 'شراء' ?></a>
   <div class="cart_empty">
     <div><img src="/images/Cart-img.png" alt="Empty Cart"></div>
-    <p>عربة التسوق فارغة</p>
-    <a href="/products" class="btn_shopping">إستكشف المنتجات</a>
+    <p><?= lang('cart_empty') ?></p>
+    <a href="/products" class="btn_shopping"><?= lang('shop_now') ?? 'إستكشف المنتجات' ?></a>
   </div>
   <i class="fa-solid fa-xmark" id="cart-close"></i>
 </div>
@@ -28,7 +28,7 @@ $footerSettings =$footerSettingModel->getSettings();
 <footer class="footer">
   <div class="footer_container container grid_content">
     <div class="footer_item">
-      <h3 class="footer_title">معلومات عنا</h3>
+      <h3 class="footer_title"><?= lang('footer_about') ?></h3>
       <p class="footer_p"><?php echo !empty($footerSettings['about_text']) ? htmlspecialchars($footerSettings['about_text']) : 'نحن متجر على الإنترنت نقدم أفضل المنتجات ذات الجودة العالية والتسليم السريع'; ?></p>
       <img src="/images/logos/logo-white.png" alt="" class="footer_img">
     </div>
@@ -59,10 +59,10 @@ $footerSettings =$footerSettingModel->getSettings();
           <a href="/about" class="footer_link">من نحن</a>
         </li>
         <li class="footer_li">
-          <a href="/#features" class="footer_link">المنتجات المميزة</a>
+          <a href="/#features" class="footer_link"><?= lang('featured_products') ?></a>
         </li>
         <li class="footer_li">
-          <a href="/#latest" class="footer_link">أحدث المنتجات</a>
+          <a href="/#latest" class="footer_link"><?= lang('latest_products') ?></a>
         </li>
         <li class="footer_li">
           <a href="/contact" class="footer_link">اتصل بنا</a>

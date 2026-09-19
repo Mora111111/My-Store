@@ -61,13 +61,15 @@ class Product {
     }
 
     public function create(array $data): bool {
-        $stmt = $this->db->prepare("INSERT INTO products (title, price, old_price, category_class, description, image_url, image_2, image_3, image_4, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO products (title, title_en, price, old_price, category_class, description, description_en, image_url, image_2, image_3, image_4, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
             $data['title'],
+            $data['title_en'] ?? null,
             $data['price'],
             $data['old_price'] ?? 0,
             $data['category_class'],
             $data['description'] ?? '',
+            $data['description_en'] ?? null,
             $data['image_url'] ?? '',
             $data['image_2'] ?? '',
             $data['image_3'] ?? '',
@@ -79,7 +81,7 @@ class Product {
     public function update(int $id, array $data): bool {
         $fields = [];
         $values = [];
-        $allowedFields = ['title', 'price', 'old_price', 'category_class', 'description', 'image_url', 'image_2', 'image_3', 'image_4', 'quantity'];
+        $allowedFields = ['title', 'title_en', 'price', 'old_price', 'category_class', 'description', 'description_en', 'image_url', 'image_2', 'image_3', 'image_4', 'quantity'];
         
         foreach ($allowedFields as $col) {
             if (isset($data[$col])) {

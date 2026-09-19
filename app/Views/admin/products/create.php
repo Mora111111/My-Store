@@ -8,6 +8,10 @@
         <label>اسم المنتج:</label>
         <input type="text" name="title" required placeholder="أدخل اسم المنتج">
       </div>
+      <div class="form-group">
+        <label>اسم المنتج (بالإنجليزية):</label>
+        <input type="text" name="title_en" placeholder="Product Title in English" dir="ltr">
+      </div>
 
       <div class="form-group">
         <label>القسم (Category):</label>
@@ -40,6 +44,10 @@
       <div class="form-group">
         <label>الوصف التفصيلي للمنتج:</label>
         <textarea name="description" rows="8" required placeholder="أدخل وصفاً تفصيلياً للمنتج..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>الوصف التفصيلي (بالإنجليزية):</label>
+        <textarea name="description_en" rows="8" placeholder="Product description in English..." dir="ltr"></textarea>
       </div>
 
       <div class="form-group">

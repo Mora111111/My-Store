@@ -3,9 +3,10 @@ class AiController {
     
     public function handleComment(): void {
         header('Content-Type: application/json; charset=utf-8');
+        $lang = $_SESSION['lang'] ?? 'ar';
         
         if (!Session::get('user_id') || Session::get('user_role') !== 'admin') {
-            echo json_encode(['error' => 'غير مصرح لك بالوصول.']);
+            echo json_encode(['error' => ($lang === 'en' ? 'Unauthorized access.' : 'غير مصرح لك بالوصول.')]);
             return;
         }
         
@@ -17,7 +18,7 @@ class AiController {
         $comment = trim($comment);
         
         if (empty($comment)) {
-            echo json_encode(['error' => 'نص التعليق فارغ.']);
+            echo json_encode(['error' => ($lang === 'en' ? 'Comment text is empty.' : 'نص التعليق فارغ.')]);
             return;
         }
         
@@ -29,10 +30,16 @@ class AiController {
 - إذا كان سلبياً أو شكوى: اعتذر بلباقة شديدة، وأظهر تعاطفك، وقدم حلاً أو وعداً بحل المشكلة وتواصل الدعم الفني معه.
 - إذا كان استفساراً عاماً: قدم رداً ترحيبياً يوضح أننا في خدمته دائماً.
 
-يجب أن يكون ردك باللغة العربية الواضحة (يفضل بلهجة مصرية راقية ومحترفة).
 يجب أن يكون ردك عبارة عن كود JSON نقي فقط، بدون أي نصوص إضافية، وبدون علامات الماركداون.
 مثال للرد المطلوب:
 {\"reply\": \"أهلاً شكراً جزيلاً لثقتك في منتجاتنا، ونتمنى لك تجربة تسوق مميزة دائماً.\"}";
+
+        // توجيه الذكاء الاصطناعي بناءً على لغة العميل
+        if ($lang === 'en') {
+            $system_instruction .= "\nCRITICAL: You MUST respond strictly in English.";
+        } else {
+            $system_instruction .= "\nCRITICAL: You MUST respond strictly in Arabic.";
+        }
         
         $payload = [
             "contents" => [
@@ -57,9 +64,10 @@ class AiController {
 
     public function generateProduct(): void {
         header('Content-Type: application/json; charset=utf-8');
+        $lang = $_SESSION['lang'] ?? 'ar';
         
         if (!Session::get('user_id') || Session::get('user_role') !== 'admin') {
-            echo json_encode(['error' => 'غير مصرح لك بالوصول.']);
+            echo json_encode(['error' => ($lang === 'en' ? 'Unauthorized access.' : 'غير مصرح لك بالوصول.')]);
             return;
         }
         
@@ -71,7 +79,7 @@ class AiController {
         $prompt = trim($prompt);
         
         if (empty($prompt)) {
-            echo json_encode(['error' => 'يرجى تقديم النص المطلوب.']);
+            echo json_encode(['error' => ($lang === 'en' ? 'Please provide the prompt.' : 'يرجى تقديم النص المطلوب.')]);
             return;
         }
         
@@ -88,6 +96,12 @@ class AiController {
 يجب أن يكون ردك عبارة عن كود JSON نقي فقط، بدون أي نصوص إضافية، وبدون علامات الماركداون.
 مثال للرد المطلوب:
 {\"title\": \"لابتوب ديل \", \"price\": \"15000\", \"category\": \"لابتوب\", \"description\": \"<p>اكتشف القوة مع لابتوب ديل...</p><ul><li>معالج قوي</li><li>رام 16 جيجا</li></ul>\"}";
+
+        if ($lang === 'en') {
+            $system_instruction .= "\nCRITICAL: You MUST respond strictly in English for ALL fields (title, description, category).";
+        } else {
+            $system_instruction .= "\nCRITICAL: You MUST respond strictly in Arabic for ALL fields.";
+        }
         
         $payload = [
             "contents" => [
@@ -112,9 +126,10 @@ class AiController {
 
     public function generateMessageReply(): void {
         header('Content-Type: application/json; charset=utf-8');
+        $lang = $_SESSION['lang'] ?? 'ar';
         
         if (!Session::get('user_id') || Session::get('user_role') !== 'admin') {
-            echo json_encode(['error' => 'غير مصرح لك بالوصول.']);
+            echo json_encode(['error' => ($lang === 'en' ? 'Unauthorized access.' : 'غير مصرح لك بالوصول.')]);
             return;
         }
         
@@ -126,7 +141,7 @@ class AiController {
         $prompt = trim($prompt);
         
         if (empty($prompt)) {
-            echo json_encode(['error' => 'رسالة العميل فارغة.']);
+            echo json_encode(['error' => ($lang === 'en' ? 'Customer message is empty.' : 'رسالة العميل فارغة.')]);
             return;
         }
         
@@ -134,9 +149,14 @@ class AiController {
         $api_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $api_key;
         $system_instruction = "أنت مدير خدمة عملاء محترف في متجر إلكتروني. سأعطيك رسالة أو استفسار من عميل. 
 مهمتك: صياغة رد احترافي، لبق، ومناسب لحل المشكلة أو الإجابة على الاستفسار. 
-يجب أن يكون الرد باللغة العربية الواضحة.
 يجب أن يكون ردك عبارة عن كود JSON نقي فقط هكذا:
 {\"reply\": \"نص الرد الاحترافي هنا\"}";
+
+        if ($lang === 'en') {
+            $system_instruction .= "\nCRITICAL: You MUST respond strictly in English.";
+        } else {
+            $system_instruction .= "\nCRITICAL: You MUST respond strictly in Arabic.";
+        }
         
         $payload = [
             "contents" => [
@@ -161,6 +181,7 @@ class AiController {
 
     public function handleChatbot(): void {
         header('Content-Type: application/json; charset=utf-8');
+        $lang = $_SESSION['lang'] ?? 'ar';
         
         $prompt = $_POST['prompt'] ?? '';
         if (empty($prompt)) {
@@ -170,13 +191,13 @@ class AiController {
         $prompt = trim($prompt);
         
         if (empty($prompt)) {
-            echo json_encode(['error' => 'No prompt provided']);
+            echo json_encode(['error' => ($lang === 'en' ? 'No prompt provided' : 'الرسالة فارغة')]);
             return;
         }
 
         $jsonPath = ROOT_DIR . '/chatbot_data.json';
         if (!file_exists($jsonPath)) {
-            echo json_encode(['error' => 'Chatbot data missing']);
+            echo json_encode(['error' => ($lang === 'en' ? 'Chatbot data missing' : 'بيانات المساعد الذكي مفقودة')]);
             return;
         }
 
@@ -203,7 +224,7 @@ class AiController {
         if ($bestMatch) {
             echo json_encode(['reply' => $bestMatch]);
         } else {
-            echo json_encode(['reply' => 'عذراً، رسالتك تحتاج إلى تفصيل أكثر، سيقوم الدعم الفني بمراجعتها والرد عليك فوراً.']);
+            echo json_encode(['reply' => ($lang === 'en' ? 'Sorry, your message needs more detail, the support team will review it and respond soon.' : 'عذراً، رسالتك تحتاج إلى تفصيل أكثر، سيقوم الدعم الفني بمراجعتها والرد عليك فوراً.')]);
         }
     }
 

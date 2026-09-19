@@ -22,3 +22,12 @@ class Language {
 function lang(string $key): string {
     return Language::get($key);
 }
+
+// دالة لجلب الحقول الديناميكية من قاعدة البيانات حسب اللغة
+function langField(array $row, string $field): string {
+    $lang = $_SESSION['lang'] ?? 'ar';
+    if ($lang === 'en' && !empty($row[$field . '_en'])) {
+        return $row[$field . '_en'];
+    }
+    return $row[$field] ?? '';
+}

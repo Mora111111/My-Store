@@ -10,6 +10,10 @@
         <label>اسم المنتج:</label>
         <input type="text" name="title" value="<?php echo htmlspecialchars($product['title']); ?>" required>
       </div>
+      <div class="form-group">
+        <label>اسم المنتج (بالإنجليزية):</label>
+        <input type="text" name="title_en" value="<?php echo htmlspecialchars($product['title_en'] ?? ''); ?>" dir="ltr">
+      </div>
 
       <div class="form-group">
         <label>القسم (Category):</label>
@@ -40,6 +44,10 @@
       <div class="form-group">
         <label>الوصف التفصيلي للمنتج:</label>
         <textarea name="description" rows="8" required><?php echo htmlspecialchars($product['description'] ?? ''); ?></textarea>
+      </div>
+      <div class="form-group">
+        <label>الوصف التفصيلي (بالإنجليزية):</label>
+        <textarea name="description_en" rows="8" dir="ltr"><?php echo htmlspecialchars($product['description_en'] ?? ''); ?></textarea>
       </div>
 
      <div class="form-group" style="margin-top: 20px;">

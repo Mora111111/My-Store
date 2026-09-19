@@ -35,10 +35,12 @@ class AdminProductController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'title' => trim($_POST['title'] ?? ''),
+                'title_en' => trim($_POST['title_en'] ?? ''),
                 'price' => floatval($_POST['price'] ?? 0),
                 'old_price' => floatval($_POST['old_price'] ?? 0),
                 'category_class' => trim($_POST['category_class'] ?? ''),
                 'description' => trim($_POST['description'] ?? ''),
+                'description_en' => trim($_POST['description_en'] ?? ''),
                 'quantity' => intval($_POST['quantity'] ?? 10)
             ];
 
@@ -109,10 +111,12 @@ class AdminProductController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $existing) {
             $data = [
                 'title' => trim($_POST['title'] ?? ''),
-                'category_class' => trim($_POST['category_class'] ?? ''),
+                'title_en' => trim($_POST['title_en'] ?? ''),
                 'price' => floatval($_POST['price'] ?? 0),
                 'old_price' => floatval($_POST['old_price'] ?? 0),
+                'category_class' => trim($_POST['category_class'] ?? ''),
                 'description' => trim($_POST['description'] ?? ''),
+                'description_en' => trim($_POST['description_en'] ?? ''),
                 'quantity' => intval($_POST['quantity'] ?? 10)
             ];
 

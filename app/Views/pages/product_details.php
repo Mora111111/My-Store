@@ -32,7 +32,7 @@
      </div>
       <div class="card_details" style="text-align: center; margin-top: 20px;">
         <div style="margin-bottom: 15px;">
-            <h2 class="product_details_title card_title" style="font-size: 24px; color: var(--main-color); margin: 0;"><?php echo htmlspecialchars($product['title']); ?></h2>
+            <h2 class="product_details_title card_title" style="font-size: 24px; color: var(--main-color); margin: 0;"><?php echo htmlspecialchars(langField($product, 'title')); ?></h2>
         </div>
 
         <div class="rating" style="margin-bottom: 15px; font-size: 18px;">
@@ -48,14 +48,14 @@
 
         <?php if (!empty($product['description'])): ?>
         <div style="text-align: right; background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.8; color: #555; border: 1px solid #eee;">
-            <h3 style="margin-top:0; color:#2c3e50; border-bottom: 2px solid var(--main-color); display: inline-block; padding-bottom: 5px; font-size: 18px;"><i class="fa-solid fa-circle-info"></i> مواصفات وتفاصيل المنتج</h3>
+            <h3 style="margin-top:0; color:#2c3e50; border-bottom: 2px solid var(--main-color); display: inline-block; padding-bottom: 5px; font-size: 18px;"><i class="fa-solid fa-circle-info"></i> <?= lang('product_specs') ?? 'مواصفات وتفاصيل المنتج' ?></h3>
             <div style="margin-top: 15px; font-size: 15px;">
-                <?php echo nl2br(strip_tags($product['description'])); ?>
+                <?php echo nl2br(strip_tags(langField($product, 'description'))); ?>
             </div>
         </div>
         <?php endif; ?>
         <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
-            <button class="card_btn" data-id="<?php echo $product['id']; ?>" style="flex: 1; margin: 0; padding: 12px 15px; font-size: 16px; position: relative; left: 0; transform: none;">أضافة إلي العربة</button>
+            <button class="card_btn" data-id="<?php echo $product['id']; ?>" style="flex: 1; margin: 0; padding: 12px 15px; font-size: 16px; position: relative; left: 0; transform: none;"><?= lang('add_to_cart') ?></button>
             <?php 
             $favoriteIds = [];
             if (Session::isLoggedIn()) {
