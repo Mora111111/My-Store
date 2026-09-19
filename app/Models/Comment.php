@@ -4,8 +4,8 @@ class Comment {
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
     }
-    public function countAll(): int {
-        return (int)$this->db->query("SELECT COUNT(*) FROM product_comments")->fetchColumn();
+   public function countAll(): int {
+        return (int)$this->db->query("SELECT COUNT(c.id) FROM product_comments c JOIN products p ON c.product_id = p.id")->fetchColumn();
     }
 
     public function getAll(): array {

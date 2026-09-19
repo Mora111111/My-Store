@@ -27,7 +27,7 @@ class Order {
     
 
     public function countAll(): int {
-        return (int)$this->db->query("SELECT COUNT(*) FROM orders")->fetchColumn();
+        return (int)$this->db->query("SELECT COUNT(*) FROM orders WHERE admin_hidden = 0")->fetchColumn();
     }
 
     public function getAll(): array {

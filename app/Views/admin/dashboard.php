@@ -1,119 +1,110 @@
 <style>
-/* فرض استجابة حديثة لشبكة الإحصائيات تتكيف مع جميع الشاشات */
-.modern-stats-grid {
+/* تصميم هادئ وأنيق جداً للداش بورد */
+.stats-grid-beautiful {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
     margin-bottom: 40px;
 }
-.stat-card-modern {
+.b-card {
     background: #ffffff;
-    padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    border-radius: 24px;
+    padding: 24px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    transition: all 0.3s ease;
+    gap: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
     border: 1px solid #f1f5f9;
-    position: relative;
-    overflow: hidden;
+    transition: all 0.3s ease;
 }
-.stat-card-modern:hover {
+.b-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.06);
+    border-color: #e2e8f0;
 }
-.stat-card-modern::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 5px;
-    height: 100%;
-    background: var(--card-color);
-    border-radius: 5px 0 0 5px;
+.b-icon-wrapper {
+    width: 68px;
+    height: 68px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    flex-shrink: 0;
 }
-.stat-info-modern h3 {
-    margin: 0 0 8px 0;
-    color: #64748b;
+.b-info h3 {
+    margin: 0 0 6px 0;
     font-size: 15px;
+    color: #64748b;
     font-weight: 700;
 }
-.stat-info-modern p {
+.b-info p {
     margin: 0;
-    font-size: 38px;
+    font-size: 32px;
     font-weight: 900;
     color: #0f172a;
     line-height: 1;
 }
-.stat-icon-modern {
-    font-size: 45px;
-    color: var(--card-color);
-    opacity: 0.15;
-    transition: 0.3s;
-    position: absolute;
-    left: 20px;
-}
-.stat-card-modern:hover .stat-icon-modern {
-    transform: scale(1.1) rotate(-5deg);
-    opacity: 0.8;
-}
+
+/* ألوان مخصصة لكل كارت لراحة العين */
+.c-products .b-icon-wrapper { background: #e0f2fe; color: #0284c7; }
+.c-categories .b-icon-wrapper { background: #ede9fe; color: #7c3aed; }
+.c-orders .b-icon-wrapper { background: #ffedd5; color: #ea580c; }
+.c-comments .b-icon-wrapper { background: #fef3c7; color: #d97706; }
+.c-messages .b-icon-wrapper { background: #fee2e2; color: #e11d48; }
+.c-visitors .b-icon-wrapper { background: #dcfce7; color: #16a34a; }
 </style>
 
-<div class="modern-stats-grid">
-  <!-- كارت المنتجات -->
-  <div class="stat-card-modern" style="--card-color: #10b981;">
-    <div class="stat-info-modern">
+<div class="stats-grid-beautiful">
+  
+  <div class="b-card c-products">
+    <div class="b-icon-wrapper"><i class="fa-solid fa-boxes-stacked"></i></div>
+    <div class="b-info">
       <h3>إجمالي المنتجات</h3>
       <p><?= $productsCount ?></p>
     </div>
-    <i class="fa-solid fa-boxes-stacked stat-icon-modern"></i>
   </div>
 
-  <!-- كارت الأقسام (الجديد) -->
-  <div class="stat-card-modern" style="--card-color: #8b5cf6;">
-    <div class="stat-info-modern">
+  <div class="b-card c-categories">
+    <div class="b-icon-wrapper"><i class="fa-solid fa-layer-group"></i></div>
+    <div class="b-info">
       <h3>الأقسام النشطة</h3>
       <p><?= $categoriesCount ?></p>
     </div>
-    <i class="fa-solid fa-layer-group stat-icon-modern"></i>
   </div>
 
-  <!-- كارت الطلبات -->
-  <div class="stat-card-modern" style="--card-color: #3b82f6;">
-    <div class="stat-info-modern">
+  <div class="b-card c-orders">
+    <div class="b-icon-wrapper"><i class="fa-solid fa-bag-shopping"></i></div>
+    <div class="b-info">
       <h3>طلبات الشراء</h3>
       <p><?= $ordersCount ?></p>
     </div>
-    <i class="fa-solid fa-bag-shopping stat-icon-modern"></i>
   </div>
 
-  <!-- كارت التعليقات -->
-  <div class="stat-card-modern" style="--card-color: #f59e0b;">
-    <div class="stat-info-modern">
+  <div class="b-card c-comments">
+    <div class="b-icon-wrapper"><i class="fa-solid fa-comment-dots"></i></div>
+    <div class="b-info">
       <h3>تعليقات العملاء</h3>
       <p><?= $commentsCount ?></p>
     </div>
-    <i class="fa-solid fa-comment-dots stat-icon-modern"></i>
   </div>
 
-  <!-- كارت الرسائل -->
-  <div class="stat-card-modern" style="--card-color: #ef4444;">
-    <div class="stat-info-modern">
+  <div class="b-card c-messages">
+    <div class="b-icon-wrapper"><i class="fa-solid fa-envelope-open-text"></i></div>
+    <div class="b-info">
       <h3>رسائل الزوار</h3>
       <p><?= $messagesCount ?></p>
     </div>
-    <i class="fa-solid fa-envelope-open-text stat-icon-modern"></i>
   </div>
 
-  <!-- كارت المتصلين -->
-  <div class="stat-card-modern" style="--card-color: #06b6d4;">
-    <div class="stat-info-modern">
+  <div class="b-card c-visitors">
+    <div class="b-icon-wrapper"><i class="fa-solid fa-globe"></i></div>
+    <div class="b-info">
       <h3>المتصلين حالياً</h3>
       <p><?= $onlineUsersCount ?></p>
     </div>
-    <i class="fa-solid fa-globe stat-icon-modern"></i>
   </div>
+
 </div>
 
 <div class="welcome-card">
