@@ -1,39 +1,39 @@
 <div class="card">
   <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h2 style="margin-bottom:0;"><i class="fa-solid fa-plus-circle"></i> إضافة منتج جديد</h2>
-    <button onclick="openAddModal()" class="btn-submit" style="text-decoration:none; border:none; cursor:pointer;"><i class="fa-solid fa-plus"></i> إضافة</button>
+    <h2 style="margin-bottom:0;"><i class="fa-solid fa-plus-circle"></i> <?= lang('title_add_new_product') ?></h2>
+    <button onclick="openAddModal()" class="btn-submit" style="text-decoration:none; border:none; cursor:pointer;"><i class="fa-solid fa-plus"></i> <?= lang('btn_add_product') ?></button>
   </div>
 </div>
 
 <div class="card">
-  <h2><i class="fa-solid fa-list"></i> المنتجات الحالية</h2>
-  <div style="margin-bottom:15px;"><input type="text" id="searchInput" placeholder="اسم المنتج" style="padding:12px; width:100%; max-width:400px; border:1px solid #cbd5e1; border-radius:8px; outline:none; font-family:inherit;"></div>
+  <h2><i class="fa-solid fa-list"></i> <?= lang('title_current_products') ?></h2>
+  <div style="margin-bottom:15px;"><input type="text" id="searchInput" placeholder="<?= lang('ph_search_product') ?>" style="padding:12px; width:100%; max-width:400px; border:1px solid #cbd5e1; border-radius:8px; outline:none; font-family:inherit;"></div>
   <table>
     <tr>
-      <th>الصورة</th>
-      <th>اسم المنتج</th>
-      <th>القسم</th>
-      <th>السعر</th>
-      <th>الإجراءات</th>
+      <th><?= lang('col_image') ?></th>
+      <th><?= lang('col_product_name') ?></th>
+      <th><?= lang('col_category') ?></th>
+      <th><?= lang('col_price') ?></th>
+      <th><?= lang('col_actions') ?></th>
     </tr>
     <?php if (!empty($products)): ?>
       <?php foreach ($products as $row): ?>
       <tr>
-<td><img src="<?= Product::getImageUrl($row['image_url']) ?>" width="60" height="60" style="border-radius:12px; object-fit:cover; box-shadow:0 4px 6px rgba(0,0,0,0.05);"></td>        <td style="font-weight:500;"><?php echo htmlspecialchars($row['title']); ?></td>
-        <td><span class="badge"><?php echo htmlspecialchars($row['category_class']); ?></span></td>
-        <td style="font-weight:700; color:#0f172a;"><?php echo htmlspecialchars($row['price']); ?> ج.م</td>
+        <td><img src="<?= Product::getImageUrl($row['image_url']) ?>" width="60" height="60" style="border-radius:12px; object-fit:cover; box-shadow:0 4px 6px rgba(0,0,0,0.05);"></td>        <td style="font-weight:500;"><?= htmlspecialchars($row['title']); ?></td>
+        <td><span class="badge"><?= htmlspecialchars($row['category_class']); ?></span></td>
+        <td style="font-weight:700; color:#0f172a;"><?= htmlspecialchars($row['price']); ?> <?= lang('currency_egp') ?></td>
         <td>
-          <a href="/admin/products/edit?id=<?php echo $row['id']; ?>" class="action-btn btn-edit"><i class="fa-solid fa-pen"></i> تعديل</a>
-          <form method="POST" action="/admin/products/delete" style="display:inline-block;" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟');">
+          <a href="/admin/products/edit?id=<?= $row['id']; ?>" class="action-btn btn-edit"><i class="fa-solid fa-pen"></i> <?= lang('btn_edit') ?></a>
+          <form method="POST" action="/admin/products/delete" style="display:inline-block;" onsubmit="return confirm('<?= lang('confirm_delete_product') ?>');">
             <?= CSRF::getField() ?>
-            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-            <button type="submit" class="action-btn btn-delete" style="cursor:pointer;"><i class="fa-solid fa-trash"></i> حذف</button>
+            <input type="hidden" name="id" value="<?= $row['id']; ?>">
+            <button type="submit" class="action-btn btn-delete" style="cursor:pointer;"><i class="fa-solid fa-trash"></i> <?= lang('btn_delete') ?></button>
           </form>
         </td>
       </tr>
       <?php endforeach; ?>
     <?php else: ?>
-      <tr><td colspan="5" style="text-align:center; padding:40px; color:#94a3b8; font-size:16px;"><i class="fa-solid fa-box-open" style="font-size:40px; margin-bottom:15px; opacity:0.5;"></i><br>لا توجد منتجات مضافة حتى الآن.</td></tr>
+      <tr><td colspan="5" style="text-align:center; padding:40px; color:#94a3b8; font-size:16px;"><i class="fa-solid fa-box-open" style="font-size:40px; margin-bottom:15px; opacity:0.5;"></i><br><?= lang('no_products_added') ?></td></tr>
     <?php endif; ?>
   </table>
 </div>
@@ -41,9 +41,10 @@
 <div class="modal-overlay" id="addProductModal">
   <div class="modal-content" style="max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-      <h2 style="margin:0; color:#0f172a;"><i class="fa-solid fa-plus-circle" style="color:#38bdf8; margin-left:8px;"></i>إضافة منتج جديد</h2>
+      <h2 style="margin:0; color:#0f172a;"><i class="fa-solid fa-plus-circle" style="color:#38bdf8; margin-left:8px;"></i><?= lang('title_add_new_product') ?></h2>
       <button type="button" class="ai-magic-btn" id="openAiModal">
         <i class="fa-solid fa-wand-magic-sparkles"></i> Ai
+      </button>
     </div>
 
     <form action="/admin/products/store" method="POST" enctype="multipart/form-data">
@@ -51,59 +52,59 @@
       
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
       <div class="form-group">
-        <label>اسم المنتج:</label>
-        <input type="text" name="title" required placeholder="أدخل اسم المنتج">
+        <label><?= lang('lbl_product_name') ?></label>
+        <input type="text" name="title" required placeholder="<?= lang('ph_product_name') ?>">
       </div>
 
       <div class="form-group">
-        <label>القسم (Category):</label>
+        <label><?= lang('lbl_category') ?></label>
         <select name="category_class" required>
-          <option value="">-- اختر القسم --</option>
-          <option value="هواتف">هواتف</option>
-          <option value="جهاز لوحي">جهاز لوحي (تابلت)</option>
-          <option value="لابتوب">لابتوب</option>
-          <option value="ساعات ذكية">ساعات ذكية</option>
-          <option value="فلاشات">فلاشات</option>
-          <option value="كاميرات">كاميرات</option>
-          <option value="راوترات">راوترات</option>
-          <option value="اكسسوارات">اكسسوارات</option>
-          <option value="مستعمل">مستعمل</option>
+          <option value=""><?= lang('select_category') ?></option>
+          <option value="هواتف"><?= lang('cat_phones') ?></option>
+          <option value="جهاز لوحي"><?= lang('cat_tablets') ?></option>
+          <option value="لابتوب"><?= lang('cat_laptops') ?></option>
+          <option value="ساعات ذكية"><?= lang('cat_smartwatches') ?></option>
+          <option value="فلاشات"><?= lang('cat_flashdrives') ?></option>
+          <option value="كاميرات"><?= lang('cat_cameras') ?></option>
+          <option value="راوترات"><?= lang('cat_routers') ?></option>
+          <option value="اكسسوارات"><?= lang('cat_accessories') ?></option>
+          <option value="مستعمل"><?= lang('cat_used') ?></option>
         </select>
       </div>
 
       <div class="form-group">
-        <label>السعر (بالجنيه):</label>
-        <input type="number" name="price" step="0.01" min="0" required placeholder="مثال: 45000">
+        <label><?= lang('lbl_price_egp') ?></label>
+        <input type="number" name="price" step="0.01" min="0" required placeholder="<?= lang('ph_price') ?>">
       </div>
       <div class="form-group">
-        <label>سعر المنتج قبل الشطب </label>
-        <input type="number" name="old_price" step="0.01" min="0" value="0" placeholder="اتركه 0 إذا لم يكن هناك خصم">
+        <label><?= lang('lbl_old_price') ?></label>
+        <input type="number" name="old_price" step="0.01" min="0" value="0" placeholder="<?= lang('ph_old_price') ?>">
       </div>
       <div class="form-group">
-        <label>الكمية المتاحة في المخزن:</label>
+        <label><?= lang('lbl_quantity') ?></label>
         <input type="number" name="quantity" min="0" value="10" required>
       </div>
       </div>
 
       <div class="form-group">
-        <label>الوصف التفصيلي للمنتج:</label>
-        <textarea name="description" rows="6" required placeholder="أدخل وصفاً تسويقياً وتفصيلياً للمنتج..."></textarea>
+        <label><?= lang('lbl_description') ?></label>
+        <textarea name="description" rows="6" required placeholder="<?= lang('ph_description') ?>"></textarea>
       </div>
 
       <div class="form-group">
-        <label>صورة المنتج:</label>
+        <label><?= lang('lbl_product_image') ?></label>
         <input type="file" name="image" accept="image/png, image/jpeg, image/gif, image/webp" required style="padding: 5px;">
       </div>
       <div class="form-group">
-        <label>صور إضافية للمنتج (اختياري - حتى 3 صور):</label>
+        <label><?= lang('lbl_additional_images') ?></label>
         <input type="file" name="image_2" accept="image/png, image/jpeg, image/gif, image/webp" style="padding: 5px; margin-bottom: 5px;">
         <input type="file" name="image_3" accept="image/png, image/jpeg, image/gif, image/webp" style="padding: 5px; margin-bottom: 5px;">
         <input type="file" name="image_4" accept="image/png, image/jpeg, image/gif, image/webp" style="padding: 5px;">
       </div>
 
       <div style="display:flex; gap:10px; margin-top:25px;">
-        <button type="submit" class="btn-submit" style="flex:2;"><i class="fa-solid fa-plus" style="margin-left: 8px;"></i> حفظ المنتج</button>
-        <button type="button" class="btn-cancel" style="flex:1;" onclick="closeAddModal()">إلغاء</button>
+        <button type="submit" class="btn-submit" style="flex:2;"><i class="fa-solid fa-plus" style="margin-left: 8px;"></i> <?= lang('btn_save_product') ?></button>
+        <button type="button" class="btn-cancel" style="flex:1;" onclick="closeAddModal()"><?= lang('cancel_btn') ?></button>
       </div>
     </form>
   </div>
@@ -111,12 +112,12 @@
 
 <div class="ai-modal-overlay" id="aiModal">
   <div class="ai-modal-content">
-    <h3 style="margin-top:0;"><i class="fa-solid fa-robot" style="color:#8b5cf6;"></i> المساعد الذكي</h3>
-    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 5px;">أدخل اسم الجهاز وسأقوم بتوليد البيانات تلقائياً.</p>
-    <input type="text" id="aiPrompt" placeholder="مثال: سامسونج S24 الترا..." style="width:100%; padding:12px; margin:15px 0; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+    <h3 style="margin-top:0;"><i class="fa-solid fa-robot" style="color:#8b5cf6;"></i> <?= lang('ai_assistant_title') ?></h3>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 5px;"><?= lang('ai_assistant_desc') ?></p>
+    <input type="text" id="aiPrompt" placeholder="<?= lang('ph_ai_prompt') ?>" style="width:100%; padding:12px; margin:15px 0; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
     <div style="display:flex; gap:10px;">
-      <button type="button" id="generateAiData" style="background:#8b5cf6; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; flex:1;">توليد البيانات</button>
-      <button type="button" onclick="closeAiModal()" style="background:#e2e8f0; color:#475569; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; flex:1;">رجوع</button>
+      <button type="button" id="generateAiData" style="background:#8b5cf6; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; flex:1;"><?= lang('btn_generate_data') ?></button>
+      <button type="button" onclick="closeAiModal()" style="background:#e2e8f0; color:#475569; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; flex:1;"><?= lang('btn_go_back') ?></button>
     </div>
   </div>
 </div>
@@ -137,7 +138,7 @@ document.getElementById('generateAiData').addEventListener('click', async () => 
     
     if(!prompt) return;
     
-    btn.textContent = 'جاري التوليد...';
+    btn.textContent = '<?= lang('btn_generating') ?>';
     btn.disabled = true;
     
     try {
@@ -163,12 +164,12 @@ document.getElementById('generateAiData').addEventListener('click', async () => 
             
             closeAiModal();
         } else {
-            alert('تعذر التوليد: ' + (data.error || 'خطأ غير معروف'));
+            alert('<?= lang('alert_generation_failed') ?>' + (data.error || '<?= lang('alert_unknown_error') ?>'));
         }
     } catch (error) {
-        alert('حدث خطأ في الاتصال بالخادم. تأكد من أدوات المطور.');
+        alert('<?= lang('alert_server_error') ?>');
     } finally {
-        btn.textContent = 'توليد البيانات';
+        btn.textContent = '<?= lang('btn_generate_data') ?>';
         btn.disabled = false;
     }
 });
