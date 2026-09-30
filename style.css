@@ -967,8 +967,9 @@ a {
 }
 
 .form_account {
-  height: 100vh;
+  min-height: 100vh;
   padding-top: 120px;
+  padding-bottom: 80px;
   background: var(--bg-gradient);
 }
 
@@ -1357,227 +1358,6 @@ input[type="checkbox"] {
   }
 }
 
-.header_payment {
-  height: 80px;
-  background-color: #333;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.box_payment {
-  height: 100%;
-  width: 80%;
-  margin: 0 auto;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.logo_payment {
-  width: 150px;
-}
-
-.container_payment {
-  width: 100%;
-  min-height: calc(100vh - 80px);
-  padding: 0 10px;
-  background-color: #eee;
-  display: flex;
-  position: relative;
-}
-
-.content_payment:first-child {
-  flex: 1;
-  margin-left: 20px;
-}
-
-.content_payment:last-child {
-  width: 380px;
-}
-
-.title_payment {
-  font-size: 18px;
-  margin-bottom: 12px;
-  color: var(--black-color);
-}
-
-.item_payment {
-  width: 100%;
-  margin: 12px 0;
-  padding: 16px 24px;
-  background-color: var(--white-color);
-  border-radius: 6px;
-}
-
-.details_payment {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-}
-
-.change_btn {
-  color: #3170ee;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.cards_payment {
-  padding: 12px 0px 12px 12px;
-}
-
-.card_payment {
-  display: flex;
-  align-items: center;
-}
-
-.card_payment:first-child {
-  margin-bottom: 5px;
-  cursor: pointer;
-}
-
-.card_payment_img {
-  width: 30px;
-  margin-left: 12px;
-}
-
-.card_payment_p {
-  font-size: 14px;
-}
-
-.visa_img {
-  width: 22px;
-  margin: 0 5px;
-}
-
-.boxs_order_total {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.box_order_total {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.boxs_order_total:last-child {
-  margin-top: 20px;
-  padding: 16px 0;
-  border-top: 1px solid #ddd;
-  font-weight: 700;
-}
-
-.boxs_order_total:last-child .order_total {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.order_btn {
-  width: 100%;
-  padding: 10px 0;
-  margin-top: 10px;
-  background-color: var(--main-color);
-  color: var(--white-color);
-  font-family: inherit;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: var(--main-transition);
-}
-
-.order_btn:hover {
-  background-color: var(--color-hover);
-}
-
-.item_payment_safety {
-  text-align: left;
-  margin-top: 20px;
-}
-
-.item_payment_safety img {
-  width: 100px;
-}
-
-.item_payment_safety p {
-  font-size: 14px;
-  color: var(--color-tow);
-}
-
-.container_modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  width: 80%;
-  background-color: var(--white-color);
-  padding: 16px 24px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: var(--index-fixed);
-  transition: var(--main-transition);
-  visibility: hidden;
-}
-
-.modal_active {
-  transform: translate(-50%, -50%) scale(1);
-  visibility: visible;
-}
-
-.modal_header {
-  padding-bottom: 16px;
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.modal_body {
-  width: 100%;
-  padding: 0 15px;
-}
-
-.form_box_modal {
-  display: flex;
-  align-items: center;
-  column-gap: 16px;
-}
-
-.form_input {
-  height: 42px;
-  padding: 6px 12px;
-  flex-basis: 50%;
-  border: 1px solid #a9a9a9;
-  border-radius: 4px;
-  outline: none;
-  background-color: transparent;
-  font-family: inherit;
-}
-
-.close_modal {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 22px;
-  color: #979797;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.layer {
-  display: none;
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1004;
-}
-
-.layer_active {
-  display: block;
-}
-
 .nav_shop i,
 .login_link i,
 .nav_toggle i,
@@ -1598,26 +1378,6 @@ input[type="checkbox"] {
   text-shadow: 0 0 8px var(--main-color);
 }
 
-@media only screen and (max-width: 800px) {
-  .container_payment {
-    flex-direction: column;
-  }
-
-  .content_payment:first-child {
-    width: 100%;
-    margin-left: 0;
-  }
-
-  .form_box_modal {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .form_input {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-}
 
 /* تصميم قائمة الملف الشخصي الجديدة */
 .profile-menu {
@@ -1630,7 +1390,7 @@ input[type="checkbox"] {
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   width: 280px;
-  z-index: 1000;
+  z-index: 1002;
   border: 1px solid #e2e8f0;
   overflow: hidden;
   animation: fadeInDropdown 0.3s ease forwards;
@@ -2172,8 +1932,7 @@ input[type="checkbox"] {
   .modal_card .form_box_modal:nth-child(1) {
     margin: 0;
   }
-}
-@media only screen and (max-width: 800px) {
+
   /* تحسين المساحات الجانبية */
   .container { 
     padding: 0 15px; 
