@@ -1,0 +1,554 @@
+File: app/Views/pages/about.php
+Key: title_about
+AR: من نحن
+EN: About Us
+
+File: app/Views/pages/about.php
+Key: msg_cart_title
+AR: عربة التسوق
+EN: Shopping Cart
+
+File: app/Views/pages/about.php
+Key: btn_buy
+AR: شراء
+EN: Buy
+
+File: app/Views/pages/about.php
+Key: cart_empty
+AR: عربة التسوق فارغة
+EN: Shopping Cart is empty
+
+File: app/Views/pages/about.php
+Key: shop_now
+AR: إستكشف المنتجات
+EN: Explore Products
+
+File: app/Views/pages/about.php
+Key: section_products_miiz
+AR: شركاء النجاح
+EN: Partners Success
+
+File: app/Views/pages/about.php
+Key: title_section_products
+AR: h2 class="main_title">شركاء النجاح</h2>
+EN: Section title: Partners Success
+
+File: app/Views/pages/about.php
+Key: p_sales_description_1
+AR: منصة الكترونية متخصصة في بيع أحدث الأجهزة الذكية والإلكترونيات الأصلية داخل السوق المصري برؤية واضحة تقوم
+EN: Electronic platform specialized in selling the latest smart devices and original electronics within the Egyptian market with a clear vision
+
+File: app/Views/pages/about.php
+Key: p_quality_commitment
+AR: على الجودة
+EN: On quality
+
+File: app/Views/pages/about.php
+Key: p_customer_value
+AR: الثقة والقيمة الحقيقية للعميل
+EN: True value and quality for the customer
+
+File: app/Views/pages/about.php
+Key: p_select_careful
+AR: نعمل على توفير مجموعة منتقاة بعناية من الهواتف الذكية أجهزة اللابتوب، الأجهزة اللوحية الساعات الذكية
+EN: We provide a carefully selected range of smartphones, laptops, smart watches
+
+File: app/Views/pages/about.php
+Key: p_accessories_tech
+AR: والإكسسوارات التقنية من العلامات التجارية العالمية الرائدة مع ضمان رسمي يضمن أصالة المنتج وأعلى معايير
+EN: And technical accessories from leading global brands with official guarantee ensuring product authenticity and highest standards
+
+File: app/Views/pages/about.php
+Key: p_performance
+AR: الأداء
+EN: Performance
+
+File: app/Views/pages/about.php
+Key: p_commitment_purchase
+AR: نلتزم بتقديم تجربة شراء احترافية تبدأ من سهولة التصفح والطلب عبر متجرنا الإلكتروني مرورًا بخيارات دفع مرنة
+EN: We commit to providing a professional purchasing experience starting from easy browsing and ordering through our online store passing through flexible payment options
+
+File: app/Views/pages/about.php
+Key: p_payment_options
+AR: وأنظمة تقسيط مناسبة وصولًا إلى خدمة شحن آمنة وسريعة تغطي المحافظات وجميع محافظات مصر
+EN: And suitable installment systems reaching safe and fast shipping covering all provinces and governorates of Egypt
+
+File: app/Views/pages/about.php
+Key: p_shipping_service
+AR: كما يضم فريقنا دعمًا فنيًا متخصصًا لمساعدتك في اختيار الجهاز الأنسب لاحتياجاتك، مع متابعة مستمرة وخدمة ما
+EN: As our specialized technical team helps you choose the most suitable device for your needs, with continuous follow-up and service
+
+File: app/Views/pages/about.php
+Key: p_after_sales
+AR: بعد
+EN: After
+
+File: app/Views/pages/about.php
+Key: p_after_sales_commitment
+AR: البيع تعكس التزامنا الكامل برضا عملائنا
+EN: Sales reflect our full commitment to customer satisfaction
+
+File: app/Views/pages/about.php
+Key: p_section_sales
+AR: قسم المبيعات
+EN: Sales section
+
+File: app/Views/pages/about.php
+Key: p_section_marketing
+AR: قسم التسويق
+EN: Marketing section
+
+File: app/Views/pages/about.php
+Key: p_section_hr
+AR: قسم HR
+EN: HR section
+
+File: app/Views/pages/home.php
+Key: title_home_main
+AR: أدواتك للنجاح تبدأ بجهاز ذكي.. اختر منتجاتك
+EN: Your tools for success start with a smart device... Choose your products
+
+File: app/Views/pages/home.php
+Key: subtitle_home_main
+AR: بالسعر اللي يناسبك
+EN: At the price that suits you
+
+File: app/Views/pages/home.php
+Key: desc_home_experience
+AR: لا تتردد في خوض التجربة 😉 فالتكنولوجيا وُجدت لتكسر حدود المستحيل
+EN: Don't hesitate to experience the technology... designed to break the limits of the impossible
+
+File: app/Views/pages/home.php
+Key: btn_home_start
+AR: كن من اوائل الذين يجربون الاجهزة الحديثة  🤩
+EN: Be among the first to try modern devices 🤩
+
+File: app/Views/pages/home.php
+Key: btn_shop_now
+AR: → تسوق الان
+EN: → Shop now
+
+File: app/Views/pages/home.php
+Key: discount_badge
+AR: خصم
+EN: Discount
+
+File: app/Views/pages/home.php
+Key: price_display
+AR: ج.م
+EN: JOD (Jordanian Dinar)
+
+File: app/Views/pages/my_orders.php
+Key: title_my_orders
+AR: سجل طلباتي
+EN: My Orders
+
+File: app/Views/pages/my_orders.php
+Key: th_order_id
+AR: رقم الطلب
+EN: Order Number
+
+File: app/Views/pages/my_orders.php
+Key: th_order_date
+AR: تاريخ الطلب
+EN: Order Date
+
+File: app/Views/pages/my_orders.php
+Key: th_total
+AR: الإجمالي
+EN: Total
+
+File: app/Views/pages/my_orders.php
+Key: th_status
+AR: حالة الطلب
+EN: Order Status
+
+File: app/Views/pages/my_orders.php
+Key: th_actions
+AR: الإجراءات
+EN: Actions
+
+File: app/Views/pages/my_orders.php
+Key: status_pending
+AR: قيد المراجعة
+EN: Pending Review
+
+File: app/Views/pages/my_orders.php
+Key: status_shipped
+AR: تم الشحن
+EN: Shipped
+
+File: app/Views/pages/my_orders.php
+Key: status_completed
+AR: مكتمل
+EN: Completed
+
+File: app/Views/pages/my_orders.php
+Key: status_cancelled
+AR: ملغي
+EN: Cancelled
+
+File: app/Views/pages/my_orders.php
+Key: btn_cancel_order
+AR: إلغاء الطلب
+EN: Cancel Order
+
+File: app/Views/pages/my_orders.php
+Key: btn_hide_order
+AR: مسح السجل
+EN: Clear Record
+
+File: app/Views/pages/my_orders.php
+Key: msg_cant_cancel
+AR: لا يمكن الإلغاء
+EN: Cannot cancel
+
+File: app/Views/pages/my_orders.php
+Key: msg_no_orders
+AR: لا يوجد لديك طلبات سابقة حتى الآن.
+EN: You have no previous orders
+
+File: app/Views/pages/my_orders.php
+Key: title_favorites
+AR: المنتجات المفضلة
+EN: Favorite Products
+
+File: app/Views/pages/my_orders.php
+Key: msg_no_favorites
+AR: لا توجد منتجات في المفضلة حالياً.
+EN: No products in favorites currently
+
+File: app/Views/pages/sandbox_payment.php
+Key: title_sandbox
+AR: بوابة الدفع الآمنة (وضع الاختبار)
+EN: Secure Payment Gateway (Test Mode)
+
+File: app/Views/pages/sandbox_payment.php
+Key: msg_sandbox_description
+AR: هذه الصفحة تحاكي بوابة الدفع الفعلية لعرض إمكانيات المنصة.
+EN: This page simulates the actual payment gateway to display platform capabilities.
+
+File: app/Views/pages/sandbox_payment.php
+Key: order_number
+AR: رقم الطلب:
+EN: Order Number:
+
+File: app/Views/pages/sandbox_payment.php
+Key: client_name
+AR: العميل:
+EN: Client:
+
+File: app/Views/pages/sandbox_payment.php
+Key: amount_due
+AR: المبلغ المطلوب:
+EN: Amount Due:
+
+File: app/Views/pages/sandbox_payment.php
+Key: card_number
+AR: رقم البطاقة (للاختبار فقط)
+EN: Card Number (for testing only)
+
+File: app/Views/pages/sandbox_payment.php
+Key: pay_now
+AR: دفع now
+EN: Pay Now
+
+File: app/Views/layouts/header.php
+Key: lbl_guest_user
+AR: مستخدم زائر
+EN: Guest User
+
+File: app/Views/layouts/header.php
+Key: btn_arabic
+AR: العربية
+EN: Arabic
+
+File: app/Views/layouts/header.php
+Key: btn_english
+AR: الإنجليزية
+EN: English
+
+File: app/Views/layouts/header.php
+Key: msg_maintenance
+AR: الموقع تحت الصيانة
+EN: Site under maintenance
+
+File: app/Views/layouts/header.php
+Key: msg_login_error_blocked
+AR: هذا الحساب محظور من قبل الإدارة.
+EN: This account is blocked by administration.
+
+File: app/Views/layouts/header.php
+Key: msg_login_error_locked
+AR: تم قفل الحساب مؤقتاً لمحاولات متكررة.
+EN: Account temporarily locked for repeated attempts.
+
+File: app/Views/layouts/header.php
+Key: msg_login_error_wrong
+AR: بيانات الدخول غير صحيحة.
+EN: Invalid login credentials.
+
+File: app/Views/layouts/header.php
+Key: msg_required_fields
+AR: الرجاء تعبئة جميع الحقول.
+EN: Please fill in all fields.
+
+File: app/Views/layouts/header.php
+Key: msg_email_format
+AR: صيغة البريد الإلكتروني غير صحيحة.
+EN: Invalid email format.
+
+File: app/Views/layouts/header.php
+Key: msg_terms_conditions
+AR: يجب عليك الموافقة على الشروط والأحكام.
+EN: You must agree to the terms and conditions.
+
+File: app/Views/layouts/header.php
+Key: msg_password_min
+AR: كلمة المرور يجب أن تكون 8 أحرف على الأقل.
+EN: Password must be at least 8 characters.
+
+File: app/Views/layouts/header.php
+Key: msg_password_match
+AR: كلمات المرور غير متطابقة.
+EN: Passwords do not match.
+
+File: app/Views/layouts/header.php
+Key: msg_email_exists
+AR: هذا البريد الإلكتروني مسجل بالفعل.
+EN: This email is already registered.
+
+File: app/Views/layouts/header.php
+Key: msg_google_login_error
+AR: تسجيل الدخول بجوجل غير مفعل حالياً
+EN: Google login is not currently enabled.
+
+File: app/Views/layouts/header.php
+Key: msg_login_success
+AR: تسجيل الدخول successful
+EN: Login successful
+
+File: app/Views/layouts/header.php
+Key: msg_cart_count
+AR: 0
+EN: Cart count (numeric, not a phrase)
+
+File: app/Views/pages/contact.php
+Key: title_contact
+AR: ارسل لنا رسالة
+EN: Send Us a Message
+
+File: app/Views/pages/contact.php
+Key: msg_name
+AR: الاسم الأول
+EN: First Name
+
+File: app/Views/pages/contact.php
+Key: msg_last_name
+AR: الاسم الأخير
+EN: Last Name
+
+File: app/Views/pages/contact.php
+Key: msg_email
+AR: الإيميل/المسجل به فقط
+EN: Email/Registered Only
+
+File: app/Views/pages/contact.php
+Key: msg_phone
+AR: رقم الهاتف / واتساب
+EN: Phone Number / WhatsApp
+
+File: app/Views/pages/contact.php
+Key: msg_message
+AR: الرسالة
+EN: Message
+
+File: app/Views/pages/contact.php
+Key: btn_send
+AR: ارسال
+EN: Send
+
+File: app/Views/pages/contact.php
+Key: title_contact_two
+AR: تواصل معنا
+EN: Contact Us
+
+File: app/Views/pages/home.php
+Key: btn_buy_now
+AR: اشتر الآن
+EN: Buy Now
+
+File: app/Views/pages/home.php
+Key: service_delivery
+AR: توصيل سريع ومجانى
+EN: Fast and Free Delivery
+
+File: app/Views/pages/home.php
+Key: service_customer_24_7
+AR: خدمة العملاء على مدار 24 / 7
+EN: Customer Service 24/7
+
+File: app/Views/pages/home.php
+Key: service_money_back
+AR: ضمان استعادة الأموال
+EN: Money Back Guarantee
+
+File: app/Views/pages/home.php
+Key: service_money_back_days
+AR: خلال 15 يوم كحد أقصي
+EN: Within 15 days max
+
+File: app/Views/pages/home.php
+Key: comments_title
+AR: تعليقات العملاء
+EN: Customer Comments
+
+File: app/Views/pages/home.php
+Key: comment_submit
+AR: ارسال التقييم
+EN: Submit Review
+
+File: app/Views/admin/products/create.php
+Key: h2_add_product
+AR: إضافة منتج جديد
+EN: Add New Product
+
+File: app/Views/admin/products/create.php
+Key: lbl_product_name
+AR: اسم المنتج:
+EN: Product Name:
+
+File: app/Views/admin/products/create.php
+Key: lbl_product_name_en
+AR: اسم المنتج (بالإنجليزية):
+EN: Product Name (in English):
+
+File: app/Views/admin/products/create.php
+Key: lbl_category
+AR: القسم (Category):
+EN: Category:
+
+File: app/Views/admin/products/create.php
+Key: lbl_price
+AR: السعر (بالجنيه):
+EN: Price (in Pounds):
+
+File: app/Views/admin/products/create.php
+Key: lbl_old_price
+AR: سعر المنتج قبل الشطب 
+EN: Product price before strike-through:
+
+File: app/Views/admin/products/create.php
+Key: lbl_quantity
+AR: الكمية المتاحة في المخزن:
+EN: Available quantity in store:
+
+File: app/Views/admin/products/create.php
+Key: lbl_description
+AR: الوصف التفصيلي للمنتج:
+EN: Detailed product description:
+
+File: app/Views/admin/products/create.php
+Key: lbl_description_en
+AR: الوصف التفصيلي (بالإنجليزية):
+EN: Detailed description (in English):
+
+File: app/Views/admin/products/create.php
+Key: lbl_main_image
+AR: صورة المنتج الرئيسية:
+EN: Main product image:
+
+File: app/Views/admin/products/create.php
+Key: lbl_additional_images
+AR: صور إضافية للمنتج (اختياري - حتى 3 صور):
+EN: Additional product images (optional - up to 3 images):
+
+File: app/Views/admin/products/create.php
+Key: btn_submit
+AR: إضافة المنتج
+EN: Add Product
+
+File: app/Views/admin/products/create.php
+Key: btn_cancel
+AR: إلغاء والعودة للقائمة
+EN: Cancel and return to list
+
+File: app/Views/admin/products/index.php
+Key: title_current_products
+AR: الحالية المنتجات
+EN: Current Products
+
+File: app/Views/admin/products/index.php
+Key: btn_add_product
+AR: إضافة منتج
+EN: Add Product
+
+File: app/Views/admin/products/index.php
+Key: ph_search_product
+AR: البحث عن منتج
+EN: Search for Product
+
+File: app/Views/admin/products/index.php
+Key: col_image
+AR: Image
+EN: Image
+
+File: app/Views/admin/products/index.php
+Key: col_product_name
+AR: اسم المنتج
+EN: Product Name
+
+File: app/Views/admin/products/index.php
+Key: col_category
+AR: قسم
+EN: Category
+
+File: app/Views/admin/products/index.php
+Key: col_price
+AR: سعر
+EN: Price
+
+File: app/Views/admin/products/index.php
+Key: col_actions
+AR: إجراءات
+EN: Actions
+
+File: app/Views/admin/products/index.php
+Key: no_products_added
+AR: لا توجد منتجات مضاف
+EN: No products added
+
+File: app/Views/admin/products/index.php
+Key: action_edit
+AR: تعديل
+EN: Edit
+
+File: app/Views/admin/products/index.php
+Key: action_delete
+AR: حذف
+EN: Delete
+
+File: app/Views/admin/products/index.php
+Key: confirm_delete_product
+AR: هل أنت متأكد من حذف هذا المنتج؟
+EN: Are you sure you want to delete this product?
+
+File: app/Views/admin/dashboard.php
+Key: total_products
+AR: إجمالي المنتجات
+EN: Total Products
+
+File: app/Views/admin/dashboard.php
+Key: welcome_title
+AR: الترحيب
+EN: Welcome
+
+File: app/Views/admin/dashboard.php
+Key: welcome_text
+AR: نرحب بك في لوحة التحكم
+EN: Welcome to the control panel
+
+File: app/Views/admin/dashboard.php
+Key: visitors_online
+AR: زوار متصلون
+EN: Online Visitors
