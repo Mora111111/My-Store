@@ -32,7 +32,12 @@ class AdminOrderController {
             $oldOrder = $orderModel->findById($id);
             $oldStatus = $oldOrder ? strtolower(trim($oldOrder['status'])) : '';
             
-            if ($oldOrder && $orderModel->updateStatus($id, $newStatus, $adminMessage)) {
+            $newPaymentStatus = null;
+            if ($newStatus === 'مكتمل' && ($oldOrder['payment_status'] ?? 'pending') !== 'paid') {
+                $newPaymentStatus = 'paid';
+            }
+
+            if ($oldOrder && $orderModel->updateStatus($id, $newStatus, $adminMessage, $newPaymentStatus)) {
                 
                 // الكلمات الدلالية لحالات الإلغاء (يمكنك تعديلها حسب المسميات في متجرك)
                 $cancelledStatuses = ['cancelled', 'rejected', 'ملغي', 'مرفوض', 'مسترجع'];

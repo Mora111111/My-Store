@@ -41,9 +41,14 @@ class Order {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function updateStatus(int $id, string $status, ?string $adminMessage = null): bool {
-        $stmt = $this->db->prepare("UPDATE orders SET status = ?, admin_message = ? WHERE id = ?");
-        return $stmt->execute([$status, $adminMessage, $id]);
+    public function updateStatus(int $id, string $status, ?string $adminMessage = null, ?string $paymentStatus = null): bool {
+        if ($paymentStatus !== null) {
+            $stmt = $this->db->prepare("UPDATE orders SET status = ?, admin_message = ?, payment_status = ? WHERE id = ?");
+            return $stmt->execute([$status, $adminMessage, $paymentStatus, $id]);
+        } else {
+            $stmt = $this->db->prepare("UPDATE orders SET status = ?, admin_message = ? WHERE id = ?");
+            return $stmt->execute([$status, $adminMessage, $id]);
+        }
     }
 
     public function delete(int $id): bool {
