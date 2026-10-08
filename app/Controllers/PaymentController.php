@@ -161,10 +161,37 @@ class PaymentController {
         $concatenatedString = implode('', $requestData);
         $calculatedHmac = hash_hmac('sha512', $concatenatedString, $hmacSecret);
         
-        if ($calculatedHmac === $receivedHmac && $success && $realOrderId > 0) {
+        if ($calculatedHmac === $receivedHmac && $realOrderId > 0) {
             $db = Database::getInstance()->getConnection();
-            $stmt = $db->prepare("UPDATE orders SET payment_status = 'paid', transaction_id = ? WHERE id = ?");
-            $stmt->execute([$obj['id'], $realOrderId]);
+
+            if ($success) {
+                // Payment Success: Update status to paid
+                $stmt = $db->prepare("UPDATE orders SET payment_status = 'paid', transaction_id = ? WHERE id = ?");
+                $stmt->execute([$obj['id'], $realOrderId]);
+            } else {
+                // Payment Failed: Fetch the order first to prevent double restocking
+                $stmt = $db->prepare("SELECT status, payment_status, products FROM orders WHERE id = ?");
+                $stmt->execute([$realOrderId]);
+                $order = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($order && $order['payment_status'] !== 'failed') {
+                    // 1. Mark order as Cancelled and payment as failed
+                    $transactionId = $obj['id'] ?? 'failed_transaction';
+                    $updateStmt = $db->prepare("UPDATE orders SET payment_status = 'failed', status = 'ملغي', transaction_id = ? WHERE id = ?");
+                    $updateStmt->execute([$transactionId, $realOrderId]);
+
+                    // 2. Restock deducted products
+                    $products = json_decode($order['products'], true);
+                    if (is_array($products)) {
+                        foreach ($products as $item) {
+                            $qty = (int)($item['quantity'] ?? $item['number'] ?? 1);
+                            $prodId = (int)$item['id'];
+                            $restockStmt = $db->prepare("UPDATE products SET quantity = quantity + ? WHERE id = ?");
+                            $restockStmt->execute([$qty, $prodId]);
+                        }
+                    }
+                }
+            }
         }
         
         http_response_code(200);
