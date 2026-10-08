@@ -119,15 +119,15 @@ addCartBtn.forEach((btn) => {
             if(promoSection) promoSection.style.display = "block";
         }
     });
-    arrayOfCards.forEach((e) => {
-        if (
-            btn.parentElement.querySelector(".card_title") && 
-            btn.parentElement.querySelector(".card_title").textContent === e.title
-        ) {
-            btn.textContent = "تم أضافة";
+    // التحقق عند تحميل الصفحة لتحديد الأزرار التي تم إضافتها مسبقاً للسلة عبر الـ ID
+    const currentBtnId = btn.getAttribute("data-id");
+    if (currentBtnId) {
+        const isProductInCart = arrayOfCards.some(card => card.id === currentBtnId);
+        if (isProductInCart) {
+            btn.textContent = "تم أضافة"; // يفضل استخدام lang('added') لو متاح
             btn.classList.add("done");
         }
-    });
+    }
 });
 
 function addCardToArray(cardImgSrc, cardTitle, cardPrice, cardId) {
