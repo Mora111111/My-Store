@@ -218,7 +218,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- CHECKOUT SUBMISSION LOGIC ---
     if (orderBtn) {
-        orderBtn.addEventListener("click", () => {
+        // استخدام onclick يضمن ربط الحدث مرة واحدة فقط حتى لو تكرر استدعاء الملف
+        orderBtn.onclick = () => { 
+            // 1. حاجز فوري: إذا كان الزر معطلاً (تم النقر عليه للتو)، تجاهل أي نقرات إضافية
+            if (orderBtn.disabled) return;
+            
             let userAddressEl = document.getElementById("user-Address");
             if (!userAddressEl || userAddressEl.textContent.trim() === "") {
                 if (modal && layer) {
@@ -233,6 +237,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 window.location.href = "/products";
                 return;
             }
+
+            // 2. تعطيل الزر فوراً وتغيير نصه قبل تجميع البيانات أو إرسال الطلب
+            orderBtn.disabled = true;
+            orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التنفيذ...';
 
             const formData = new FormData();
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
@@ -262,8 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return item;
             })));
 
-            orderBtn.disabled = true;
-            orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التنفيذ...';
             fetch("/checkout/process", {
                 method: "POST",
                 headers: {
@@ -311,6 +317,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     orderBtn.disabled = false;
                     orderBtn.textContent = "تأكيد الطلب";
                 });
-        });
+        };
     }
 });
