@@ -203,6 +203,12 @@ function isActive($path) {
           <a href="/" target="_blank" class="view-store-btn" title="<?= lang('open_store_window') ?>">
               <i class="fa-solid fa-store"></i> <?= lang('user_experience') ?>
           </a>
+          <button class="view-store-btn" style="position: relative;" onclick="window.location.href='/admin#out-of-stock-section'">
+              <i class="fa-solid fa-bell"></i>
+              <?php if (isset($outOfStockCount) && $outOfStockCount > 0): ?>
+                  <span style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold;"><?= $outOfStockCount ?></span>
+              <?php endif; ?>
+          </button>
           <a href="/logout" class="logout-btn">
               <i class="fa-solid fa-right-from-bracket"></i> <?= lang('logout') ?>
           </a>

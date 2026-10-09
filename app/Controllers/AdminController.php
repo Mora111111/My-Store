@@ -17,6 +17,8 @@ class AdminController {
         $commentsCount = (new Comment())->countAll();
         $messagesCount = (new Message())->countAllContactMessages();
         $onlineUsersCount = Session::getOnlineCount();
+        $outOfStockCount = $productModel->countOutOfStock();
+        $outOfStockProducts = $productModel->getOutOfStockProducts(5);
         
         $showSearch = false;
         $pageIcon = 'fa-house';

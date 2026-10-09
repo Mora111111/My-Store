@@ -171,6 +171,37 @@
 
 </div>
 
+<div id="out-of-stock-section">
+<?php if (isset($outOfStockCount) && $outOfStockCount > 0): ?>
+    <div style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 10px; border-right: 4px solid #ef4444; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <h3 style="color: #ef4444; margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i> <?= lang('out_of_stock_title') ?? 'منتجات نفذت كميتها' ?></h3>
+        <table style="width: 100%; border-collapse: collapse; text-align: right;">
+            <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                <th style="padding: 10px;"><?= lang('col_product') ?? 'المنتج' ?></th>
+                <th style="padding: 10px;"><?= lang('col_quantity') ?? 'الكمية' ?></th>
+                <th style="padding: 10px;"><?= lang('btn_restock') ?? 'الإجراء' ?></th>
+            </tr>
+            <?php foreach ($outOfStockProducts as $item): ?>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px; display: flex; align-items: center; gap: 10px;">
+                        <img src="<?= htmlspecialchars($item['image_url']) ?>" style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover;">
+                        <?= htmlspecialchars($item['title']) ?>
+                    </td>
+                    <td style="padding: 10px; color: #ef4444; font-weight: bold;">0</td>
+                    <td style="padding: 10px;">
+                        <a href="/admin/products/edit?id=<?= $item['id'] ?>" style="color: #3b82f6; text-decoration: none; font-weight: bold;">تحديث الكمية</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+<?php else: ?>
+    <div style="margin-top: 30px; background: #f0fdf4; padding: 20px; border-radius: 10px; border-right: 4px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <h3 style="color: #10b981; margin: 0;"><i class="fa-solid fa-circle-check"></i> <?= lang('stock_ok_msg') ?? 'جميع المنتجات متوفرة في المخزن حالياً.' ?></h3>
+    </div>
+<?php endif; ?>
+</div>
+
 <div class="welcome-card">
   <h2><?= lang('store_tracking') ?> <?= htmlspecialchars(explode(' ', Session::get('user_name'))[0] ?? '') ?> 🛒</h2>
   <p><?= lang('dashboard_quick_stats') ?></p>

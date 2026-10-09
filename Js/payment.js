@@ -32,6 +32,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const orderBtn = document.querySelector(".order_btn");
     const modal = document.querySelector(".container_modal");
     const layer = document.querySelector(".layer");
+    let errorRedirectUrl = null;
+    const errorModal = document.getElementById('modal-error');
+    const closeErrorBtn = document.getElementById('btn-close-checkout-error');
+    if (closeErrorBtn && errorModal) {
+        closeErrorBtn.addEventListener('click', () => {
+            errorModal.classList.remove('modal_active');
+            if (layer) layer.classList.remove('layer_active');
+            if (errorRedirectUrl) {
+                window.location.href = errorRedirectUrl;
+            }
+        });
+    }
+    function showCheckoutError(msg, redirectUrl = null) {
+        errorRedirectUrl = redirectUrl;
+        const errText = document.getElementById('checkout-error-text');
+        if (errText) errText.textContent = msg;
+        if (errorModal) errorModal.classList.add('modal_active');
+        if (layer) layer.classList.add('layer_active');
+    }
     const closeModal = document.querySelector(".close_modal");
     const addressDiv = document.querySelector(".address");
     const sendBtn = document.querySelector(".send_btn");
@@ -233,12 +252,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (!cartItems || cartItems.length === 0) {
-                alert("عربة التسوق فارغة!");
-                window.location.href = "/products";
+                showCheckoutError("عربة التسوق فارغة!", "/products");
                 return;
             }
 
             // 2. تعطيل الزر فوراً وتغيير نصه قبل تجميع البيانات أو إرسال الطلب
+            const origBtnHtml = orderBtn.innerHTML;
             orderBtn.disabled = true;
             orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التنفيذ...';
 
@@ -301,21 +320,21 @@ document.addEventListener("DOMContentLoaded", () => {
                                 }
                             }
                         } else {
-                            alert("حدث خطأ أثناء تسجيل الطلب: " + (data.error || ""));
+                            showCheckoutError("حدث خطأ أثناء تسجيل الطلب: " + (data.error || ""));
                             orderBtn.disabled = false;
-                            orderBtn.textContent = "تأكيد الطلب";
+                            orderBtn.innerHTML = origBtnHtml;
                         }
                     } catch (e) {
                         console.error("Server response:", text);
-                        alert("فشل استجابة السيرفر. برجاء المحاولة مرة أخرى.");
+                        showCheckoutError("فشل استجابة السيرفر. برجاء المحاولة مرة أخرى.");
                         orderBtn.disabled = false;
-                        orderBtn.textContent = "تأكيد الطلب";
+                        orderBtn.innerHTML = origBtnHtml;
                     }
                 })
                 .catch(err => {
-                    alert("حدث خطأ في الاتصال: " + err.message);
+                    showCheckoutError("حدث خطأ في الاتصال: " + err.message);
                     orderBtn.disabled = false;
-                    orderBtn.textContent = "تأكيد الطلب";
+                    orderBtn.innerHTML = origBtnHtml;
                 });
         };
     }

@@ -207,6 +207,14 @@
     </div>
     <button class="popup_btn" style="background: #10b981; color: white; border: none; padding: 15px 40px; border-radius: 40px; font-size: 20px; font-weight: bold; cursor: pointer;" onclick="localStorage.removeItem('cards'); window.location.href='/my-orders'"><?= lang('ok_btn') ?></button>
   </div>
+
+  <div class="container_modal popup" id="modal-error">
+    <div class="popup_content">
+        <i class="fa-solid fa-circle-exclamation popup_icon" style="font-size:70px;color:#ef4444;"></i>
+        <p class="popup_p" id="checkout-error-text" style="font-size:16px;font-weight:bold;margin:20px 0;"></p>
+    </div>
+    <button class="popup_btn" id="btn-close-checkout-error" style="background:#ef4444; width:100%; border-radius:30px; font-size: 16px; padding: 10px;"><?= lang('ok_btn') ?? 'حسناً' ?></button>
+  </div>
 </div>
 
 <div class="layer"></div>

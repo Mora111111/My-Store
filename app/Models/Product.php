@@ -110,6 +110,18 @@ class Product {
         return $stmt->execute([$amount, $id]);
     }
 
+    public function countOutOfStock(): int {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM products WHERE quantity <= 0");
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getOutOfStockProducts(int $limit = 5): array {
+        $stmt = $this->db->prepare("SELECT id, title, image_url, category_class, quantity FROM products WHERE quantity <= 0 ORDER BY id DESC LIMIT ?");
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public static function calculateDiscount(array $product, array $activeCoupons = []): array {
         $basePrice = floatval($product['price'] ?? 0);
         $finalPrice = $basePrice;
