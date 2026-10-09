@@ -320,7 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 }
                             }
                         } else {
-                            showCheckoutError("حدث خطأ أثناء تسجيل الطلب: " + (data.error || ""));
+                            showCheckoutError(data.error || "عذراً، حدث خطأ غير متوقع.");
                             orderBtn.disabled = false;
                             orderBtn.innerHTML = origBtnHtml;
                         }

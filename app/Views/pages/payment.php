@@ -209,11 +209,11 @@
   </div>
 
   <div class="container_modal popup" id="modal-error">
-    <div class="popup_content">
-        <i class="fa-solid fa-circle-exclamation popup_icon" style="font-size:70px;color:#ef4444;"></i>
-        <p class="popup_p" id="checkout-error-text" style="font-size:16px;font-weight:bold;margin:20px 0;"></p>
+    <div class="popup_content" style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px 10px;">
+        <i class="fa-solid fa-box-open popup_icon" style="font-size:60px; color:#f59e0b; margin-bottom: 15px;"></i>
+        <p class="popup_p" id="checkout-error-text" style="font-size:16px; font-weight:600; line-height:1.6; color:#334155; margin:0 0 20px 0;"></p>
     </div>
-    <button class="popup_btn" id="btn-close-checkout-error" style="background:#ef4444; width:100%; border-radius:30px; font-size: 16px; padding: 10px;"><?= lang('ok_btn') ?? 'حسناً' ?></button>
+    <button class="popup_btn" id="btn-close-checkout-error" style="background:#f59e0b; width:100%; border-radius:30px; font-size: 16px; padding: 10px; color: white; border: none; cursor: pointer;"><?= lang('ok_btn') ?? 'حسناً' ?></button>
   </div>
 </div>
 

@@ -65,7 +65,7 @@ class CheckoutController {
                         header('Content-Type: application/json');
                         echo json_encode([
                             'success' => false, 
-                            'error' => 'عذراً، الكمية المطلوبة من "' . $dbProduct['title'] . '" غير متوفرة. المتاح حالياً: ' . $dbProduct['quantity']
+                            'error' => 'عفواً، الكمية المطلوبة من "' . $dbProduct['title'] . '" غير متوفرة حالياً. قمنا بإعلام الإدارة وسنتواصل معك إذا توفرت كميات جديدة. شكراً لكم.'
                         ]);
                         exit;
                     }
