@@ -59,10 +59,10 @@ $footerSettings =$footerSettingModel->getSettings();
           <a href="/about" class="footer_link"><?= lang('about') ?></a>
         </li>
         <li class="footer_li">
-          <a href="/#features" class="footer_link"><?= lang('featured_products') ?></a>
+          <a href="/store#features" class="footer_link"><?= lang('featured_products') ?></a>
         </li>
         <li class="footer_li">
-          <a href="/#latest" class="footer_link"><?= lang('latest_products') ?></a>
+          <a href="/store#latest" class="footer_link"><?= lang('latest_products') ?></a>
         </li>
         <li class="footer_li">
           <a href="/contact" class="footer_link"><?= lang('contact_us') ?></a>

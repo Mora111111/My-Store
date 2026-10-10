@@ -1,10 +1,12 @@
 <?php
 class HomeController {
-    public function index(): void {
+    public function landing(): void {
+        require_once APP_DIR . '/Views/pages/landing.php';
+    }
+    public function store(): void {
         $productModel = new Product();$featuredProducts = $productModel->getFeatured();$latestProducts = $productModel->getLatest();$globalCouponModel = new Coupon();
         $activeCouponsRaw =$globalCouponModel->getActiveStrikethroughCoupons();
         
-        // Sort percentage first, then fixed, descending value to ensure best deal applies
         usort($activeCouponsRaw, function($a,$b) {
             if ($a['discount_type'] ===$b['discount_type']) return $b['discount_value'] <=>$a['discount_value'];
             return $a['discount_type'] === 'percentage' ? -1 : 1;

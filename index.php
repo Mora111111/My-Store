@@ -63,7 +63,8 @@ if (Session::isLoggedIn()) {
 
 $router = new Router();
 
-$router->add('GET', '/', 'HomeController@index');
+$router->add('GET', '/', 'HomeController@landing');
+$router->add('GET', '/store', 'HomeController@store');
 $router->add('GET', '/switch-lang', 'LanguageController@switch');
 $router->add('GET', '/products', 'ProductController@index');
 $router->add('GET', '/about', 'PageController@about');

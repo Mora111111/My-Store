@@ -178,7 +178,7 @@ if (!empty($sysSettings['maintenance_mode'])) {
 
           <ul class="safe-links nav-list">
             <?php $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
-            <li class="nav-item"><a href="/" class="nav_link <?= ($currentUri === '/') ? 'active' : '' ?>"><?= lang('home') ?></a></li>
+            <li class="nav-item"><a href="/store" class="nav_link <?= ($currentUri === '/store') ? 'active' : '' ?>"><?= lang('home') ?></a></li>
             <li class="nav-item"><a href="/products" class="nav_link <?= ($currentUri === '/products' || $currentUri === '/product') ? 'active' : '' ?>"><?= lang('products') ?></a></li>
             <li class="nav-item"><a href="/services" class="nav_link <?= ($currentUri === '/services') ? 'active' : '' ?>"><?= lang('services') ?></a></li>
             <li class="nav-item"><a href="/about" class="nav_link <?= ($currentUri === '/about') ? 'active' : '' ?>"><?= lang('about') ?></a></li>
