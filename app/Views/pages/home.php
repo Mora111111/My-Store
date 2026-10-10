@@ -21,26 +21,7 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
           <a href="/products" class="home_btn">→ تسوق الان</a>
         </div>
         <div class="home_box">
-          <?php if (!empty($featuredProducts)): ?>
-          <div class="hero-product-slider">
-            <?php foreach ($featuredProducts as $i => $product): ?>
-            <a href="/product?id=<?= $product['id'] ?>" class="hero-slide<?= $i === 0 ? ' hero-slide-active' : '' ?>">
-              <img src="<?= Product::getImageUrl($product['image_url']) ?>" alt="<?= htmlspecialchars(langField($product, 'title')) ?>" class="hero-slide-img" />
-              <span class="hero-slide-overlay">
-                <span class="hero-slide-title"><?= htmlspecialchars(langField($product, 'title')) ?></span>
-                <span class="hero-slide-price"><?= $product['price'] ?> <?= lang('currency_egp') ?></span>
-              </span>
-            </a>
-            <?php endforeach; ?>
-            <span class="hero-dots">
-              <?php foreach ($featuredProducts as $i => $product): ?>
-              <span class="hero-dot<?= $i === 0 ? ' hero-dot-active' : '' ?>" data-hero-dot="<?= $i ?>"></span>
-              <?php endforeach; ?>
-            </span>
-          </div>
-          <?php else: ?>
           <img src="/images/image1.png" alt="" class="home-img" />
-          <?php endif; ?>
         </div>
       </section>
       <section class="categories container">
@@ -306,28 +287,3 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
         </div>
       </div>
     </main>
-<script>
-(function () {
-  var slider = document.querySelector('.hero-product-slider');
-  if (!slider) return;
-  var slides = slider.querySelectorAll('.hero-slide');
-  var dots = slider.querySelectorAll('[data-hero-dot]');
-  if (!slides.length) return;
-  var current = 0;
-  function show(n) {
-    current = (n + slides.length) % slides.length;
-    Array.prototype.forEach.call(slides, function (s, i) {
-      if (i === current) { s.classList.add('hero-slide-active'); } else { s.classList.remove('hero-slide-active'); }
-    });
-    Array.prototype.forEach.call(dots, function (d, i) {
-      if (i === current) { d.classList.add('hero-dot-active'); } else { d.classList.remove('hero-dot-active'); }
-    });
-  }
-  Array.prototype.forEach.call(dots, function (d) {
-    d.addEventListener('click', function () {
-      show(parseInt(d.getAttribute('data-hero-dot'), 10));
-    });
-  });
-  setInterval(function () { show(current + 1); }, 4000);
-})();
-</script>
