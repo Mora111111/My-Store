@@ -21,7 +21,85 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
           <a href="/products" class="home_btn">→ تسوق الان</a>
         </div>
         <div class="home_box">
+          <?php $currentLang = $_SESSION['lang'] ?? 'ar'; ?>
+          <?php if (!empty($featuredProducts)): ?>
+          <style>
+            .dynamic-hero-slider .slider-item {
+              position: absolute;
+              inset: 0;
+              opacity: 0;
+              transition: opacity 0.8s ease;
+              display: block;
+            }
+            .dynamic-hero-slider .slider-item.active {
+              opacity: 1;
+              z-index: 2;
+            }
+            .dynamic-hero-slider .slider-img {
+              object-fit: contain;
+              width: 100%;
+              height: 100%;
+              display: block;
+            }
+            .dynamic-hero-slider .slider-overlay {
+              position: absolute;
+              inset-inline: 12px;
+              inset-block-end: 12px;
+              text-align: start;
+              padding-inline-start: 16px;
+              padding-inline-end: 16px;
+              padding-block: 10px;
+              border-radius: 12px;
+              background: rgba(255, 255, 255, 0.7);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.6);
+              box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+            }
+            .dynamic-hero-slider .slider-title {
+              display: block;
+              font-weight: 800;
+              color: #0f172a;
+              font-size: 1rem;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            .dynamic-hero-slider .slider-price {
+              display: block;
+              font-weight: 700;
+              color: #0ea5e9;
+              font-size: 0.95rem;
+              margin-block-start: 2px;
+            }
+          </style>
+          <div class="dynamic-hero-slider" style="position: relative; width: 100%; aspect-ratio: 4/3; overflow: hidden; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+            <?php foreach ($featuredProducts as $idx => $p): ?>
+            <?php $slideTitle = ($currentLang === 'en' && !empty($p['title_en'])) ? $p['title_en'] : $p['title']; ?>
+            <a href="/product?id=<?= $p['id'] ?>" class="slider-item<?= $idx === 0 ? ' active' : '' ?>">
+              <img src="<?= Product::getImageUrl($p['image_url']) ?>" alt="<?= htmlspecialchars($slideTitle) ?>" class="slider-img" />
+              <span class="slider-overlay">
+                <span class="slider-title"><?= htmlspecialchars($slideTitle) ?></span>
+                <span class="slider-price"><?= $p['price'] ?> <?= lang('currency_egp') ?></span>
+              </span>
+            </a>
+            <?php endforeach; ?>
+          </div>
+          <script>
+            (function () {
+              var items = document.querySelectorAll('.dynamic-hero-slider .slider-item');
+              if (!items.length) return;
+              var i = 0;
+              setInterval(function () {
+                items[i].classList.remove('active');
+                i = (i + 1) % items.length;
+                items[i].classList.add('active');
+              }, 4000);
+            })();
+          </script>
+          <?php else: ?>
           <img src="/images/image1.png" alt="" class="home-img" />
+          <?php endif; ?>
         </div>
       </section>
       <section class="categories container">
