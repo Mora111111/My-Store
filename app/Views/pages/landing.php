@@ -130,10 +130,11 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
 }
 .lp-btn--ghost:hover { transform: translateY(-3px); border-color: var(--lp-blue-400); color: var(--lp-blue-600); }
 .lp-btn--white {
-  background: var(--lp-white);
-  color: var(--lp-blue-600);
+  background: #ffffff !important;
+  color: var(--lp-blue-600) !important;
   box-shadow: 0 14px 30px rgba(15, 23, 42, 0.25);
 }
+.lp-btn--white svg { color: var(--lp-blue-600) !important; }
 .lp-btn--white:hover { transform: translateY(-3px); }
 .lp-final-box .lp-btn--white span, .lp-final-box .lp-btn--white svg { color: var(--lp-blue-600); }
 .lp-btn--lg { padding-block: 18px; padding-inline: 40px; font-size: 1.2rem; border-radius: 16px; }
@@ -553,12 +554,11 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
 .lp-tile--fix { grid-column: span 3; }
 .lp-tile--support { grid-column: span 12; flex-direction: row; align-items: center; justify-content: space-between; gap: 24px; min-block-size: 0; background: linear-gradient(135deg, var(--lp-blue), var(--lp-blue-600)); border-color: transparent; color: var(--lp-white); }
 .lp-tile--support::after { background: radial-gradient(circle, rgba(255, 255, 255, 0.22), transparent 70%); }
-.lp-tile--support h3, .lp-tile--support p { color: var(--lp-white); }
-.lp-tile--support p { opacity: 0.88; }
+.lp-tile--support h3, .lp-tile--support p, .lp-tile--support .lp-tile-kind { color: #ffffff !important; }
+.lp-tile--support p { opacity: 0.9 !important; }
 .lp-tile-ico { inline-size: 52px; block-size: 52px; border-radius: 15px; display: grid; place-items: center; background: var(--lp-blue-50); color: var(--lp-blue); border: 1px solid var(--lp-blue-100); }
 .lp-tile--support .lp-tile-ico { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.3); color: var(--lp-white); }
 .lp-tile-kind { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.04em; color: var(--lp-blue); }
-.lp-tile--support .lp-tile-kind { color: rgba(255, 255, 255, 0.85); }
 .lp-tile h3 { font-size: 1.4rem; font-weight: 800; color: var(--lp-ink); margin-block: 6px; }
 .lp-tile p { color: var(--lp-muted); font-size: 0.95rem; max-inline-size: 420px; }
 .lp-tile-link { display: inline-flex; align-items: center; gap: 8px; margin-block-start: 18px; font-weight: 800; color: var(--lp-blue-600); }
