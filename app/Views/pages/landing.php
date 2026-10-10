@@ -7,7 +7,7 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>تسوّق الأجهزة الذكية بثقة وأمان</title>
+<title><?= lang('lp_meta_title') ?></title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -135,6 +135,7 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
   box-shadow: 0 14px 30px rgba(15, 23, 42, 0.25);
 }
 .lp-btn--white:hover { transform: translateY(-3px); }
+.lp-final-box .lp-btn--white span, .lp-final-box .lp-btn--white svg { color: var(--lp-blue-600); }
 .lp-btn--lg { padding-block: 18px; padding-inline: 40px; font-size: 1.2rem; border-radius: 16px; }
 .lp-btn--sm { padding-block: 10px; padding-inline: 20px; font-size: 0.95rem; border-radius: 12px; }
 
@@ -671,18 +672,23 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
 
   <header class="lp-header" id="lp-header">
     <div class="lp-container lp-header-inner">
-      <a href="#lp-top" class="lp-brand" aria-label="الصفحة الرئيسية">
+      <a href="#lp-top" class="lp-brand" aria-label="<?= lang('lp_brand_home') ?>">
         <span class="lp-brand-mark">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
         </span>
-        <span>تك ستور</span>
+        <span>MY Store</span>
       </a>
-      <nav class="lp-nav" aria-label="التنقل الرئيسي">
-        <a href="#lp-trust">الأمان</a>
-        <a href="#lp-transparency">الشفافية</a>
-        <a href="#lp-store">المتجر</a>
+      <nav class="lp-nav" aria-label="<?= lang('lp_nav_main') ?>">
+        <a href="#lp-trust"><?= lang('lp_nav_security') ?></a>
+        <a href="#lp-transparency"><?= lang('lp_nav_transparency') ?></a>
+        <a href="#lp-store"><?= lang('lp_nav_store') ?></a>
+        <?php if ($currentLang === 'ar'): ?>
+        <a href="/switch-lang?lang=en">English</a>
+        <?php else: ?>
+        <a href="/switch-lang?lang=ar"><?= lang('lp_lang_ar') ?></a>
+        <?php endif; ?>
       </nav>
-      <a href="/store" class="lp-btn lp-btn--primary lp-btn--sm">دخول المتجر</a>
+      <a href="/store" class="lp-btn lp-btn--primary lp-btn--sm"><?= lang('lp_header_cta') ?></a>
     </div>
   </header>
 
@@ -691,20 +697,20 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
     <section class="lp-hero">
       <div class="lp-container lp-hero-grid">
         <div class="lp-hero-copy">
-          <span class="lp-eyebrow lp-reveal"><i class="lp-eyebrow-dot"></i>منصتك الموثوقة للأجهزة الذكية</span>
-          <h1 class="lp-hero-title lp-reveal" style="--lp-d:100ms">تسوّق أحدث الأجهزة الذكية <span>بثقة كاملة</span> وأمان لا مثيل له</h1>
-          <p class="lp-hero-text lp-reveal" style="--lp-d:200ms">نجمع لك أفضل الهواتف والحواسيب والإكسسوارات الأصلية في مكان واحد، مع إدارة تراقب كل طلب على مدار الساعة، وتقييمات حقيقية معلنة، وحماية كاملة لبياناتك وحقوقك.</p>
+          <span class="lp-eyebrow lp-reveal"><i class="lp-eyebrow-dot"></i><?= lang('lp_hero_eyebrow') ?></span>
+          <h1 class="lp-hero-title lp-reveal" style="--lp-d:100ms"><?= lang('lp_hero_title_a') ?> <span><?= lang('lp_hero_title_em') ?></span> <?= lang('lp_hero_title_b') ?></h1>
+          <p class="lp-hero-text lp-reveal" style="--lp-d:200ms"><?= lang('lp_hero_text') ?></p>
           <div class="lp-hero-actions lp-reveal" style="--lp-d:300ms">
             <a href="/store" class="lp-btn lp-btn--primary lp-btn--pulse lp-btn--lg">
-              <span>ابدأ التسوق الآن</span>
+              <span><?= lang('lp_hero_cta') ?></span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
             </a>
-            <a href="#lp-trust" class="lp-btn lp-btn--ghost lp-btn--lg">لماذا نحن؟</a>
+            <a href="#lp-trust" class="lp-btn lp-btn--ghost lp-btn--lg"><?= lang('lp_hero_ghost') ?></a>
           </div>
           <div class="lp-hero-stats lp-reveal" style="--lp-d:400ms">
-            <div class="lp-stat"><strong><span data-lp-count="50000">0</span>+</strong><span>عميل راضٍ</span></div>
-            <div class="lp-stat"><strong><span data-lp-count="4.9" data-lp-decimals="1">0</span>/5</strong><span>متوسط التقييمات</span></div>
-            <div class="lp-stat"><strong>24/7</strong><span>دعم متواصل</span></div>
+            <div class="lp-stat"><strong><span data-lp-count="50000">0</span>+</strong><span><?= lang('lp_stat_customers') ?></span></div>
+            <div class="lp-stat"><strong><span data-lp-count="4.9" data-lp-decimals="1">0</span>/5</strong><span><?= lang('lp_stat_rating') ?></span></div>
+            <div class="lp-stat"><strong>24/7</strong><span><?= lang('lp_stat_support') ?></span></div>
           </div>
         </div>
 
@@ -738,15 +744,15 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
 
           <div class="lp-chip lp-chip--1 lp-float lp-float--c" style="position:absolute">
             <span class="lp-chip-ico lp-chip-ico--g"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>
-            <span>دفع آمن 100%<small>تشفير كامل للمعاملات</small></span>
+            <span><?= lang('lp_chip_secure') ?><small><?= lang('lp_chip_secure_sub') ?></small></span>
           </div>
           <div class="lp-chip lp-chip--2 lp-float lp-float--d" style="position:absolute">
             <span class="lp-chip-ico lp-chip-ico--a"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg></span>
-            <span>+12,000 تقييم<small>معلنة وظاهرة للجميع</small></span>
+            <span>+12,000 <?= lang('lp_chip_reviews') ?><small><?= lang('lp_chip_reviews_sub') ?></small></span>
           </div>
           <div class="lp-chip lp-chip--3 lp-float" style="position:absolute">
             <span class="lp-chip-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-            <span>إدارة متاحة الآن<small>رد خلال دقائق</small></span>
+            <span><?= lang('lp_chip_admin') ?><small><?= lang('lp_chip_admin_sub') ?></small></span>
           </div>
         </div>
       </div>
@@ -755,9 +761,9 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
     <section class="lp-section" id="lp-trust">
       <div class="lp-container">
         <div class="lp-head">
-          <span class="lp-eyebrow lp-reveal"><i class="lp-eyebrow-dot"></i>الثقة والأمان</span>
-          <h2 class="lp-title lp-reveal" style="--lp-d:100ms">كل ما تحتاجه <em>لتشتري بطمأنينة</em></h2>
-          <p class="lp-lead lp-reveal" style="--lp-d:200ms">بنينا منصتنا على ثلاثة أعمدة لا نتنازل عنها: دفع محمي، حقوق مصونة، وبيانات في أيدٍ أمينة.</p>
+          <span class="lp-eyebrow lp-reveal"><i class="lp-eyebrow-dot"></i><?= lang('lp_trust_eyebrow') ?></span>
+          <h2 class="lp-title lp-reveal" style="--lp-d:100ms"><?= lang('lp_trust_title_a') ?> <em><?= lang('lp_trust_title_em') ?></em></h2>
+          <p class="lp-lead lp-reveal" style="--lp-d:200ms"><?= lang('lp_trust_lead') ?></p>
         </div>
 
         <div class="lp-grid-3">
@@ -765,35 +771,35 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
             <div class="lp-card-ico">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
             </div>
-            <h3>مدفوعات آمنة ومشفّرة</h3>
-            <p>جميع عمليات الدفع تتم عبر بوابات معتمدة وبتشفير عالي المستوى، ولا نحتفظ بأي بيانات بطاقات على خوادمنا إطلاقاً.</p>
-            <div class="lp-card-tags"><span class="lp-tag">تشفير SSL</span><span class="lp-tag">دفع متعدد</span><span class="lp-tag">حماية من الاحتيال</span></div>
+            <h3><?= lang('lp_card1_title') ?></h3>
+            <p><?= lang('lp_card1_text') ?></p>
+            <div class="lp-card-tags"><span class="lp-tag"><?= lang('lp_tag_ssl') ?></span><span class="lp-tag"><?= lang('lp_tag_multipay') ?></span><span class="lp-tag"><?= lang('lp_tag_fraud') ?></span></div>
           </article>
 
           <article class="lp-card lp-reveal" style="--lp-d:120ms">
             <div class="lp-card-ico">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 7h14"/><path d="m5 7-3 7a4 4 0 0 0 6 0L5 7Z"/><path d="m19 7-3 7a4 4 0 0 0 6 0l-3-7Z"/></svg>
             </div>
-            <h3>حماية كاملة لحقوق المستخدم</h3>
-            <p>سياسات استرجاع واستبدال واضحة، وضمان أصالة المنتجات، ونظام شكاوى يضمن لك حقك حتى آخر خطوة بعد الشراء.</p>
-            <div class="lp-card-tags"><span class="lp-tag">استرجاع مرن</span><span class="lp-tag">ضمان أصلي</span><span class="lp-tag">حل النزاعات</span></div>
+            <h3><?= lang('lp_card2_title') ?></h3>
+            <p><?= lang('lp_card2_text') ?></p>
+            <div class="lp-card-tags"><span class="lp-tag"><?= lang('lp_tag_returns') ?></span><span class="lp-tag"><?= lang('lp_tag_genuine') ?></span><span class="lp-tag"><?= lang('lp_tag_disputes') ?></span></div>
           </article>
 
           <article class="lp-card lp-reveal" style="--lp-d:240ms">
             <div class="lp-card-ico">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 15v2"/></svg>
             </div>
-            <h3>سلامة وخصوصية بياناتك</h3>
-            <p>بياناتك الشخصية محمية بأعلى معايير الأمان، ولا تُشارك مع أي طرف ثالث دون موافقتك الصريحة، ولك التحكم الكامل بها.</p>
-            <div class="lp-card-tags"><span class="lp-tag">خصوصية تامة</span><span class="lp-tag">نسخ احتياطي</span><span class="lp-tag">تحكم كامل</span></div>
+            <h3><?= lang('lp_card3_title') ?></h3>
+            <p><?= lang('lp_card3_text') ?></p>
+            <div class="lp-card-tags"><span class="lp-tag"><?= lang('lp_tag_privacy') ?></span><span class="lp-tag"><?= lang('lp_tag_backup') ?></span><span class="lp-tag"><?= lang('lp_tag_control') ?></span></div>
           </article>
         </div>
 
         <div class="lp-trustbar lp-reveal">
-          <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>منتجات أصلية 100%</span>
-          <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>شحن سريع وتتبع مباشر</span>
-          <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>ضمان استرجاع الأموال</span>
-          <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>مراجعة إدارية لكل طلب</span>
+          <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg><?= lang('lp_trustbar_genuine') ?></span>
+          <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg><?= lang('lp_trustbar_shipping') ?></span>
+          <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg><?= lang('lp_trustbar_refund') ?></span>
+          <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg><?= lang('lp_trustbar_review') ?></span>
         </div>
       </div>
     </section>
@@ -801,71 +807,71 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
     <section class="lp-section lp-section--alt" id="lp-transparency">
       <div class="lp-container lp-split">
         <div>
-          <span class="lp-eyebrow lp-reveal"><i class="lp-eyebrow-dot"></i>الشفافية والإدارة</span>
-          <h2 class="lp-title lp-reveal" style="--lp-d:100ms">إدارة حاضرة <em>معك في كل لحظة</em></h2>
-          <p class="lp-lead lp-reveal" style="--lp-d:200ms">لا نختبئ خلف الشاشات. فريق الإدارة يتابع الطلبات والتقييمات ويتواصل معك مباشرة، لأن ثقتك هي أغلى ما نملك.</p>
+          <span class="lp-eyebrow lp-reveal"><i class="lp-eyebrow-dot"></i><?= lang('lp_trans_eyebrow') ?></span>
+          <h2 class="lp-title lp-reveal" style="--lp-d:100ms"><?= lang('lp_trans_title_a') ?> <em><?= lang('lp_trans_title_em') ?></em></h2>
+          <p class="lp-lead lp-reveal" style="--lp-d:200ms"><?= lang('lp_trans_lead') ?></p>
 
           <div class="lp-checks">
             <div class="lp-check lp-reveal lp-reveal--start" style="--lp-d:100ms">
               <span class="lp-check-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-              <div><h3>إدارة متاحة 24/7</h3><p>فريق مختص يستقبل استفساراتك وشكاواك في أي ساعة، طوال أيام الأسبوع، بلا إجازات.</p></div>
+              <div><h3><?= lang('lp_check1_title') ?></h3><p><?= lang('lp_check1_text') ?></p></div>
             </div>
             <div class="lp-check lp-reveal lp-reveal--start" style="--lp-d:200ms">
               <span class="lp-check-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg></span>
-              <div><h3>كل تقييم معلن ومُقدَّر</h3><p>نعرض جميع آراء العملاء كما هي دون حذف أو تجميل، ونرد على كل ملاحظة بجدية واحترام.</p></div>
+              <div><h3><?= lang('lp_check2_title') ?></h3><p><?= lang('lp_check2_text') ?></p></div>
             </div>
             <div class="lp-check lp-reveal lp-reveal--start" style="--lp-d:300ms">
               <span class="lp-check-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>
-              <div><h3>حقوقك مصونة بصرامة</h3><p>أي مخالفة بحق العميل تُعالج فوراً من الإدارة العليا، وفق سياسات معلنة وملزمة للجميع.</p></div>
+              <div><h3><?= lang('lp_check3_title') ?></h3><p><?= lang('lp_check3_text') ?></p></div>
             </div>
           </div>
         </div>
 
         <div class="lp-panel lp-reveal lp-reveal--end" style="--lp-d:150ms">
           <div class="lp-panel-top">
-            <span class="lp-live"><i></i>لوحة الشفافية المباشرة</span>
+            <span class="lp-live"><i></i><?= lang('lp_panel_live') ?></span>
             <span class="lp-badge-247">24/7</span>
           </div>
           <div class="lp-reviews">
             <div class="lp-review">
               <div class="lp-review-head">
-                <span class="lp-avatar">أ</span>
-                <div><b>أحمد محمود</b><small>هاتف ذكي · طلب موثّق</small></div>
-                <span class="lp-stars" aria-label="5 من 5">
+                <span class="lp-avatar"><?= lang('lp_review1_initial') ?></span>
+                <div><b><?= lang('lp_review1_name') ?></b><small><?= lang('lp_review1_product') ?> · <?= lang('lp_verified_order') ?></small></div>
+                <span class="lp-stars" aria-label="<?= lang('lp_stars_5') ?>">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg>
                 </span>
               </div>
-              <p>وصلني الجهاز في وقت قياسي وبحالة ممتازة، والدعم ردّ عليّ خلال دقائق.</p>
-              <div class="lp-reply"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>ردّ الإدارة: شكراً لثقتك، سعداء بخدمتك دائماً.</div>
+              <p><?= lang('lp_review1_text') ?></p>
+              <div class="lp-reply"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg><?= lang('lp_admin_reply') ?> <?= lang('lp_review1_reply') ?></div>
             </div>
 
             <div class="lp-review">
               <div class="lp-review-head">
-                <span class="lp-avatar">س</span>
-                <div><b>سارة عبد الله</b><small>حاسوب محمول · طلب موثّق</small></div>
-                <span class="lp-stars" aria-label="5 من 5">
+                <span class="lp-avatar"><?= lang('lp_review2_initial') ?></span>
+                <div><b><?= lang('lp_review2_name') ?></b><small><?= lang('lp_review2_product') ?> · <?= lang('lp_verified_order') ?></small></div>
+                <span class="lp-stars" aria-label="<?= lang('lp_stars_5') ?>">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg>
                 </span>
               </div>
-              <p>تجربة شراء مريحة وشفافة، وتعاملوا مع ملاحظتي البسيطة بجدية تامة.</p>
-              <div class="lp-reply"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>ردّ الإدارة: تمت معالجة ملاحظتك وتحسين الخدمة.</div>
+              <p><?= lang('lp_review2_text') ?></p>
+              <div class="lp-reply"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg><?= lang('lp_admin_reply') ?> <?= lang('lp_review2_reply') ?></div>
             </div>
 
             <div class="lp-review">
               <div class="lp-review-head">
-                <span class="lp-avatar">خ</span>
-                <div><b>خالد إبراهيم</b><small>إكسسوارات · طلب موثّق</small></div>
-                <span class="lp-stars" aria-label="5 من 5">
+                <span class="lp-avatar"><?= lang('lp_review3_initial') ?></span>
+                <div><b><?= lang('lp_review3_name') ?></b><small><?= lang('lp_review3_product') ?> · <?= lang('lp_verified_order') ?></small></div>
+                <span class="lp-stars" aria-label="<?= lang('lp_stars_5') ?>">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2Z"/></svg>
                 </span>
               </div>
-              <p>منتجات أصلية وأسعار عادلة، وأكثر ما أعجبني وضوح السياسات.</p>
+              <p><?= lang('lp_review3_text') ?></p>
             </div>
           </div>
           <div class="lp-panel-foot">
-            <span class="lp-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>تقييمات موثّقة</span>
-            <span class="lp-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>ردود الإدارة معلنة</span>
-            <span class="lp-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>بلا حذف أو تعديل</span>
+            <span class="lp-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg><?= lang('lp_pill_verified') ?></span>
+            <span class="lp-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg><?= lang('lp_pill_replies') ?></span>
+            <span class="lp-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg><?= lang('lp_pill_noedit') ?></span>
           </div>
         </div>
       </div>
@@ -874,9 +880,9 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
     <section class="lp-section" id="lp-store">
       <div class="lp-container">
         <div class="lp-head">
-          <span class="lp-eyebrow lp-reveal"><i class="lp-eyebrow-dot"></i>نظرة على المتجر</span>
-          <h2 class="lp-title lp-reveal" style="--lp-d:100ms">كل ما تحتاجه من <em>التقنية</em> في مكان واحد</h2>
-          <p class="lp-lead lp-reveal" style="--lp-d:200ms">منتجات أصلية مختارة بعناية، وخدمات متخصصة تبقي أجهزتك في أفضل حال.</p>
+          <span class="lp-eyebrow lp-reveal"><i class="lp-eyebrow-dot"></i><?= lang('lp_store_eyebrow') ?></span>
+          <h2 class="lp-title lp-reveal" style="--lp-d:100ms"><?= lang('lp_store_title_a') ?> <em><?= lang('lp_store_title_em') ?></em> <?= lang('lp_store_title_b') ?></h2>
+          <p class="lp-lead lp-reveal" style="--lp-d:200ms"><?= lang('lp_store_lead') ?></p>
         </div>
 
         <div class="lp-store">
@@ -889,10 +895,10 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
               <span class="lp-tile-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></span>
             </div>
             <div>
-              <span class="lp-tile-kind">المنتجات</span>
-              <h3>الهواتف الذكية</h3>
-              <p>أحدث الإصدارات من أفضل العلامات العالمية بضمان رسمي وأسعار منافسة.</p>
-              <span class="lp-tile-link">تصفح الهواتف <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+              <span class="lp-tile-kind"><?= lang('lp_tile_products') ?></span>
+              <h3><?= lang('lp_tile_phones') ?></h3>
+              <p><?= lang('lp_tile_phones_text') ?></p>
+              <span class="lp-tile-link"><?= lang('lp_tile_phones_link') ?> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
             </div>
           </a>
 
@@ -901,10 +907,10 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
               <span class="lp-tile-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></span>
             </div>
             <div>
-              <span class="lp-tile-kind">المنتجات</span>
-              <h3>الحواسيب المحمولة</h3>
-              <p>أداء قوي للعمل والدراسة والإبداع، بخيارات تناسب كل ميزانية.</p>
-              <span class="lp-tile-link">تصفح الحواسيب <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+              <span class="lp-tile-kind"><?= lang('lp_tile_products') ?></span>
+              <h3><?= lang('lp_tile_laptops') ?></h3>
+              <p><?= lang('lp_tile_laptops_text') ?></p>
+              <span class="lp-tile-link"><?= lang('lp_tile_laptops_link') ?> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
             </div>
           </a>
 
@@ -913,9 +919,9 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
               <span class="lp-tile-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="2" y="14" width="5" height="7" rx="2"/><rect x="17" y="14" width="5" height="7" rx="2"/></svg></span>
             </div>
             <div>
-              <span class="lp-tile-kind">المنتجات</span>
-              <h3>الإكسسوارات</h3>
-              <p>سماعات وشواحن وملحقات أصلية.</p>
+              <span class="lp-tile-kind"><?= lang('lp_tile_products') ?></span>
+              <h3><?= lang('lp_tile_acc') ?></h3>
+              <p><?= lang('lp_tile_acc_text') ?></p>
             </div>
           </a>
 
@@ -924,9 +930,9 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
               <span class="lp-tile-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-.6-.6-2.6 2.6-2.2Z"/></svg></span>
             </div>
             <div>
-              <span class="lp-tile-kind">الخدمات</span>
-              <h3>صيانة معتمدة</h3>
-              <p>فنيون محترفون وقطع أصلية.</p>
+              <span class="lp-tile-kind"><?= lang('lp_tile_services') ?></span>
+              <h3><?= lang('lp_tile_repair') ?></h3>
+              <p><?= lang('lp_tile_repair_text') ?></p>
             </div>
           </a>
 
@@ -934,12 +940,12 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
             <div style="display:flex;gap:20px;align-items:center">
               <span class="lp-tile-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 16v2a3 3 0 0 1-3 3h-4"/><rect x="2" y="13" width="4" height="6" rx="2"/><rect x="18" y="13" width="4" height="6" rx="2"/></svg></span>
               <div>
-                <span class="lp-tile-kind">الخدمات</span>
-                <h3>الدعم التقني على مدار الساعة</h3>
-                <p>مختصون جاهزون لمساعدتك في الإعداد والاستخدام وحل أي مشكلة تقنية فوراً.</p>
+                <span class="lp-tile-kind"><?= lang('lp_tile_services') ?></span>
+                <h3><?= lang('lp_support_title') ?></h3>
+                <p><?= lang('lp_support_text') ?></p>
               </div>
             </div>
-            <a href="/store" class="lp-btn lp-btn--white lp-btn--sm">تواصل معنا</a>
+            <a href="/store" class="lp-btn lp-btn--white lp-btn--sm"><?= lang('lp_contact_btn') ?></a>
           </div>
         </div>
       </div>
@@ -948,17 +954,17 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
     <section class="lp-final">
       <div class="lp-container">
         <div class="lp-final-box lp-reveal lp-reveal--zoom">
-          <span class="lp-eyebrow" style="background:rgba(255,255,255,0.16);color:#fff;border-color:rgba(255,255,255,0.3)"><i class="lp-eyebrow-dot" style="background:#fff"></i>جاهز للبدء؟</span>
-          <h2 style="margin-block-start:20px">ادخل المتجر الآن وتسوّق وأنت مطمئن</h2>
-          <p>انضم إلى آلاف العملاء الذين اختاروا الأمان والشفافية والدعم المتواصل. تجربتك القادمة تبدأ بنقرة واحدة.</p>
+          <span class="lp-eyebrow" style="background:rgba(255,255,255,0.16);color:#fff;border-color:rgba(255,255,255,0.3)"><i class="lp-eyebrow-dot" style="background:#fff"></i><?= lang('lp_final_eyebrow') ?></span>
+          <h2 style="margin-block-start:20px"><?= lang('lp_final_title') ?></h2>
+          <p><?= lang('lp_final_text') ?></p>
           <a href="/store" class="lp-btn lp-btn--white lp-btn--pulse lp-btn--lg">
-            <span>ابدأ التسوق الآن</span>
+            <span><?= lang('lp_final_cta') ?></span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
           </a>
           <div class="lp-final-points">
-            <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>دفع آمن</span>
-            <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>حقوق محمية</span>
-            <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>دعم 24/7</span>
+            <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg><?= lang('lp_point_secure') ?></span>
+            <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg><?= lang('lp_point_rights') ?></span>
+            <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg><?= lang('lp_point_support') ?></span>
           </div>
         </div>
       </div>
@@ -968,11 +974,11 @@ $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
 
   <footer class="lp-footer">
     <div class="lp-container lp-footer-inner">
-      <span>© 2026 تك ستور. جميع الحقوق محفوظة.</span>
+      <span>© 2026 MY Store. <?= lang('lp_footer_rights') ?></span>
       <div class="lp-footer-links">
-        <a href="#lp-trust">سياسة الخصوصية</a>
-        <a href="#lp-transparency">الشروط والأحكام</a>
-        <a href="#lp-store">تواصل معنا</a>
+        <a href="#lp-trust"><?= lang('lp_footer_privacy') ?></a>
+        <a href="#lp-transparency"><?= lang('lp_footer_terms') ?></a>
+        <a href="#lp-store"><?= lang('lp_contact_btn') ?></a>
       </div>
     </div>
   </footer>
