@@ -4,8 +4,8 @@ class Order {
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
     }
-   public function create(array $data): int|false {
-        $sql = "INSERT INTO orders (user_id, full_name, phone, address_line1, address_line2, city, governorate, zip_code, total_price, products, payment_method, payment_status, transaction_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public function create(array $data): int|false {
+        $sql = "INSERT INTO orders (user_id, full_name, phone, address_line1, address_line2, city, governorate, zip_code, total_price, subtotal, shipping_fee, discount_amount, coupon_code, products, payment_method, payment_status, transaction_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $success = $stmt->execute([
             $data['user_id'] ?? null,
@@ -17,6 +17,10 @@ class Order {
             $data['governorate'],
             $data['zip_code'] ?? null,
             $data['total_price'],
+            $data['subtotal'] ?? $data['total_price'],
+            $data['shipping_fee'] ?? 0,
+            $data['discount_amount'] ?? 0,
+            $data['coupon_code'] ?? null,
             $data['products'],
             $data['payment_method'] ?? 'cod',
             $data['payment_status'] ?? 'pending',

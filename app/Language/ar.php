@@ -764,7 +764,7 @@ return [
 
     // Out of Stock
     'out_of_stock_title' => 'منتجات نفذت كميتها',
-    'menu_out_of_stock' => 'نفاد المخزون',
+    'menu_out_of_stock' => 'اشعارات الطلبات',
     'col_quantity' => 'الكمية',
     'btn_restock' => 'الإجراء',
     'update_quantity' => 'تحديث الكمية',

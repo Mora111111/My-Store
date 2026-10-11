@@ -51,6 +51,7 @@ class CheckoutController {
             }
             
             $subtotal = 0;
+            $grossSubtotal = 0;
             $secureProductsArray = [];
 
             if (is_array($cartProducts)) {
@@ -92,6 +93,7 @@ class CheckoutController {
                     }
 
                     $subtotal += ($finalPrice * $qty);
+                    $grossSubtotal += ($basePrice * $qty);
 
                     $secureProductsArray[] = [
                         'id' => $dbProduct['id'],
@@ -111,6 +113,8 @@ class CheckoutController {
                 $shipping = floatval($site_settings['shipping_cost'] ?? 0);
             }
             $server_total = $subtotal + $shipping;
+            $discountAmount = max(0, $grossSubtotal - $subtotal);
+            $couponCode = $appliedCoupon['code'] ?? null;
 
             $data = [
                 'user_id' => Session::get('user_id'),
@@ -122,6 +126,10 @@ class CheckoutController {
                 'governorate' => $_POST['governorate'] ?? '',
                 'zip_code' => $_POST['zip_code'] ?? '',
                 'total_price' => $server_total,
+                'subtotal' => $grossSubtotal,
+                'shipping_fee' => $shipping,
+                'discount_amount' => $discountAmount,
+                'coupon_code' => $couponCode,
                 'products' => json_encode($secureProductsArray, JSON_UNESCAPED_UNICODE),
                 'payment_method' => $payment_method,
                 'payment_status' => 'pending',
