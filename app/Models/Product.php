@@ -49,6 +49,13 @@ class Product {
         return $stmt->fetchAll();
     }
 
+    public function getDiscounted(int $limit = 8): array {
+        $stmt = $this->db->prepare("SELECT *, (old_price - price) AS discount_amount FROM products WHERE old_price > price ORDER BY discount_amount DESC LIMIT ?");
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public function getCategories(): array {
         $stmt = $this->db->query("SELECT DISTINCT category_class FROM products WHERE category_class != ''");
         return $stmt->fetchAll(PDO::FETCH_COLUMN);

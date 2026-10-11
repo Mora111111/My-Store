@@ -753,4 +753,12 @@ return [
     'lp_footer_rights' => 'جميع الحقوق محفوظة.',
     'lp_footer_privacy' => 'سياسة الخصوصية',
     'lp_footer_terms' => 'الشروط والأحكام',
+
+    // Slider Settings
+    'title_slider_settings' => 'إعدادات السلايدر',
+    'lbl_slider_mode' => 'مصدر منتجات السلايدر',
+    'slider_mode_featured' => 'المنتجات المميزة',
+    'slider_mode_latest' => 'أحدث المنتجات',
+    'slider_mode_discounted' => 'المنتجات المخفضة',
+    'slider_mode_all' => 'كل المنتجات',
 ];

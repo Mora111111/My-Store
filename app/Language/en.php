@@ -772,4 +772,12 @@ return [
     'lp_footer_rights' => 'All rights reserved.',
     'lp_footer_privacy' => 'Privacy policy',
     'lp_footer_terms' => 'Terms and conditions',
+
+    // Slider Settings
+    'title_slider_settings' => 'Slider Settings',
+    'lbl_slider_mode' => 'Slider products source',
+    'slider_mode_featured' => 'Featured products',
+    'slider_mode_latest' => 'Latest products',
+    'slider_mode_discounted' => 'Discounted products',
+    'slider_mode_all' => 'All products',
 ];

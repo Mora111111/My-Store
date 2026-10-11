@@ -33,6 +33,17 @@
         </select>
       </div>
       <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
+      <h3 style="color:#0f172a; margin-bottom: 15px;"><i class="fa-solid fa-images" style="color:#38bdf8;"></i> <?= lang('title_slider_settings') ?></h3>
+      <div class="form_row">
+        <label><?= lang('lbl_slider_mode') ?></label>
+        <select name="slider_mode" class="form_input">
+            <option value="featured" <?php echo ($site_settings['slider_mode'] ?? 'featured') == 'featured' ? 'selected' : ''; ?>><?= lang('slider_mode_featured') ?></option>
+            <option value="latest" <?php echo ($site_settings['slider_mode'] ?? 'featured') == 'latest' ? 'selected' : ''; ?>><?= lang('slider_mode_latest') ?></option>
+            <option value="discounted" <?php echo ($site_settings['slider_mode'] ?? 'featured') == 'discounted' ? 'selected' : ''; ?>><?= lang('slider_mode_discounted') ?></option>
+            <option value="all" <?php echo ($site_settings['slider_mode'] ?? 'featured') == 'all' ? 'selected' : ''; ?>><?= lang('slider_mode_all') ?></option>
+        </select>
+      </div>
+      <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
       <h3 style="color:#0f172a; margin-bottom: 15px;"><i class="fa-solid fa-truck-fast" style="color:#38bdf8;"></i> <?= lang('title_shipping_settings') ?></h3>
       <div class="form_row">
         <label><?= lang('lbl_shipping_cost') ?></label>

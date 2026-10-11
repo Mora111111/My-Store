@@ -12,6 +12,27 @@ class HomeController {
             return $a['discount_type'] === 'percentage' ? -1 : 1;
         });
         $activeCoupons =$activeCouponsRaw;
+
+        $settingModel = new Setting();
+        $site_settings = $settingModel->getSettings();
+        $sliderMode = $site_settings['slider_mode'] ?? 'featured';
+        if (!in_array($sliderMode, ['featured', 'latest', 'discounted', 'all'], true)) {
+            $sliderMode = 'featured';
+        }
+        switch ($sliderMode) {
+            case 'latest':
+                $sliderProducts = $productModel->getLatest(8);
+                break;
+            case 'discounted':
+                $sliderProducts = $productModel->getDiscounted(8);
+                break;
+            case 'all':
+                $sliderProducts = array_slice($productModel->getAll(), 0, 8);
+                break;
+            default:
+                $sliderProducts = $featuredProducts;
+                break;
+        }
         
         require_once APP_DIR . '/Views/layouts/header.php';
         require_once APP_DIR . '/Views/pages/home.php';

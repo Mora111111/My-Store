@@ -36,7 +36,7 @@ class AdminSettingController {
                 
                 $check = $db->query("SELECT id FROM settings WHERE id = 1")->fetch();
                 if (!$check) {
-                    $db->query("INSERT INTO settings (id, about_text, phone1, phone2, email, address, shipping_cost, facebook_link, maintenance_mode, global_discount, enable_online_payment, gateway_api_key, gateway_integration_id, gateway_iframe_id, gateway_hmac_secret, gateway_integration_id_wallet) VALUES (1, 'متجرنا', '010', '', 'email@test.com', 'مصر', 0, '', 0, 0, 0, '', '', '', '', '')");
+                    $db->query("INSERT INTO settings (id, about_text, phone1, phone2, email, address, shipping_cost, facebook_link, maintenance_mode, global_discount, enable_online_payment, gateway_api_key, gateway_integration_id, gateway_iframe_id, gateway_hmac_secret, gateway_integration_id_wallet, slider_mode) VALUES (1, 'متجرنا', '010', '', 'email@test.com', 'مصر', 0, '', 0, 0, 0, '', '', '', '', '', 'featured')");
                 }
                 
                 $settingModel = new Setting();
@@ -57,6 +57,7 @@ class AdminSettingController {
                     'gateway_hmac_secret' => trim($_POST['gateway_hmac_secret'] ?? ''),
                     'gateway_integration_id_wallet' => trim($_POST['gateway_integration_id_wallet'] ?? ''),
                     'timezone' => trim($_POST['timezone'] ?? 'Africa/Cairo'),
+                    'slider_mode' => in_array(trim($_POST['slider_mode'] ?? ''), ['featured', 'latest', 'discounted', 'all'], true) ? trim($_POST['slider_mode']) : 'featured',
                     'google_client_id' => trim($_POST['google_client_id'] ?? ''),
                     'google_client_secret' => trim($_POST['google_client_secret'] ?? ''),
                     'turnstile_site_key' => trim($_POST['turnstile_site_key'] ?? ''),
