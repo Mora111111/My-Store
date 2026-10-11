@@ -30,7 +30,7 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
               overflow: hidden;
               overflow: clip;
               isolation: isolate;
-              perspective: 1400px;
+              perspective: 4000px;
               perspective-origin: 50% 50%;
               transform-style: preserve-3d;
               border-radius: 22px;
@@ -141,7 +141,7 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
             @media (max-width: 600px) {
               .dynamic-hero-slider {
                 border-radius: 16px;
-                perspective: 1100px;
+                perspective: 4000px;
               }
 
               .dynamic-hero-slider .slider-caption {
