@@ -17,8 +17,6 @@ class AdminController {
         $commentsCount = (new Comment())->countAll();
         $messagesCount = (new Message())->countAllContactMessages();
         $onlineUsersCount = Session::getOnlineCount();
-        $outOfStockCount = $productModel->countOutOfStock();
-        $outOfStockProducts = $productModel->getOutOfStockProducts(5);
         
         $showSearch = false;
         $pageIcon = 'fa-house';
@@ -40,6 +38,20 @@ class AdminController {
 
         require_once APP_DIR . '/Views/admin/layout_start.php';
         require_once APP_DIR . '/Views/admin/online_visitors.php';
+        require_once APP_DIR . '/Views/admin/layout_end.php';
+    }
+
+    public function outOfStock(): void {
+        $productModel = new Product();
+        $outOfStockCount = $productModel->countOutOfStock();
+        $outOfStockProducts = $productModel->getOutOfStockProducts(100);
+
+        $showSearch = false;
+        $pageIcon = 'fa-triangle-exclamation';
+        $pageTitle = lang('out_of_stock_title');
+
+        require_once APP_DIR . '/Views/admin/layout_start.php';
+        require_once APP_DIR . '/Views/admin/out_of_stock.php';
         require_once APP_DIR . '/Views/admin/layout_end.php';
     }
 }

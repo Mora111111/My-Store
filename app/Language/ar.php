@@ -761,4 +761,12 @@ return [
     'slider_mode_latest' => 'أحدث المنتجات',
     'slider_mode_discounted' => 'المنتجات المخفضة',
     'slider_mode_all' => 'كل المنتجات',
+
+    // Out of Stock
+    'out_of_stock_title' => 'منتجات نفذت كميتها',
+    'menu_out_of_stock' => 'نفاد المخزون',
+    'col_quantity' => 'الكمية',
+    'btn_restock' => 'الإجراء',
+    'update_quantity' => 'تحديث الكمية',
+    'stock_ok_msg' => 'جميع المنتجات متوفرة في المخزن حالياً.',
 ];

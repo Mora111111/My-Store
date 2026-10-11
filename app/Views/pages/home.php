@@ -28,32 +28,38 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
               width: 100%;
               aspect-ratio: 4 / 3;
               overflow: hidden;
+              overflow: clip;
               isolation: isolate;
-              border-radius: 20px;
-              background: #f8fafc;
-              box-shadow: 0 16px 42px rgba(15, 23, 42, 0.12), 0 3px 10px rgba(15, 23, 42, 0.04);
+              perspective: 1400px;
+              perspective-origin: 50% 50%;
+              transform-style: preserve-3d;
+              border-radius: 22px;
+              background: #f5f5f7;
+              box-shadow:
+                0 24px 60px rgba(0, 0, 0, 0.12),
+                0 4px 14px rgba(0, 0, 0, 0.05);
+              -webkit-font-smoothing: antialiased;
             }
 
             .dynamic-hero-slider .slider-item {
               position: absolute;
               inset: 0;
-              z-index: 1;
-              opacity: 0;
-              visibility: hidden;
+              width: 100%;
+              height: 100%;
+              display: block;
+              transform: rotateY(var(--cube-angle, 0deg)) translateZ(var(--cube-depth, 0px));
+              transform-origin: center center;
+              transform-style: preserve-3d;
+              backface-visibility: hidden;
+              -webkit-backface-visibility: hidden;
               pointer-events: none;
-              transition:
-                opacity 1.15s cubic-bezier(0.22, 1, 0.36, 1),
-                visibility 0s linear 1.15s;
+              transition: transform 1.25s cubic-bezier(0.76, 0, 0.24, 1);
+              will-change: transform;
+              background: linear-gradient(145deg, #ffffff 0%, #f5f5f7 100%);
             }
 
             .dynamic-hero-slider .slider-item.active {
-              z-index: 2;
-              opacity: 1;
-              visibility: visible;
               pointer-events: auto;
-              transition:
-                opacity 1.15s cubic-bezier(0.22, 1, 0.36, 1),
-                visibility 0s;
             }
 
             .dynamic-hero-slider .slider-item img {
@@ -61,59 +67,64 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
               width: 100%;
               height: 100%;
               object-fit: contain;
-              background: #fff;
-              transform: scale(1.075);
-              transform-origin: center;
-              transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
-              will-change: transform;
+              object-position: center;
+              background: linear-gradient(145deg, #ffffff 0%, #f5f5f7 100%);
+              transform: scale(0.96);
+              transition: transform 1.25s cubic-bezier(0.16, 1, 0.3, 1);
+              backface-visibility: hidden;
+              -webkit-backface-visibility: hidden;
             }
 
             .dynamic-hero-slider .slider-item.active img {
               transform: scale(1);
+              transition-delay: 0.08s;
             }
 
             .dynamic-hero-slider .slider-caption {
               position: absolute;
-              inset-inline-start: 14px;
-              inset-inline-end: 14px;
-              inset-block-end: 14px;
+              inset-inline-start: 16px;
+              inset-inline-end: 16px;
+              inset-block-end: 16px;
               z-index: 3;
-              padding-block: 14px;
-              padding-inline: 18px;
-              border: 1px solid rgba(255, 255, 255, 0.72);
-              border-radius: 16px;
+              padding-block: 16px;
+              padding-inline: 20px;
+              border: 1px solid rgba(255, 255, 255, 0.68);
+              border-radius: 18px;
               background: linear-gradient(
                 135deg,
-                rgba(255, 255, 255, 0.82),
-                rgba(255, 255, 255, 0.62)
+                rgba(255, 255, 255, 0.78),
+                rgba(248, 250, 252, 0.62)
               );
-              backdrop-filter: blur(22px) saturate(165%);
-              -webkit-backdrop-filter: blur(22px) saturate(165%);
+              backdrop-filter: blur(28px) saturate(180%);
+              -webkit-backdrop-filter: blur(28px) saturate(180%);
               box-shadow:
-                0 8px 28px rgba(15, 23, 42, 0.10),
-                inset 0 1px 0 rgba(255, 255, 255, 0.75);
+                0 12px 35px rgba(15, 23, 42, 0.10),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
               text-align: start;
               opacity: 0;
-              transform: translateY(12px);
+              visibility: hidden;
+              transform: translateY(14px) scale(0.985);
+              transform-origin: center;
               transition:
-                opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-              transition-delay: 0s;
+                opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0s linear 0.65s;
             }
 
             .dynamic-hero-slider .slider-item.active .slider-caption {
               opacity: 1;
-              transform: translateY(0);
-              transition-delay: 0.2s;
+              visibility: visible;
+              transform: translateY(0) scale(1);
+              transition-delay: 0.3s, 0.3s, 0s;
             }
 
             .dynamic-hero-slider .slider-caption strong {
               display: block;
-              margin-block-end: 5px;
-              color: #0f172a;
-              font-size: clamp(0.95rem, 1.5vw, 1.125rem);
-              font-weight: 750;
-              line-height: 1.5;
+              margin-block-end: 6px;
+              color: #1d1d1f;
+              font-size: clamp(1rem, 1.6vw, 1.2rem);
+              font-weight: 700;
+              line-height: 1.45;
               letter-spacing: -0.025em;
               text-wrap: pretty;
             }
@@ -121,26 +132,27 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
             .dynamic-hero-slider .slider-caption span {
               display: inline-block;
               color: var(--main-color);
-              font-size: 1rem;
-              font-weight: 800;
+              font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+              font-weight: 750;
               line-height: 1.5;
               letter-spacing: -0.015em;
             }
 
-            @media (max-width: 480px) {
+            @media (max-width: 600px) {
               .dynamic-hero-slider {
                 border-radius: 16px;
+                perspective: 1100px;
               }
 
               .dynamic-hero-slider .slider-caption {
                 inset-inline-start: 10px;
                 inset-inline-end: 10px;
                 inset-block-end: 10px;
-                padding-block: 10px;
-                padding-inline: 13px;
-                border-radius: 13px;
-                backdrop-filter: blur(16px) saturate(155%);
-                -webkit-backdrop-filter: blur(16px) saturate(155%);
+                padding-block: 11px;
+                padding-inline: 14px;
+                border-radius: 14px;
+                backdrop-filter: blur(20px) saturate(170%);
+                -webkit-backdrop-filter: blur(20px) saturate(170%);
               }
 
               .dynamic-hero-slider .slider-caption strong {
@@ -148,13 +160,12 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
               }
 
               .dynamic-hero-slider .slider-caption span {
-                font-size: 0.925rem;
+                font-size: 0.9rem;
               }
             }
 
             @media (prefers-reduced-motion: reduce) {
               .dynamic-hero-slider .slider-item,
-              .dynamic-hero-slider .slider-item.active,
               .dynamic-hero-slider .slider-item img,
               .dynamic-hero-slider .slider-caption {
                 transition-duration: 0.01ms;
@@ -181,11 +192,11 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
               var sliders = document.querySelectorAll('.dynamic-hero-slider');
 
               sliders.forEach(function (slider) {
-                var items = slider.querySelectorAll('.slider-item');
+                var items = Array.from(slider.querySelectorAll('.slider-item'));
 
                 if (!items.length) return;
 
-                var current = Array.from(items).findIndex(function (item) {
+                var current = items.findIndex(function (item) {
                   return item.classList.contains('active');
                 });
 
@@ -194,34 +205,82 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
                   items[current].classList.add('active');
                 }
 
-                items.forEach(function (item, index) {
-                  if (index !== current) {
-                    item.classList.remove('active');
-                  }
-                });
+                if (items.length === 1) return;
 
-                if (items.length < 2) return;
-
-                var interval = null;
+                var timer = null;
                 var delay = 5000;
+                var duration = 1250;
+                var direction = 1;
+
+                function updateDirection() {
+                  direction = window.getComputedStyle(slider).direction === 'rtl' ? -1 : 1;
+                }
+
+                function updateCube(animate) {
+                  updateDirection();
+
+                  var width = slider.clientWidth;
+
+                  if (!width) return;
+
+                  var count = items.length;
+                  var step = 360 / count;
+                  var depth = count === 2
+                    ? width / 2
+                    : width / (2 * Math.tan(Math.PI / count));
+
+                  slider.style.setProperty('--cube-depth', depth + 'px');
+                  slider.style.transitionDuration = animate ? duration + 'ms' : '0ms';
+
+                  items.forEach(function (item, index) {
+                    var angle = (index - current) * step * direction;
+
+                    item.style.setProperty('--cube-angle', angle + 'deg');
+                    item.style.transitionDuration = animate ? duration + 'ms' : '0ms';
+                  });
+                }
 
                 function showNext() {
                   items[current].classList.remove('active');
                   current = (current + 1) % items.length;
                   items[current].classList.add('active');
+                  updateCube(true);
                 }
 
                 function startSlider() {
-                  if (interval !== null || document.hidden) return;
-                  interval = window.setInterval(showNext, delay);
+                  if (timer !== null || document.hidden) return;
+
+                  timer = window.setInterval(showNext, delay);
                 }
 
                 function stopSlider() {
-                  if (interval !== null) {
-                    window.clearInterval(interval);
-                    interval = null;
+                  if (timer !== null) {
+                    window.clearInterval(timer);
+                    timer = null;
                   }
                 }
+
+                updateCube(false);
+
+                window.requestAnimationFrame(function () {
+                  window.requestAnimationFrame(function () {
+                    items.forEach(function (item) {
+                      item.style.transitionDuration = '';
+                    });
+
+                    startSlider();
+                  });
+                });
+
+                window.addEventListener('resize', function () {
+                  updateCube(false);
+
+                  window.requestAnimationFrame(function () {
+                    items.forEach(function (item) {
+                      item.style.transitionDuration = '';
+                    });
+                  });
+                });
 
                 document.addEventListener('visibilitychange', function () {
                   if (document.hidden) {
@@ -230,8 +289,6 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
                     startSlider();
                   }
                 });
-
-                startSlider();
               });
             })();
           </script>

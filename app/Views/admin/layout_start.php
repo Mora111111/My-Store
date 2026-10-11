@@ -4,6 +4,10 @@ $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $currentLang = $_SESSION['lang'] ?? 'ar';
 $pageDir = ($currentLang === 'en') ? 'ltr' : 'rtl';
 
+if (!isset($outOfStockCount)) {
+    $outOfStockCount = (new Product())->countOutOfStock();
+}
+
 function isActive($path) {
     $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     if ($path === '/admin') {
@@ -175,6 +179,9 @@ function isActive($path) {
     <a href="/admin/orders" class="<?= isActive('/admin/orders') ?>">
         <i class="fa-solid fa-cart-shopping"></i><span><?= lang('menu_orders') ?></span>
     </a>
+    <a href="/admin/out-of-stock" class="<?= isActive('/admin/out-of-stock') ?>">
+        <i class="fa-solid fa-triangle-exclamation"></i><span><?= lang('menu_out_of_stock') ?></span>
+    </a>
     <a href="/admin/messages" class="<?= isActive('/admin/messages') ?>">
         <i class="fa-solid fa-envelope"></i><span><?= lang('menu_messages') ?></span>
     </a>
@@ -203,7 +210,7 @@ function isActive($path) {
           <a href="/" target="_blank" class="view-store-btn" title="<?= lang('open_store_window') ?>">
               <i class="fa-solid fa-store"></i> <?= lang('user_experience') ?>
           </a>
-          <button class="view-store-btn" style="position: relative;" onclick="window.location.href='/admin#out-of-stock-section'">
+          <button class="view-store-btn" style="position: relative;" onclick="window.location.href='/admin/out-of-stock'">
               <i class="fa-solid fa-bell"></i>
               <?php if (isset($outOfStockCount) && $outOfStockCount > 0): ?>
                   <span style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold;"><?= $outOfStockCount ?></span>

@@ -119,6 +119,7 @@ $router->add('POST', '/admin/messages/delete', 'AdminMessageController@delete');
 $router->add('POST', '/admin/comments/reply', 'AdminCommentController@reply');
 $router->add('POST', '/admin/comments/delete', 'AdminCommentController@delete');
 $router->add('GET', '/admin/online-visitors', 'AdminController@onlineVisitors');
+$router->add('GET', '/admin/out-of-stock', 'AdminController@outOfStock');
 $router->add('GET', '/product', 'ProductController@show');
 $router->add('POST', '/product', 'ProductController@show');
 $router->add('POST', '/contact', 'PageController@sendMessage');

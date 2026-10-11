@@ -780,4 +780,12 @@ return [
     'slider_mode_latest' => 'Latest products',
     'slider_mode_discounted' => 'Discounted products',
     'slider_mode_all' => 'All products',
+
+    // Out of Stock
+    'out_of_stock_title' => 'Out of Stock Products',
+    'menu_out_of_stock' => 'Out of Stock',
+    'col_quantity' => 'Quantity',
+    'btn_restock' => 'Action',
+    'update_quantity' => 'Update quantity',
+    'stock_ok_msg' => 'All products are currently in stock.',
 ];
