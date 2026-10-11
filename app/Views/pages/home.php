@@ -23,13 +23,144 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
         <div class="home_box">
           <?php $currentLang = $_SESSION['lang'] ?? 'ar'; ?>
           <style>
-            .dynamic-hero-slider { position: relative; width: 100%; aspect-ratio: 4/3; overflow: hidden; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-            .dynamic-hero-slider .slider-item { position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
-            .dynamic-hero-slider .slider-item.active { opacity: 1; z-index: 2; pointer-events: auto; }
-            .dynamic-hero-slider .slider-item img { object-fit: contain; width: 100%; height: 100%; display: block; background: #fff; }
-            .dynamic-hero-slider .slider-caption { position: absolute; inset-inline-start: 12px; inset-inline-end: 12px; bottom: 12px; z-index: 3; text-align: start; padding-inline-start: 16px; padding-inline-end: 16px; padding-block: 10px; border-radius: 12px; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.55); }
-            .dynamic-hero-slider .slider-caption strong { display: block; color: #0f172a; font-size: 1rem; }
-            .dynamic-hero-slider .slider-caption span { color: var(--main-color); font-weight: 700; }
+            .dynamic-hero-slider {
+              position: relative;
+              width: 100%;
+              aspect-ratio: 4 / 3;
+              overflow: hidden;
+              isolation: isolate;
+              border-radius: 20px;
+              background: #f8fafc;
+              box-shadow: 0 16px 42px rgba(15, 23, 42, 0.12), 0 3px 10px rgba(15, 23, 42, 0.04);
+            }
+
+            .dynamic-hero-slider .slider-item {
+              position: absolute;
+              inset: 0;
+              z-index: 1;
+              opacity: 0;
+              visibility: hidden;
+              pointer-events: none;
+              transition:
+                opacity 1.15s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s linear 1.15s;
+            }
+
+            .dynamic-hero-slider .slider-item.active {
+              z-index: 2;
+              opacity: 1;
+              visibility: visible;
+              pointer-events: auto;
+              transition:
+                opacity 1.15s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s;
+            }
+
+            .dynamic-hero-slider .slider-item img {
+              display: block;
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+              background: #fff;
+              transform: scale(1.075);
+              transform-origin: center;
+              transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+              will-change: transform;
+            }
+
+            .dynamic-hero-slider .slider-item.active img {
+              transform: scale(1);
+            }
+
+            .dynamic-hero-slider .slider-caption {
+              position: absolute;
+              inset-inline-start: 14px;
+              inset-inline-end: 14px;
+              inset-block-end: 14px;
+              z-index: 3;
+              padding-block: 14px;
+              padding-inline: 18px;
+              border: 1px solid rgba(255, 255, 255, 0.72);
+              border-radius: 16px;
+              background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.82),
+                rgba(255, 255, 255, 0.62)
+              );
+              backdrop-filter: blur(22px) saturate(165%);
+              -webkit-backdrop-filter: blur(22px) saturate(165%);
+              box-shadow:
+                0 8px 28px rgba(15, 23, 42, 0.10),
+                inset 0 1px 0 rgba(255, 255, 255, 0.75);
+              text-align: start;
+              opacity: 0;
+              transform: translateY(12px);
+              transition:
+                opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+              transition-delay: 0s;
+            }
+
+            .dynamic-hero-slider .slider-item.active .slider-caption {
+              opacity: 1;
+              transform: translateY(0);
+              transition-delay: 0.2s;
+            }
+
+            .dynamic-hero-slider .slider-caption strong {
+              display: block;
+              margin-block-end: 5px;
+              color: #0f172a;
+              font-size: clamp(0.95rem, 1.5vw, 1.125rem);
+              font-weight: 750;
+              line-height: 1.5;
+              letter-spacing: -0.025em;
+              text-wrap: pretty;
+            }
+
+            .dynamic-hero-slider .slider-caption span {
+              display: inline-block;
+              color: var(--main-color);
+              font-size: 1rem;
+              font-weight: 800;
+              line-height: 1.5;
+              letter-spacing: -0.015em;
+            }
+
+            @media (max-width: 480px) {
+              .dynamic-hero-slider {
+                border-radius: 16px;
+              }
+
+              .dynamic-hero-slider .slider-caption {
+                inset-inline-start: 10px;
+                inset-inline-end: 10px;
+                inset-block-end: 10px;
+                padding-block: 10px;
+                padding-inline: 13px;
+                border-radius: 13px;
+                backdrop-filter: blur(16px) saturate(155%);
+                -webkit-backdrop-filter: blur(16px) saturate(155%);
+              }
+
+              .dynamic-hero-slider .slider-caption strong {
+                font-size: 0.95rem;
+              }
+
+              .dynamic-hero-slider .slider-caption span {
+                font-size: 0.925rem;
+              }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+              .dynamic-hero-slider .slider-item,
+              .dynamic-hero-slider .slider-item.active,
+              .dynamic-hero-slider .slider-item img,
+              .dynamic-hero-slider .slider-caption {
+                transition-duration: 0.01ms;
+                transition-delay: 0s;
+              }
+            }
           </style>
           <?php $sliderItems = $sliderProducts ?? $featuredProducts ?? []; ?>
           <?php if (!empty($sliderItems)): ?>
@@ -47,14 +178,61 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
           </div>
           <script>
             (function () {
-              var items = document.querySelectorAll('.dynamic-hero-slider .slider-item');
-              if (!items.length) return;
-              var current = 0;
-              setInterval(function () {
-                items[current].classList.remove('active');
-                current = (current + 1) % items.length;
-                items[current].classList.add('active');
-              }, 4000);
+              var sliders = document.querySelectorAll('.dynamic-hero-slider');
+
+              sliders.forEach(function (slider) {
+                var items = slider.querySelectorAll('.slider-item');
+
+                if (!items.length) return;
+
+                var current = Array.from(items).findIndex(function (item) {
+                  return item.classList.contains('active');
+                });
+
+                if (current < 0) {
+                  current = 0;
+                  items[current].classList.add('active');
+                }
+
+                items.forEach(function (item, index) {
+                  if (index !== current) {
+                    item.classList.remove('active');
+                  }
+                });
+
+                if (items.length < 2) return;
+
+                var interval = null;
+                var delay = 5000;
+
+                function showNext() {
+                  items[current].classList.remove('active');
+                  current = (current + 1) % items.length;
+                  items[current].classList.add('active');
+                }
+
+                function startSlider() {
+                  if (interval !== null || document.hidden) return;
+                  interval = window.setInterval(showNext, delay);
+                }
+
+                function stopSlider() {
+                  if (interval !== null) {
+                    window.clearInterval(interval);
+                    interval = null;
+                  }
+                }
+
+                document.addEventListener('visibilitychange', function () {
+                  if (document.hidden) {
+                    stopSlider();
+                  } else {
+                    startSlider();
+                  }
+                });
+
+                startSlider();
+              });
             })();
           </script>
           <?php else: ?>
