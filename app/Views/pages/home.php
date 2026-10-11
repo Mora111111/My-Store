@@ -69,14 +69,14 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
               object-fit: contain;
               object-position: center;
               background: linear-gradient(145deg, #ffffff 0%, #f5f5f7 100%);
-              transform: scale(0.96);
+              transform: scale(0.82);
               transition: transform 1.25s cubic-bezier(0.16, 1, 0.3, 1);
               backface-visibility: hidden;
               -webkit-backface-visibility: hidden;
             }
 
             .dynamic-hero-slider .slider-item.active img {
-              transform: scale(1);
+              transform: scale(0.86);
               transition-delay: 0.08s;
             }
 
