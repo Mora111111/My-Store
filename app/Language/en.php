@@ -788,4 +788,6 @@ return [
     'btn_restock' => 'Action',
     'update_quantity' => 'Update quantity',
     'stock_ok_msg' => 'All products are currently in stock.',
+    'ph_product_name_en' => 'Enter product name in English',
+    'ph_description_en' => 'Enter a detailed product description in English...',
 ];

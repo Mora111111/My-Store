@@ -57,6 +57,11 @@
       </div>
 
       <div class="form-group">
+        <label><?= lang('lbl_product_name_en') ?></label>
+        <input type="text" name="title_en" dir="ltr" placeholder="<?= lang('ph_product_name_en') ?>">
+      </div>
+
+      <div class="form-group">
         <label><?= lang('lbl_category') ?></label>
         <select name="category_class" required>
           <option value=""><?= lang('select_category') ?></option>
@@ -89,6 +94,11 @@
       <div class="form-group">
         <label><?= lang('lbl_description') ?></label>
         <textarea name="description" rows="6" required placeholder="<?= lang('ph_description') ?>"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label><?= lang('lbl_description_en') ?></label>
+        <textarea name="description_en" rows="6" dir="ltr" placeholder="<?= lang('ph_description_en') ?>"></textarea>
       </div>
 
       <div class="form-group">
@@ -155,11 +165,16 @@ document.getElementById('generateAiData').addEventListener('click', async () => 
         
         if(data && !data.error) {
             if(data.title) document.querySelector('input[name="title"]').value = data.title;
+            if(data.title_en) document.querySelector('input[name="title_en"]').value = data.title_en;
             if(data.category_class) document.querySelector('select[name="category_class"]').value = data.category_class;
             if(data.price) document.querySelector('input[name="price"]').value = data.price;
             if(data.description) {
                 let cleanText = data.description.replace(/<br\s*[\/]?>/gi, "\n").replace(/<\/p>/gi, "\n\n").replace(/<[^>]+>/ig, "");
                 document.querySelector('textarea[name="description"]').value = cleanText.trim();
+            }
+            if(data.description_en) {
+                let cleanTextEn = data.description_en.replace(/<br\s*[\/]?>/gi, "\n").replace(/<\/p>/gi, "\n\n").replace(/<[^>]+>/ig, "");
+                document.querySelector('textarea[name="description_en"]').value = cleanTextEn.trim();
             }
             
             closeAiModal();
