@@ -81,6 +81,7 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
             }
 
             .dynamic-hero-slider .slider-caption {
+              display: none;
               position: absolute;
               inset-inline-start: 16px;
               inset-inline-end: 16px;
