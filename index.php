@@ -89,6 +89,8 @@ $router->add('GET', '/signup', 'AuthController@showSignup');
 $router->add('POST', '/signup', 'AuthController@register');
 $router->add('GET', '/logout', 'AuthController@logout');
 $router->add('GET', '/admin', 'AdminController@index');
+$router->add('GET', '/admin/finance', 'AdminFinanceController@index');
+$router->add('GET', '/admin/finance/data', 'AdminFinanceController@data');
 $router->add('GET', '/admin/products', 'AdminProductController@index');
 $router->add('POST', '/admin/products/store', 'AdminProductController@store');
 $router->add('GET', '/admin/products/edit', 'AdminProductController@edit');

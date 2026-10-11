@@ -790,4 +790,18 @@ return [
     'stock_ok_msg' => 'All products are currently in stock.',
     'ph_product_name_en' => 'Enter product name in English',
     'ph_description_en' => 'Enter a detailed product description in English...',
+
+    // Finance Dashboard
+    'menu_finance' => 'Revenue',
+    'finance_title' => 'Revenue Dashboard',
+    'finance_today' => 'Today',
+    'finance_7d' => 'Last 7 Days',
+    'finance_30d' => 'Last 30 Days',
+    'kpi_gross' => 'Gross Sales',
+    'kpi_net' => 'Net Revenue',
+    'kpi_orders' => 'Total Orders',
+    'kpi_aov' => 'Average Order Value',
+    'chart_trend' => 'Daily Revenue Trend',
+    'chart_status' => 'Status Distribution',
+    'finance_empty' => 'No data in this period.',
 ];

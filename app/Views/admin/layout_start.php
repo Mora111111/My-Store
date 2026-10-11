@@ -179,6 +179,9 @@ function isActive($path) {
     <a href="/admin/orders" class="<?= isActive('/admin/orders') ?>">
         <i class="fa-solid fa-cart-shopping"></i><span><?= lang('menu_orders') ?></span>
     </a>
+    <a href="/admin/finance" class="<?= isActive('/admin/finance') ?>">
+        <i class="fa-solid fa-chart-line"></i><span><?= lang('menu_finance') ?></span>
+    </a>
     <a href="/admin/out-of-stock" class="<?= isActive('/admin/out-of-stock') ?>">
         <i class="fa-solid fa-triangle-exclamation"></i><span><?= lang('menu_out_of_stock') ?></span>
     </a>

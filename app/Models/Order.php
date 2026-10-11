@@ -104,4 +104,35 @@ class Order {
         $stmt->execute([$id, $userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getRevenueSummary(string $start, string $end): array {
+        $stmt = $this->db->prepare("SELECT COUNT(*) AS orders_count, COALESCE(SUM(subtotal), 0) AS gross, COALESCE(SUM(discount_amount), 0) AS discounts, COALESCE(SUM(shipping_fee), 0) AS shipping, COALESCE(SUM(total_price), 0) AS net FROM orders WHERE created_at BETWEEN ? AND ? AND admin_hidden = 0 AND ((payment_status = 'paid' AND status != 'ملغي') OR (payment_method = 'cod' AND status = 'مكتمل'))");
+        $stmt->execute([$start, $end]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!is_array($row)) {
+            $row = [];
+        }
+        $orders = (int)($row['orders_count'] ?? 0);
+        $net = (float)($row['net'] ?? 0);
+        return [
+            'gross' => (float)($row['gross'] ?? 0),
+            'discounts' => (float)($row['discounts'] ?? 0),
+            'shipping' => (float)($row['shipping'] ?? 0),
+            'net' => $net,
+            'orders' => $orders,
+            'aov' => $orders > 0 ? $net / $orders : 0
+        ];
+    }
+
+    public function getDailyRevenue(string $start, string $end): array {
+        $stmt = $this->db->prepare("SELECT DATE(created_at) AS day, COUNT(*) AS orders_count, COALESCE(SUM(total_price), 0) AS net FROM orders WHERE created_at BETWEEN ? AND ? AND admin_hidden = 0 AND ((payment_status = 'paid' AND status != 'ملغي') OR (payment_method = 'cod' AND status = 'مكتمل')) GROUP BY DATE(created_at) ORDER BY day ASC");
+        $stmt->execute([$start, $end]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getStatusBreakdown(string $start, string $end): array {
+        $stmt = $this->db->prepare("SELECT status, COUNT(*) AS orders_count, COALESCE(SUM(total_price), 0) AS net FROM orders WHERE created_at BETWEEN ? AND ? AND admin_hidden = 0 GROUP BY status ORDER BY orders_count DESC");
+        $stmt->execute([$start, $end]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
