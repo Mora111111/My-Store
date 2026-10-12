@@ -116,6 +116,15 @@ class CheckoutController {
             $discountAmount = max(0, $grossSubtotal - $subtotal);
             $couponCode = $appliedCoupon['code'] ?? null;
 
+            // المنطق الجديد لفصل حالات الدفع وتوليد الرقم المرجعي
+            $orderStatus = 'قيد المراجعة';
+            $transactionId = null;
+            if ($payment_method === 'cod') {
+                $transactionId = 'COD-' . strtoupper(bin2hex(random_bytes(6)));
+            } else {
+                $orderStatus = 'بانتظار الدفع';
+            }
+
             $data = [
                 'user_id' => Session::get('user_id'),
                 'full_name' => $_POST['full_name'] ?? '',
@@ -133,7 +142,8 @@ class CheckoutController {
                 'products' => json_encode($secureProductsArray, JSON_UNESCAPED_UNICODE),
                 'payment_method' => $payment_method,
                 'payment_status' => 'pending',
-                'transaction_id' => null
+                'status' => $orderStatus,
+                'transaction_id' => $transactionId
             ];
 
             // إتمام الطلب وخصم الكمية

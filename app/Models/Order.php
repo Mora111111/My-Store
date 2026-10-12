@@ -5,7 +5,7 @@ class Order {
         $this->db = Database::getInstance()->getConnection();
     }
     public function create(array $data): int|false {
-        $sql = "INSERT INTO orders (user_id, full_name, phone, address_line1, address_line2, city, governorate, zip_code, total_price, subtotal, shipping_fee, discount_amount, coupon_code, products, payment_method, payment_status, transaction_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO orders (user_id, full_name, phone, address_line1, address_line2, city, governorate, zip_code, status, total_price, subtotal, shipping_fee, discount_amount, coupon_code, products, payment_method, payment_status, transaction_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $success = $stmt->execute([
             $data['user_id'] ?? null,
@@ -16,6 +16,7 @@ class Order {
             $data['city'],
             $data['governorate'],
             $data['zip_code'] ?? null,
+            $data['status'] ?? 'قيد المراجعة',
             $data['total_price'],
             $data['subtotal'] ?? $data['total_price'],
             $data['shipping_fee'] ?? 0,
@@ -135,4 +136,60 @@ class Order {
         $stmt->execute([$start, $end]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function reclaimAbandonedOrders(int $timeoutMinutes = 30): int {
+        $timeoutMinutes = max(1, $timeoutMinutes);
+        $cutoff = date('Y-m-d H:i:s', strtotime('-' . $timeoutMinutes . ' minutes'));
+        $stmt = $this->db->prepare("SELECT id FROM orders WHERE status = 'بانتظار الدفع' AND created_at < ? AND admin_hidden = 0");
+        $stmt->execute([$cutoff]);
+        $abandoned = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $reclaimed = 0;
+        foreach ($abandoned as $order) {
+            $orderId = (int)($order['id'] ?? 0);
+            if ($orderId <= 0) {
+                continue;
+            }
+            try {
+                $this->db->beginTransaction();
+                $check = $this->db->prepare("SELECT products FROM orders WHERE id = ? AND status = 'بانتظار الدفع' FOR UPDATE");
+                $check->execute([$orderId]);
+                $row = $check->fetch(PDO::FETCH_ASSOC);
+                if (!is_array($row)) {
+                    $this->db->rollBack();
+                    continue;
+                }
+                $mark = $this->db->prepare("UPDATE orders SET status = 'ملغي' WHERE id = ? AND status = 'بانتظار الدفع'");
+                $mark->execute([$orderId]);
+                if ($mark->rowCount() === 0) {
+                    $this->db->rollBack();
+                    continue;
+                }
+                $products = json_decode($row['products'] ?? '[]', true);
+                if (is_array($products)) {
+                    $restock = $this->db->prepare("UPDATE products SET quantity = quantity + ? WHERE id = ?");
+                    foreach ($products as $item) {
+                        if (!is_array($item)) {
+                            continue;
+                        }
+                        $qty = (int)($item['quantity'] ?? $item['number'] ?? 1);
+                        $prodId = (int)($item['id'] ?? 0);
+                        if ($prodId > 0 && $qty > 0) {
+                            $restock->execute([$qty, $prodId]);
+                        }
+                    }
+                }
+                $this->db->commit();
+                $reclaimed++;
+            } catch (Exception $e) {
+                if ($this->db->inTransaction()) {
+                    $this->db->rollBack();
+                }
+            }
+        }
+        return $reclaimed;
+    }
+}
+
+if (!class_exists('App\Models\Order', false)) {
+    class_alias('Order', 'App\Models\Order');
 }

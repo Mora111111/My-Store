@@ -18,6 +18,10 @@ class AdminController {
         $messagesCount = (new Message())->countAllContactMessages();
         $onlineUsersCount = Session::getOnlineCount();
         
+        // نظام الاسترجاع التلقائي (The Reaper)
+        $orderModel = new \App\Models\Order(); 
+        $orderModel->reclaimAbandonedOrders(30);
+        
         $showSearch = false;
         $pageIcon = 'fa-house';
         $pageTitle = 'لوحة التحكم';

@@ -9,6 +9,7 @@ define('CORE_DIR', __DIR__ . '/core');
 require_once CORE_DIR . '/Language.php';
 
 spl_autoload_register(function ($class) {
+    $className = basename(str_replace('\\', '/', $class));
     $directories = [
         __DIR__ . '/core',
         __DIR__ . '/app/Models',
@@ -16,9 +17,12 @@ spl_autoload_register(function ($class) {
     ];
 
     foreach ($directories as $dir) {
-        $file = $dir . '/' . $class . '.php';
+        $file = $dir . '/' . $className . '.php';
         if (file_exists($file)) {
             require_once $file;
+            if ($class !== $className && !class_exists($class, false)) {
+                class_alias($className, $class);
+            }
             return;
         }
     }
