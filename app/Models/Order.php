@@ -72,7 +72,7 @@ class Order {
     }
 
     public function getByUserId(int $userId): array {
-        $stmt = $this->db->prepare("SELECT * FROM orders WHERE user_id = ? AND user_hidden = 0 ORDER BY created_at DESC");
+        $stmt = $this->db->prepare("SELECT * FROM orders WHERE user_id = ? AND user_hidden = 0 AND status != 'بانتظار الدفع' ORDER BY created_at DESC");
         $stmt->execute([$userId]);
         return $stmt->fetchAll();
     }
@@ -158,7 +158,7 @@ class Order {
                     $this->db->rollBack();
                     continue;
                 }
-                $mark = $this->db->prepare("UPDATE orders SET status = 'ملغي' WHERE id = ? AND status = 'بانتظار الدفع'");
+                $mark = $this->db->prepare("UPDATE orders SET status = 'ملغي', user_hidden = 1 WHERE id = ? AND status = 'بانتظار الدفع'");
                 $mark->execute([$orderId]);
                 if ($mark->rowCount() === 0) {
                     $this->db->rollBack();
