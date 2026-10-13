@@ -88,8 +88,18 @@ class CheckoutController {
                     if ($manualPrice !== null) {
                         $finalPrice = $manualPrice;
                     } else {
-                        $discountResult = Product::calculateDiscount($dbProduct, $activeCoupons);
-                        $finalPrice = $discountResult['final_price'];
+                        $finalPrice = $basePrice;
+                        foreach($activeCoupons as $c) {
+                            if($c['target_type'] === 'all' || ($c['target_type'] === 'specific_product' && $c['target_product_id'] == $dbProduct['id'])) {
+                                if($c['discount_type'] === 'percentage') {
+                                    $finalPrice = $basePrice - ($basePrice * ($c['discount_value'] / 100));
+                                } else {
+                                    $finalPrice = $basePrice - $c['discount_value'];
+                                }
+                                $finalPrice = max(0, $finalPrice);
+                                break;
+                            }
+                        }
                     }
 
                     $subtotal += ($finalPrice * $qty);
