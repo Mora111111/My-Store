@@ -804,4 +804,14 @@ return [
     'chart_trend' => 'Daily Revenue Trend',
     'chart_status' => 'Status Distribution',
     'finance_empty' => 'No data in this period.',
+
+    // Dashboard Cards
+    'total_revenue' => 'Revenues',
+    'total_users' => 'Users Management',
+    'active_coupons' => 'Discounts',
+    'order_notifications' => 'Order Notifications',
+    'cancel_online_error_msg' => 'Online paid orders cannot be self-cancelled. Please contact administration to cancel the order and process your refund.',
+    'cancel_success_msg' => 'Order cancelled successfully.',
+    'cannot_cancel_label' => 'Cannot be cancelled',
+    'super_admin_badge' => 'Owner',
 ];

@@ -4,8 +4,8 @@ class Mailer {
     public static function sendMail(string $to, string $subject, string $message): bool {
         $host = 'ssl://smtp.gmail.com';
         $port = 465;
-        $username = 'amr.mansour.mohamed1@gmail.com';
-        $password = 'faqutwlhlpqqhbps';
+        $username = defined('SMTP_USER') ? SMTP_USER : 'amr.mansour.mohamed1@gmail.com';
+        $password = defined('SMTP_PASS') ? SMTP_PASS : 'faqutwlhlpqqhbps';
         $timeout = 30;
 
         $context = stream_context_create(['ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]);

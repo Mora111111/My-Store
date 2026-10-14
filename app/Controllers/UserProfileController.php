@@ -77,7 +77,14 @@ class UserProfileController {
             $userId = Session::get('user_id');
             if ($orderId && $userId) {
                 $orderModel = new Order();
-                $orderModel->cancelUserOrder($orderId, $userId);
+                $result = $orderModel->cancelUserOrder($orderId, (int)$userId);
+                if ($result === 'online_paid_restriction') {
+                    $_SESSION['order_flash_error'] = lang('cancel_online_error_msg');
+                } else if ($result === 'cancelled') {
+                    $_SESSION['order_flash_success'] = lang('cancel_success_msg');
+                } else {
+                    $_SESSION['order_flash_error'] = lang('msg_cant_cancel');
+                }
             }
             header('Location: /my-orders');
             exit;

@@ -50,6 +50,15 @@ Language::load();
 
 Session::trackOnline();
 
+$reaperFile = sys_get_temp_dir() . '/mystore_reaper.ts';
+if (!file_exists($reaperFile) || (time() - @filemtime($reaperFile)) >= 60) {
+    @touch($reaperFile);
+    try {
+        (new Order())->reclaimAbandonedOrders(30);
+    } catch (Throwable $e) {
+    }
+}
+
 if (Session::isLoggedIn()) {
     $db = Database::getInstance()->getConnection();
     $stmt = $db->prepare("SELECT is_banned FROM elogin WHERE id = ?");
@@ -135,7 +144,6 @@ $router->add('POST', '/ai/chatbot', 'AiController@handleChatbot');
 $router->add('POST', '/ai/generate-product', 'AiController@generateProduct');
 $router->add('POST', '/ai/message-reply', 'AiController@generateMessageReply');
 $router->add('GET', '/payment/pay', 'PaymentController@pay');
-$router->add('POST', '/payment/process-sandbox', 'PaymentController@processSandbox');
 $router->add('POST', '/api/payment-callback', 'PaymentController@callback');
 $router->add('GET', '/payment/response', 'PaymentController@response');
 $router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);

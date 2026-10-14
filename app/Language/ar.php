@@ -785,4 +785,14 @@ return [
     'chart_trend' => 'اتجاه الإيرادات اليومية',
     'chart_status' => 'توزيع الحالات',
     'finance_empty' => 'لا توجد بيانات في هذه الفترة.',
+
+    // Dashboard Cards
+    'total_revenue' => 'الإيرادات',
+    'total_users' => 'إدارة المستخدمين',
+    'active_coupons' => 'الخصومات',
+    'order_notifications' => 'اشعارات الطلبات',
+    'cancel_online_error_msg' => 'لا يمكن إلغاء الطلبات المدفوعة إلكترونياً بشكل ذاتي. يرجى التواصل مع الإدارة لإلغاء الطلب واسترداد المبلغ.',
+    'cancel_success_msg' => 'تم إلغاء الطلب بنجاح.',
+    'cannot_cancel_label' => 'لا يمكن الإلغاء',
+    'super_admin_badge' => 'المالك الأساسي',
 ];

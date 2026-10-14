@@ -6,17 +6,29 @@ class LanguageController {
         if (in_array($lang, ['ar', 'en'])) {
             $_SESSION['lang'] = $lang;
             
-            // إذا كان المستخدم مسجل الدخول، احفظ لغته في قاعدة البيانات
             if (Session::isLoggedIn()) {
                 $db = Database::getInstance()->getConnection();
                 $stmt = $db->prepare("UPDATE elogin SET preferred_lang = ? WHERE id = ?");
                 $stmt->execute([$lang, Session::get('user_id')]);
             }
         }
-        
-        // إعادته للصفحة التي كان فيها
-        $referer = $_SERVER['HTTP_REFERER'] ?? '/';
-        header("Location: " . $referer);
+
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $redirect = '/';
+        if (!empty($referer)) {
+            $parsed = parse_url($referer);
+            $refererHost = $parsed['host'] ?? '';
+            $currentHost = $_SERVER['HTTP_HOST'] ?? '';
+            if ($refererHost === '' || $refererHost === $currentHost) {
+                $path = $parsed['path'] ?? '/';
+                if ($path === '' || $path[0] !== '/' || strpos($path, '//') === 0) {
+                    $path = '/';
+                }
+                $query = $parsed['query'] ?? '';
+                $redirect = $path . ($query ? '?' . $query : '');
+            }
+        }
+        header("Location: " . $redirect);
         exit;
     }
 }

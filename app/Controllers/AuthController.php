@@ -150,7 +150,9 @@ public function login(): void
         exit;
     }
 
-    private const GOOGLE_REDIRECT_URI = 'https://my-store-pz2s.onrender.com/auth/google/callback';
+    private function getGoogleRedirectUri(): string {
+        return rtrim(BASE_URL, '/') . '/auth/google/callback';
+    }
 
     public function googleLogin(): void
     {
@@ -166,7 +168,7 @@ public function login(): void
 
         $url = 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query([
             'client_id' => $settings['google_client_id'],
-            'redirect_uri' => self::GOOGLE_REDIRECT_URI,
+            'redirect_uri' => $this->getGoogleRedirectUri(),
             'response_type' => 'code',
             'scope' => 'email profile',
             'access_type' => 'online',
@@ -188,7 +190,7 @@ public function login(): void
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
                 'client_id' => $settings['google_client_id'],
                 'client_secret' => $settings['google_client_secret'],
-                'redirect_uri' => self::GOOGLE_REDIRECT_URI,
+                'redirect_uri' => $this->getGoogleRedirectUri(),
                 'grant_type' => 'authorization_code',
                 'code' => $_GET['code']
             ]));
@@ -209,6 +211,12 @@ public function login(): void
                     $existingUser = $userModel->findByEmail($userInfo['email']);
                     
                     if ($existingUser) {
+                        if (!empty($existingUser['is_banned'])) {
+                            Session::set('login_error', lang('account_banned_msg'));
+                            header('Location: /login');
+                            exit;
+                        }
+                        session_regenerate_id(true);
                         Session::set('user_id', $existingUser['id']);
                         Session::set('user_name', $existingUser['name']);
                         Session::set('user_role', $existingUser['role']);
@@ -222,6 +230,7 @@ public function login(): void
                             'role' => 'user'
                         ]);
                         $newUser = $userModel->findByEmail($userInfo['email']);
+                        session_regenerate_id(true);
                         Session::set('user_id', $newUser['id']);
                         Session::set('user_name', $newUser['name']);
                         Session::set('user_role', $newUser['role']);

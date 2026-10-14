@@ -80,6 +80,7 @@
           $row_lname = $row['lname'] ?? $row['Lname'] ?? $row['last_name'] ?? '';
           $initials = mb_substr($row_fname, 0, 1);
           $is_banned = isset($row['is_banned']) ? (int)$row['is_banned'] : 0;
+          $is_super_admin = strtolower(trim($row['email'] ?? '')) === strtolower(defined('SUPER_ADMIN_EMAIL') ? SUPER_ADMIN_EMAIL : 'm24958604@gmail.com');
         ?>
         <tr style="<?php echo $is_banned ? 'opacity: 0.7; background: #fef2f2;' : ''; ?>">
           <td style="display:flex; align-items:center;">
@@ -96,7 +97,9 @@
             </span>
           </td>
           <td>
-            <?php if($row['id'] != Session::get('user_id')): ?>
+            <?php if($is_super_admin): ?>
+              <span style="padding:6px 14px; border-radius:40px; font-weight:600; font-size:12px; background:#ede9fe; color:#5b21b6; white-space:nowrap;"><i class="fa-solid fa-crown"></i> <?= lang('super_admin_badge') ?></span>
+            <?php elseif($row['id'] != Session::get('user_id')): ?>
             <form method="POST" action="/admin/users/update-role" class="role-update-form" style="display:inline;">
   <?= CSRF::getField() ?>
   <input type="hidden" name="user_id" value="<?php echo $row['id']; ?>">
@@ -111,7 +114,9 @@
             <?php endif; ?>
           </td>
           <td>
-            <?php if($row['id'] != Session::get('user_id')): ?>
+            <?php if($is_super_admin): ?>
+              <span style="padding:6px 14px; border-radius:40px; font-weight:600; font-size:12px; background:#ede9fe; color:#5b21b6; white-space:nowrap;"><i class="fa-solid fa-shield-halved"></i> <?= lang('super_admin_badge') ?></span>
+            <?php elseif($row['id'] != Session::get('user_id')): ?>
               <div style="display: flex; gap: 5px; justify-content: flex-end;">
                 <form method="POST" action="/admin/users/ban" style="display:inline;">
                   <?= CSRF::getField() ?>

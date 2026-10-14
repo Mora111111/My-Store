@@ -52,13 +52,9 @@ class AdminProductController {
             }
 
             foreach ($imageFields as $fileKey => $dbField) {
-                if (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] === UPLOAD_ERR_OK) {
-                    $fileName = time() . '_' . uniqid() . '.' . pathinfo($_FILES[$fileKey]['name'], PATHINFO_EXTENSION);
-                    $targetPath = $uploadDir . $fileName;
-                    
-                    if (move_uploaded_file($_FILES[$fileKey]['tmp_name'], $targetPath)) {
-                        $data[$dbField] = 'uploads/' . $fileName;
-                    }
+                $securePath = $this->handleSecureImageUpload($fileKey, $uploadDir);
+                if ($securePath !== null) {
+                    $data[$dbField] = $securePath;
                 }
             }
 
@@ -80,6 +76,36 @@ class AdminProductController {
 
         header('Location: /admin/products');
         exit;
+    }
+
+    private function handleSecureImageUpload(string $fileKey, string $uploadDir): ?string {
+        if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
+            return null;
+        }
+        $allowedExt = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $allowedMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $ext = strtolower(pathinfo($_FILES[$fileKey]['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, $allowedExt, true)) {
+            return null;
+        }
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        if ($finfo === false) {
+            return null;
+        }
+        $mime = finfo_file($finfo, $_FILES[$fileKey]['tmp_name']);
+        finfo_close($finfo);
+        if (!in_array($mime, $allowedMime, true)) {
+            return null;
+        }
+        if (@getimagesize($_FILES[$fileKey]['tmp_name']) === false) {
+            return null;
+        }
+        $fileName = time() . '_' . uniqid() . '.' . $ext;
+        $targetPath = $uploadDir . $fileName;
+        if (!move_uploaded_file($_FILES[$fileKey]['tmp_name'], $targetPath)) {
+            return null;
+        }
+        return 'uploads/' . $fileName;
     }
 
     public function edit(): void {
@@ -128,16 +154,12 @@ class AdminProductController {
             }
 
             foreach ($imageFields as $fileKey => $dbField) {
-                if (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] === UPLOAD_ERR_OK) {
-                    $fileName = time() . '_' . uniqid() . '.' . pathinfo($_FILES[$fileKey]['name'], PATHINFO_EXTENSION);
-                    $targetPath = $uploadDir . $fileName;
-                    
-                    if (move_uploaded_file($_FILES[$fileKey]['tmp_name'], $targetPath)) {
-                        $data[$dbField] = 'uploads/' . $fileName;
-                        
-                        if (!empty($existing[$dbField]) && file_exists(ROOT_DIR . '/' . ltrim($existing[$dbField], '/'))) {
-                            unlink(ROOT_DIR . '/' . ltrim($existing[$dbField], '/'));
-                        }
+                $securePath = $this->handleSecureImageUpload($fileKey, $uploadDir);
+                if ($securePath !== null) {
+                    $data[$dbField] = $securePath;
+
+                    if (!empty($existing[$dbField]) && file_exists(ROOT_DIR . '/' . ltrim($existing[$dbField], '/'))) {
+                        unlink(ROOT_DIR . '/' . ltrim($existing[$dbField], '/'));
                     }
                 }
             }

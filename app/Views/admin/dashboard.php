@@ -63,6 +63,10 @@
 .c-comments   .b-icon-wrapper { background: #fef3c7; color: #d97706; }
 .c-messages   .b-icon-wrapper { background: #ffe4e6; color: #e11d48; }
 .c-visitors   .b-icon-wrapper { background: #dcfce7; color: #16a34a; }
+.c-revenue    .b-icon-wrapper { background: #e0e7ff; color: #4f46e5; }
+.c-users      .b-icon-wrapper { background: #fce7f3; color: #ec4899; }
+.c-coupons    .b-icon-wrapper { background: #cffafe; color: #0e7490; }
+.c-notifs     .b-icon-wrapper { background: #ecfccb; color: #4d7c0f; }
 
 /* كارت الترحيب */
 .welcome-card {
@@ -166,6 +170,38 @@
     <div class="b-info">
       <h3><?= lang('online_users') ?></h3>
       <p><?= $onlineUsersCount ?></p>
+    </div>
+  </div>
+
+  <div class="b-card c-revenue">
+    <div class="b-icon-wrapper"><i class="fa-solid fa-sack-dollar"></i></div>
+    <div class="b-info">
+      <h3><?= lang('total_revenue') ?></h3>
+      <p><?= number_format((float)$totalRevenue, 2) ?> <small style="font-size:14px; color:#64748b;"><?= lang('currency_egp') ?></small></p>
+    </div>
+  </div>
+
+  <div class="b-card c-users">
+    <div class="b-icon-wrapper"><i class="fa-solid fa-users"></i></div>
+    <div class="b-info">
+      <h3><?= lang('total_users') ?></h3>
+      <p><?= $usersCount ?></p>
+    </div>
+  </div>
+
+  <div class="b-card c-coupons">
+    <div class="b-icon-wrapper"><i class="fa-solid fa-tags"></i></div>
+    <div class="b-info">
+      <h3><?= lang('active_coupons') ?></h3>
+      <p><?= $activeCouponsCount ?></p>
+    </div>
+  </div>
+
+  <div class="b-card c-notifs">
+    <div class="b-icon-wrapper"><i class="fa-solid fa-bell"></i></div>
+    <div class="b-info">
+      <h3><?= lang('order_notifications') ?></h3>
+      <p><?= $pendingOrdersCount ?></p>
     </div>
   </div>
 

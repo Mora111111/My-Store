@@ -20,7 +20,7 @@ class PaymentController {
         $isWallet = ($order['payment_method'] === 'online_wallet');
         $isCard = ($order['payment_method'] === 'online_card' || $order['payment_method'] === 'online');
         
-        if (!$order || (!$isWallet && !$isCard) || $order['payment_status'] === 'paid') {
+        if (!$order || (!$isWallet && !$isCard) || $order['payment_status'] === 'paid' || $order['status'] === 'ملغي') {
             header('Location: /my-orders');
             exit;
         }
@@ -31,7 +31,6 @@ class PaymentController {
         $apiKey = trim($settings['gateway_api_key'] ?? '');
         $iframeId = trim($settings['gateway_iframe_id'] ?? '');
         
-        // تحويل أرقام الدمج إلى Integer لمنع رفض بايموب
         $cardIntId = (int)trim($settings['gateway_integration_id'] ?? 0);
         $walletIntId = (int)trim($settings['gateway_integration_id_wallet'] ?? 0);
         $integrationId = $isWallet ? $walletIntId : $cardIntId;
@@ -56,20 +55,18 @@ class PaymentController {
         $paymobOrderId = $orderResponse->id ?? null;
         if (!$paymobOrderId) die("فشل تسجيل الطلب في بوابة الدفع.");
         
-        // معالجة الاسم الأخير لمنع انهيار المصفوفة
         $fullName = trim($order['full_name']);
         $nameParts = explode(' ', $fullName);
         $firstName = !empty($nameParts[0]) ? $nameParts[0] : 'Customer';
         $lastName = (count($nameParts) > 1 && !empty($nameParts[1])) ? $nameParts[1] : 'User';
         
-        // معالجة رقم الهاتف وإجبار رقم المحفظة التجريبي
         $rawPhone = !empty($order['phone']) ? preg_replace('/[^0-9]/', '', $order['phone']) : '01000000000';
-        $finalPhone = $isWallet ? '01010101010' : $rawPhone;
+        $finalPhone = $rawPhone ?: '01000000000';
 
         $paymentKeyResponse = $this->cURL('https://accept.paymob.com/api/acceptance/payment_keys', [
             'auth_token' => $token,
             'amount_cents' => $amountCents,
-            'expiration' => 3600,
+            'expiration' => 1800,
             'order_id' => $paymobOrderId,
             'billing_data' => [
                 'apartment' => 'NA',
@@ -116,89 +113,46 @@ class PaymentController {
     public function callback(): void {
         $data = file_get_contents('php://input');
         $json = json_decode($data, true);
-        
-        if (!$json || !isset($json['obj'])) {
+
+        if (!$json || !isset($json['obj']) || !is_array($json['obj'])) {
             http_response_code(400);
             exit;
         }
-        
+
         $obj = $json['obj'];
-        $success = $obj['success'] ?? false;
-        $merchantOrderId = $obj['order']['merchant_order_id'] ?? '';
-        
+        $merchantOrderId = (string)($obj['order']['merchant_order_id'] ?? '');
         $orderIdParts = explode('_', $merchantOrderId);
-        $realOrderId = (int)$orderIdParts[0];
-        
+        $realOrderId = (int)($orderIdParts[0] ?? 0);
+
         $settingModel = new Setting();
         $settings = $settingModel->getSettings();
         $hmacSecret = trim($settings['gateway_hmac_secret'] ?? '');
-        
+
         $receivedHmac = $_GET['hmac'] ?? '';
-        
-        $requestData = [
-            'amount_cents' => $obj['amount_cents'] ?? '',
-            'created_at' => $obj['created_at'] ?? '',
-            'currency' => $obj['currency'] ?? '',
-            'error_occured' => ($obj['error_occured'] ?? false) ? 'true' : 'false',
-            'has_parent_transaction' => ($obj['has_parent_transaction'] ?? false) ? 'true' : 'false',
-            'id' => $obj['id'] ?? '',
-            'integration_id' => $obj['integration_id'] ?? '',
-            'is_3d_secure' => ($obj['is_3d_secure'] ?? false) ? 'true' : 'false',
-            'is_auth' => ($obj['is_auth'] ?? false) ? 'true' : 'false',
-            'is_capture' => ($obj['is_capture'] ?? false) ? 'true' : 'false',
-            'is_refunded' => ($obj['is_refunded'] ?? false) ? 'true' : 'false',
-            'is_standalone_payment' => ($obj['is_standalone_payment'] ?? false) ? 'true' : 'false',
-            'is_voided' => ($obj['is_voided'] ?? false) ? 'true' : 'false',
-            'order' => $obj['order']['id'] ?? '',
-            'owner' => $obj['owner'] ?? '',
-            'pending' => ($obj['pending'] ?? false) ? 'true' : 'false',
-            'source_data_pan' => $obj['source_data']['pan'] ?? '',
-            'source_data_sub_type' => $obj['source_data']['sub_type'] ?? '',
-            'source_data_type' => $obj['source_data']['type'] ?? '',
-            'success' => $success ? 'true' : 'false'
-        ];
-        
-        $concatenatedString = implode('', $requestData);
-        $calculatedHmac = hash_hmac('sha512', $concatenatedString, $hmacSecret);
-        
-        if ($calculatedHmac === $receivedHmac && $realOrderId > 0) {
-            $db = Database::getInstance()->getConnection();
 
-            if ($success) {
-                // Payment Success: Update status to paid
-                $stmt = $db->prepare("UPDATE orders SET payment_status = 'paid', transaction_id = ? WHERE id = ?");
-                $stmt->execute([$obj['id'], $realOrderId]);
-            } else {
-                // Payment Failed: Fetch the order first to prevent double restocking
-                $stmt = $db->prepare("SELECT status, payment_status, products FROM orders WHERE id = ?");
-                $stmt->execute([$realOrderId]);
-                $order = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($order && $order['payment_status'] !== 'failed') {
-                    // 1. Mark order as Cancelled and payment as failed
-                    $transactionId = $obj['id'] ?? 'failed_transaction';
-                    $updateStmt = $db->prepare("UPDATE orders SET payment_status = 'failed', status = 'ملغي', transaction_id = ? WHERE id = ?");
-                    $updateStmt->execute([$transactionId, $realOrderId]);
-
-                    // 2. Restock deducted products
-                    $products = json_decode($order['products'], true);
-                    if (is_array($products)) {
-                        foreach ($products as $item) {
-                            $qty = (int)($item['quantity'] ?? $item['number'] ?? 1);
-                            $prodId = (int)$item['id'];
-                            $restockStmt = $db->prepare("UPDATE products SET quantity = quantity + ? WHERE id = ?");
-                            $restockStmt->execute([$qty, $prodId]);
-                        }
-                    }
-                }
-            }
+        if ($this->verifyHmac($obj, (string)$receivedHmac, $hmacSecret) && $realOrderId > 0) {
+            $isSuccess = ($obj['success'] ?? false) === true || ($obj['success'] ?? '') === 'true';
+            $trxId = (string)($obj['id'] ?? ($isSuccess ? 'paid_transaction' : 'failed_transaction'));
+            $this->settleOrderPayment($realOrderId, $isSuccess, $trxId);
         }
-        
+
         http_response_code(200);
         exit;
     }
     
     public function response(): void {
+        if (isset($_GET['hmac'], $_GET['merchant_order_id'])) {
+            $settingModel = new Setting();
+            $settings = $settingModel->getSettings();
+            $hmacSecret = trim($settings['gateway_hmac_secret'] ?? '');
+            if ($this->verifyHmac($_GET, (string)$_GET['hmac'], $hmacSecret)) {
+                $responseOrderIdParts = explode('_', (string)$_GET['merchant_order_id']);
+                $responseOrderId = (int)($responseOrderIdParts[0] ?? 0);
+                $isSuccess = ($_GET['success'] ?? 'false') === 'true';
+                $trxId = (string)($_GET['id'] ?? '');
+                $this->settleOrderPayment($responseOrderId, $isSuccess, $trxId);
+            }
+        }
         $success = $_GET['success'] ?? 'false';
         if ($success === 'true') {
             echo "<div style='text-align:center; padding:50px; font-family:sans-serif; background:#f0fdf4; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;'>
@@ -219,6 +173,112 @@ class PaymentController {
                   </div>";
         }
         exit;
+    }
+
+    private function verifyHmac(array $data, string $receivedHmac, string $hmacSecret): bool {
+        if ($hmacSecret === '' || $receivedHmac === '') {
+            return false;
+        }
+        $boolFields = ['error_occured', 'has_parent_transaction', 'is_3d_secure', 'is_auth', 'is_capture', 'is_refunded', 'is_standalone_payment', 'is_voided', 'pending', 'success'];
+        $normalized = $data;
+        foreach ($boolFields as $field) {
+            if (!array_key_exists($field, $normalized)) {
+                continue;
+            }
+            $value = $normalized[$field];
+            $normalized[$field] = ($value === true || $value === 'true' || $value === 1 || $value === '1') ? 'true' : 'false';
+        }
+        $requestData = [
+            'amount_cents' => $normalized['amount_cents'] ?? '',
+            'created_at' => $normalized['created_at'] ?? '',
+            'currency' => $normalized['currency'] ?? '',
+            'error_occured' => $normalized['error_occured'] ?? 'false',
+            'has_parent_transaction' => $normalized['has_parent_transaction'] ?? 'false',
+            'id' => $normalized['id'] ?? '',
+            'integration_id' => $normalized['integration_id'] ?? '',
+            'is_3d_secure' => $normalized['is_3d_secure'] ?? 'false',
+            'is_auth' => $normalized['is_auth'] ?? 'false',
+            'is_capture' => $normalized['is_capture'] ?? 'false',
+            'is_refunded' => $normalized['is_refunded'] ?? 'false',
+            'is_standalone_payment' => $normalized['is_standalone_payment'] ?? 'false',
+            'is_voided' => $normalized['is_voided'] ?? 'false',
+            'order' => (isset($normalized['order']) && is_array($normalized['order'])) ? ($normalized['order']['id'] ?? '') : ($normalized['order'] ?? ''),
+            'owner' => $normalized['owner'] ?? '',
+            'pending' => $normalized['pending'] ?? 'false',
+            'source_data_pan' => (isset($normalized['source_data']) && is_array($normalized['source_data'])) ? ($normalized['source_data']['pan'] ?? '') : ($normalized['source_data_pan'] ?? ''),
+            'source_data_sub_type' => (isset($normalized['source_data']) && is_array($normalized['source_data'])) ? ($normalized['source_data']['sub_type'] ?? '') : ($normalized['source_data_sub_type'] ?? ''),
+            'source_data_type' => (isset($normalized['source_data']) && is_array($normalized['source_data'])) ? ($normalized['source_data']['type'] ?? '') : ($normalized['source_data_type'] ?? ''),
+            'success' => $normalized['success'] ?? 'false'
+        ];
+        $calculatedHmac = hash_hmac('sha512', implode('', $requestData), $hmacSecret);
+        return hash_equals($calculatedHmac, $receivedHmac);
+    }
+
+    private function settleOrderPayment(int $realOrderId, bool $success, string $transactionId): void {
+        if ($realOrderId <= 0) {
+            return;
+        }
+        $db = Database::getInstance()->getConnection();
+        try {
+            $db->beginTransaction();
+            $lockStmt = $db->prepare("SELECT id, status, payment_status, products FROM orders WHERE id = ? LIMIT 1 FOR UPDATE");
+            $lockStmt->execute([$realOrderId]);
+            $order = $lockStmt->fetch(PDO::FETCH_ASSOC);
+            if (!$order) {
+                $db->rollBack();
+                return;
+            }
+            if ($success === true) {
+                if ($order['payment_status'] !== 'paid') {
+                    $updateStmt = $db->prepare("UPDATE orders SET payment_status = 'paid', status = 'قيد المراجعة', user_hidden = 0, admin_hidden = 0, transaction_id = ? WHERE id = ?");
+                    $updateStmt->execute([$transactionId, $realOrderId]);
+                    if ($order['status'] === 'ملغي') {
+                        $products = json_decode($order['products'] ?? '[]', true);
+                        if (is_array($products)) {
+                            $deduct = $db->prepare("UPDATE products SET quantity = GREATEST(0, quantity - ?) WHERE id = ?");
+                            foreach ($products as $item) {
+                                if (!is_array($item)) {
+                                    continue;
+                                }
+                                $qty = (int)($item['quantity'] ?? $item['number'] ?? 1);
+                                $prodId = (int)($item['id'] ?? 0);
+                                if ($prodId > 0 && $qty > 0) {
+                                    $deduct->execute([$qty, $prodId]);
+                                }
+                            }
+                        }
+                    }
+                }
+                $db->commit();
+                return;
+            }
+            if ($order['status'] === 'بانتظار الدفع' && $order['payment_status'] === 'pending') {
+                $failStmt = $db->prepare("UPDATE orders SET payment_status = 'failed', status = 'ملغي', user_hidden = 1, admin_hidden = 1, transaction_id = ? WHERE id = ? AND status = 'بانتظار الدفع' AND payment_status = 'pending'");
+                $failStmt->execute([$transactionId, $realOrderId]);
+                if ($failStmt->rowCount() > 0) {
+                    $products = json_decode($order['products'] ?? '[]', true);
+                    if (is_array($products)) {
+                        $restock = $db->prepare("UPDATE products SET quantity = quantity + ? WHERE id = ?");
+                        foreach ($products as $item) {
+                            if (!is_array($item)) {
+                                continue;
+                            }
+                            $qty = (int)($item['quantity'] ?? $item['number'] ?? 1);
+                            $prodId = (int)($item['id'] ?? 0);
+                            if ($prodId > 0 && $qty > 0) {
+                                $restock->execute([$qty, $prodId]);
+                            }
+                        }
+                    }
+                }
+            }
+            $db->commit();
+            return;
+        } catch (Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+        }
     }
 
     private function cURL($url, $data) {

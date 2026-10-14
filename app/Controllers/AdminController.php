@@ -17,6 +17,16 @@ class AdminController {
         $commentsCount = (new Comment())->countAll();
         $messagesCount = (new Message())->countAllContactMessages();
         $onlineUsersCount = Session::getOnlineCount();
+        $revenueSummary = (new Order())->getRevenueSummary('2000-01-01 00:00:00', date('Y-m-d H:i:s'));
+        $totalRevenue = (float)($revenueSummary['net'] ?? 0);
+        $usersCount = (new User())->countAll();
+        $activeCouponsCount = 0;
+        foreach ((new Coupon())->getAll() as $couponRow) {
+            if ((int)($couponRow['status'] ?? 0) === 1) {
+                $activeCouponsCount++;
+            }
+        }
+        $pendingOrdersCount = (new Order())->countPending();
         
         // نظام الاسترجاع التلقائي (The Reaper)
         $orderModel = new \App\Models\Order(); 

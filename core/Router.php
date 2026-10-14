@@ -13,7 +13,7 @@ class Router {
         if ($parsedUri !== '/') {
             $parsedUri = rtrim($parsedUri, '/');
         }
-        if ($method === 'POST') {
+        if ($method === 'POST' && $parsedUri !== '/api/payment-callback') {
             $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
             if (!CSRF::validate($token)) {
                 http_response_code(403);

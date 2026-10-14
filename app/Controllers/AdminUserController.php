@@ -79,6 +79,11 @@ class AdminUserController {
         exit;
     }
 
+    private function isSuperAdminUser(int $userId): bool {
+        $user = (new User())->findById($userId);
+        return $user && strtolower(trim($user['email'] ?? '')) === strtolower(SUPER_ADMIN_EMAIL);
+    }
+
     public function updateRole(): void {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!isset($_POST['csrf_token']) || !CSRF::validate($_POST['csrf_token'])) {
@@ -91,7 +96,13 @@ class AdminUserController {
         $id = intval($_POST['user_id'] ?? 0);
         $new_role = $_POST['new_role'] ?? 'user';
         
-        // منع الترقية المباشرة لمدير (يجب المرور بالـ OTP)
+        if ($id > 0 && $this->isSuperAdminUser($id)) {
+            $_SESSION['toast_msg'] = 'لا يمكن تعديل أو حذف حساب المالك الأساسي للنظام.';
+            $_SESSION['toast_type'] = 'error';
+            header('Location: /admin/users');
+            exit;
+        }
+        
         if ($new_role === 'admin') {
             $_SESSION['toast_msg'] = 'الترقية لمدير تتطلب التحقق من الرمز.';
             $_SESSION['toast_type'] = 'error';
@@ -112,6 +123,7 @@ public function requestOtp(): void {
     header('Content-Type: application/json');
     $id = intval($_POST['user_id'] ?? 0);
     if ($id <= 0) { echo json_encode(['success' => false]); exit; }
+    if ($this->isSuperAdminUser($id)) { echo json_encode(['success' => false]); exit; }
     
     $_SESSION['admin_otp_user_id'] = $id;
     echo json_encode(['success' => true, 'message' => 'افتح تطبيق Google Authenticator على هاتفك للحصول على الكود']);
@@ -137,11 +149,20 @@ public function requestOtp(): void {
             
             require_once CORE_DIR . '/GoogleAuthenticator.php';
             if (!GoogleAuthenticator::checkCode($secretKey, $inputOtp)) { 
-                echo json_encode(['success'=>false, 'message'=>'الكود غير صحيح أو منتهي الصلاحية']); 
+                $_SESSION['toast_msg'] = 'الكود غير صحيح أو منتهي الصلاحية.';
+                $_SESSION['toast_type'] = 'error';
+                header('Location: /admin/users');
                 exit; 
             }
             
             if ($userId > 0) {
+                if ($this->isSuperAdminUser((int)$userId)) {
+                    unset($_SESSION['admin_otp_user_id']);
+                    $_SESSION['toast_msg'] = 'لا يمكن تعديل أو حذف حساب المالك الأساسي للنظام.';
+                    $_SESSION['toast_type'] = 'error';
+                    header('Location: /admin/users');
+                    exit;
+                }
                 $userModel = new User();
                 $userModel->updateRole($userId, 'admin');
                 unset($_SESSION['admin_otp_user_id']);
@@ -168,6 +189,12 @@ public function requestOtp(): void {
             $userModel = new User();
             $id = intval($_POST['user_id'] ?? 0);
             $current_status = intval($_POST['current_status'] ?? 0);
+            if ($id > 0 && $this->isSuperAdminUser($id)) {
+                $_SESSION['toast_msg'] = 'لا يمكن تعديل أو حذف حساب المالك الأساسي للنظام.';
+                $_SESSION['toast_type'] = 'error';
+                header('Location: /admin/users');
+                exit;
+            }
             if ($id > 0 && $id !== (int)Session::get('user_id')) {
                 $new_status = $current_status ? 0 : 1;
                 $userModel->toggleBan($id, $new_status);
@@ -189,6 +216,12 @@ public function requestOtp(): void {
             }
             $userModel = new User();
             $id = intval($_POST['id'] ?? 0);
+            if ($id > 0 && $this->isSuperAdminUser($id)) {
+                $_SESSION['toast_msg'] = 'لا يمكن تعديل أو حذف حساب المالك الأساسي للنظام.';
+                $_SESSION['toast_type'] = 'error';
+                header('Location: /admin/users');
+                exit;
+            }
             if ($id > 0 && $id !== (int)Session::get('user_id')) {
                 $userModel->delete($id);
                 $_SESSION['toast_msg'] = 'تم حذف المستخدم بنجاح.';

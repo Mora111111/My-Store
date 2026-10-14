@@ -39,6 +39,20 @@
           </div>
       <?php endif; ?>
 
+      <?php if(!empty($_SESSION['order_flash_error'])): ?>
+          <div style="background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+              <?php echo htmlspecialchars($_SESSION['order_flash_error']); ?>
+          </div>
+      <?php endif; ?>
+
+      <?php if(!empty($_SESSION['order_flash_success'])): ?>
+          <div style="background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+              <?php echo htmlspecialchars($_SESSION['order_flash_success']); ?>
+          </div>
+      <?php endif; ?>
+
+      <?php unset($_SESSION['order_flash_error'], $_SESSION['order_flash_success']); ?>
+
       <div class="table-responsive">
         <table class="orders-table">
             <thead>
@@ -74,11 +88,16 @@
                         <td>
                             <a href="/my-orders/invoice?id=<?php echo $row['id']; ?>" class="btn-view"><i class="fa-solid fa-file-invoice"></i> الفاتورة</a>                            
                             <?php if ($status === 'قيد المراجعة'): ?>
-                                <form action="/my-orders/cancel" method="POST" style="display:inline;">
-                                    <input type="hidden" name="csrf_token" value="<?php echo CSRF::generate(); ?>">
-                                    <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
-                                    <button type="submit" class="btn-delete-order" onclick="return confirm('هل أنت متأكد من إلغاء هذا الطلب؟');"><i class="fa-solid fa-xmark"></i> إلغاء الطلب</button>
-                                </form>
+                                <?php $isOnlineLocked = ($row['payment_method'] ?? 'cod') !== 'cod' || ($row['payment_status'] ?? 'pending') === 'paid'; ?>
+                                <?php if ($isOnlineLocked): ?>
+                                    <button type="button" class="btn-delete-order" style="cursor:not-allowed; opacity:0.85;" onclick="alert('<?= htmlspecialchars(lang('cancel_online_error_msg')); ?>');"><i class="fa-solid fa-lock"></i> <?= lang('cannot_cancel_label') ?></button>
+                                <?php else: ?>
+                                    <form action="/my-orders/cancel" method="POST" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="<?php echo CSRF::generate(); ?>">
+                                        <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
+                                        <button type="submit" class="btn-delete-order" onclick="return confirm('هل أنت متأكد من إلغاء هذا الطلب؟');"><i class="fa-solid fa-xmark"></i> إلغاء الطلب</button>
+                                    </form>
+                                <?php endif; ?>
                             <?php elseif ($status === 'ملغي' || $status === 'مكتمل'): ?>
                                 <form action="/my-orders/hide" method="POST" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?php echo CSRF::generate(); ?>">

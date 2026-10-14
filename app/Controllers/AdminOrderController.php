@@ -69,7 +69,7 @@ class AdminOrderController {
         if (is_array($products)) {
             $productModel = new Product();
             foreach ($products as $item) {
-                $qty = (int)($item['quantity'] ?? 1);
+                $qty = (int)($item['quantity'] ?? $item['number'] ?? 1);
                 $id = (int)($item['id'] ?? 0);
                 
                 if ($id > 0) {
