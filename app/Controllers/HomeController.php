@@ -19,20 +19,7 @@ class HomeController {
         if (!in_array($sliderMode, ['featured', 'latest', 'discounted', 'all'], true)) {
             $sliderMode = 'featured';
         }
-        switch ($sliderMode) {
-            case 'latest':
-                $sliderProducts = $productModel->getLatest(8);
-                break;
-            case 'discounted':
-                $sliderProducts = $productModel->getDiscounted(8);
-                break;
-            case 'all':
-                $sliderProducts = array_slice($productModel->getAll(), 0, 8);
-                break;
-            default:
-                $sliderProducts = $featuredProducts;
-                break;
-        }
+        $sliderProducts = $productModel->getSliderProducts($sliderMode, $activeCoupons);
         
         require_once APP_DIR . '/Views/layouts/header.php';
         require_once APP_DIR . '/Views/pages/home.php';

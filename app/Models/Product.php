@@ -57,6 +57,49 @@ class Product {
         return $stmt->fetchAll();
     }
 
+    public function getSliderProducts(string $mode = 'featured', array $activeCoupons = []): array {
+        $allowedModes = ['featured', 'latest', 'discounted', 'all'];
+        if (!in_array($mode, $allowedModes, true)) {
+            $mode = 'featured';
+        }
+        $rows = [];
+        if ($mode === 'all') {
+            $rows = $this->db->query("SELECT * FROM products WHERE quantity > 0 ORDER BY RAND()")->fetchAll(PDO::FETCH_ASSOC);
+        } elseif ($mode === 'featured') {
+            $stmt = $this->db->prepare("SELECT * FROM products WHERE quantity > 0 ORDER BY rating DESC, RAND() LIMIT 30");
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            shuffle($rows);
+        } elseif ($mode === 'latest') {
+            $stmt = $this->db->prepare("SELECT * FROM products WHERE quantity > 0 ORDER BY id DESC LIMIT 25");
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            shuffle($rows);
+        } else {
+            $allRows = $this->db->query("SELECT * FROM products WHERE quantity > 0")->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($allRows as $row) {
+                $isDiscounted = (float)($row['old_price'] ?? 0) > (float)$row['price'];
+                if (!$isDiscounted) {
+                    foreach ($activeCoupons as $c) {
+                        if (($c['target_type'] ?? '') === 'all'
+                            || (($c['target_type'] ?? '') === 'specific_product' && (int)($c['target_product_id'] ?? 0) === (int)$row['id'])) {
+                            $isDiscounted = true;
+                            break;
+                        }
+                    }
+                }
+                if ($isDiscounted) {
+                    $rows[] = $row;
+                }
+            }
+            shuffle($rows);
+        }
+        if (empty($rows)) {
+            $rows = $this->db->query("SELECT * FROM products ORDER BY RAND() LIMIT 30")->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return $rows;
+    }
+
     public function getCategories(): array {
         $stmt = $this->db->query("SELECT DISTINCT category_class FROM products WHERE category_class != ''");
         return $stmt->fetchAll(PDO::FETCH_COLUMN);

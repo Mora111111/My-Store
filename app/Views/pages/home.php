@@ -28,38 +28,45 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
               width: 100%;
               aspect-ratio: 4 / 3;
               overflow: hidden;
-              overflow: clip;
-              isolation: isolate;
-              perspective: 4000px;
-              perspective-origin: 50% 50%;
-              transform-style: preserve-3d;
               border-radius: 22px;
-              background: #f5f5f7;
-              box-shadow:
-                0 24px 60px rgba(0, 0, 0, 0.12),
-                0 4px 14px rgba(0, 0, 0, 0.05);
+              background: linear-gradient(145deg, #ffffff 0%, #f4f5f7 100%);
+              box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12), 0 4px 14px rgba(0, 0, 0, 0.05);
               -webkit-font-smoothing: antialiased;
+            }
+
+            .dynamic-hero-slider .slider-stage {
+              position: absolute;
+              inset: 0;
+              display: block;
+              width: 100%;
+              height: 100%;
+              padding: 34px;
+              box-sizing: border-box;
             }
 
             .dynamic-hero-slider .slider-item {
               position: absolute;
               inset: 0;
-              width: 100%;
-              height: 100%;
               display: block;
-              transform: rotateY(var(--cube-angle, 0deg)) translateZ(var(--cube-depth, 0px));
-              transform-origin: center center;
-              transform-style: preserve-3d;
-              backface-visibility: hidden;
-              -webkit-backface-visibility: hidden;
+              opacity: 0;
+              visibility: hidden;
+              transform: scale(0.96) translateY(14px);
               pointer-events: none;
-              transition: transform 1.25s cubic-bezier(0.76, 0, 0.24, 1);
-              will-change: transform;
-              background: linear-gradient(145deg, #ffffff 0%, #f5f5f7 100%);
+              transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.85s;
+              will-change: opacity, transform;
             }
 
             .dynamic-hero-slider .slider-item.active {
+              opacity: 1;
+              visibility: visible;
+              transform: scale(1) translateY(0);
               pointer-events: auto;
+              transition-delay: 0s;
+              z-index: 2;
+            }
+
+            .dynamic-hero-slider .slider-item.prev {
+              transform: scale(0.96) translateY(-14px);
             }
 
             .dynamic-hero-slider .slider-item img {
@@ -68,228 +75,418 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
               height: 100%;
               object-fit: contain;
               object-position: center;
-              background: linear-gradient(145deg, #ffffff 0%, #f5f5f7 100%);
-              transform: scale(0.82);
-              transition: transform 1.25s cubic-bezier(0.16, 1, 0.3, 1);
-              backface-visibility: hidden;
-              -webkit-backface-visibility: hidden;
+              filter: drop-shadow(0 22px 32px rgba(15, 23, 42, 0.16));
             }
 
-            .dynamic-hero-slider .slider-item.active img {
-              transform: scale(0.86);
-              transition-delay: 0.08s;
+            .dynamic-hero-slider .slider-badge {
+              position: absolute;
+              inset-block-start: 16px;
+              inset-inline-start: 16px;
+              z-index: 6;
+              display: inline-flex;
+              align-items: center;
+              gap: 6px;
+              padding: 7px 14px;
+              border-radius: 40px;
+              background: linear-gradient(135deg, #ef4444, #f97316);
+              color: #fff;
+              font-size: 0.82rem;
+              font-weight: 800;
+              box-shadow: 0 8px 20px rgba(239, 68, 68, 0.35);
+            }
+
+            .dynamic-hero-slider .slider-counter {
+              position: absolute;
+              inset-block-start: 16px;
+              inset-inline-end: 16px;
+              z-index: 6;
+              padding: 6px 12px;
+              border-radius: 40px;
+              border: 1px solid rgba(255, 255, 255, 0.7);
+              background: rgba(255, 255, 255, 0.66);
+              backdrop-filter: blur(14px);
+              -webkit-backdrop-filter: blur(14px);
+              color: #1d1d1f;
+              font-size: 0.8rem;
+              font-weight: 700;
+              font-variant-numeric: tabular-nums;
             }
 
             .dynamic-hero-slider .slider-caption {
-              display: none;
               position: absolute;
-              inset-inline-start: 16px;
-              inset-inline-end: 16px;
+              inset-inline: 16px;
               inset-block-end: 16px;
-              z-index: 3;
-              padding-block: 16px;
-              padding-inline: 20px;
+              z-index: 5;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 14px;
+              padding-block: 14px;
+              padding-inline: 18px;
               border: 1px solid rgba(255, 255, 255, 0.68);
               border-radius: 18px;
-              background: linear-gradient(
-                135deg,
-                rgba(255, 255, 255, 0.78),
-                rgba(248, 250, 252, 0.62)
-              );
-              backdrop-filter: blur(28px) saturate(180%);
-              -webkit-backdrop-filter: blur(28px) saturate(180%);
-              box-shadow:
-                0 12px 35px rgba(15, 23, 42, 0.10),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+              background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(248, 250, 252, 0.64));
+              backdrop-filter: blur(26px) saturate(180%);
+              -webkit-backdrop-filter: blur(26px) saturate(180%);
+              box-shadow: 0 12px 35px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
               text-align: start;
               opacity: 0;
               visibility: hidden;
-              transform: translateY(14px) scale(0.985);
-              transform-origin: center;
-              transition:
-                opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-                visibility 0s linear 0.65s;
+              transform: translateY(16px);
+              transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.7s;
             }
 
             .dynamic-hero-slider .slider-item.active .slider-caption {
               opacity: 1;
               visibility: visible;
-              transform: translateY(0) scale(1);
-              transition-delay: 0.3s, 0.3s, 0s;
+              transform: translateY(0);
+              transition-delay: 0.32s, 0.32s, 0s;
+            }
+
+            .dynamic-hero-slider .slider-caption .slider-meta {
+              min-width: 0;
             }
 
             .dynamic-hero-slider .slider-caption strong {
               display: block;
-              margin-block-end: 6px;
+              margin-block-end: 4px;
               color: #1d1d1f;
-              font-size: clamp(1rem, 1.6vw, 1.2rem);
+              font-size: clamp(0.95rem, 1.5vw, 1.12rem);
               font-weight: 700;
-              line-height: 1.45;
-              letter-spacing: -0.025em;
-              text-wrap: pretty;
+              line-height: 1.4;
+              letter-spacing: -0.02em;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
             }
 
-            .dynamic-hero-slider .slider-caption span {
-              display: inline-block;
+            .dynamic-hero-slider .slider-caption .slider-price {
+              display: inline-flex;
+              align-items: baseline;
+              gap: 8px;
               color: var(--main-color);
-              font-size: clamp(0.95rem, 1.4vw, 1.08rem);
-              font-weight: 750;
-              line-height: 1.5;
-              letter-spacing: -0.015em;
+              font-size: clamp(0.92rem, 1.35vw, 1.05rem);
+              font-weight: 800;
+              line-height: 1.4;
+            }
+
+            .dynamic-hero-slider .slider-caption del {
+              color: #94a3b8;
+              font-size: 0.82em;
+              font-weight: 600;
+            }
+
+            .dynamic-hero-slider .slider-arrow {
+              flex-shrink: 0;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              inline-size: 44px;
+              block-size: 44px;
+              border-radius: 50%;
+              background: linear-gradient(135deg, var(--main-color), #38bdf8);
+              color: #fff;
+              font-size: 1rem;
+              text-decoration: none;
+              box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
+              transition: transform 0.25s ease;
+            }
+
+            .dynamic-hero-slider .slider-arrow:hover {
+              transform: translateY(-2px) scale(1.06);
+            }
+
+            .dynamic-hero-slider .slider-nav-btn {
+              position: absolute;
+              inset-block-start: 50%;
+              z-index: 7;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              inline-size: 42px;
+              block-size: 42px;
+              margin-block-start: -21px;
+              border: 1px solid rgba(255, 255, 255, 0.7);
+              border-radius: 50%;
+              background: rgba(255, 255, 255, 0.7);
+              backdrop-filter: blur(14px);
+              -webkit-backdrop-filter: blur(14px);
+              color: #1d1d1f;
+              font-size: 0.9rem;
+              cursor: pointer;
+              opacity: 0;
+              transition: opacity 0.35s ease, transform 0.25s ease;
+            }
+
+            .dynamic-hero-slider:hover .slider-nav-btn,
+            .dynamic-hero-slider .slider-nav-btn:focus-visible {
+              opacity: 1;
+            }
+
+            .dynamic-hero-slider .slider-nav-btn:hover {
+              transform: scale(1.08);
+            }
+
+            .dynamic-hero-slider .slider-nav-btn.prev {
+              inset-inline-start: 14px;
+            }
+
+            .dynamic-hero-slider .slider-nav-btn.next {
+              inset-inline-end: 14px;
+            }
+
+            .dynamic-hero-slider .slider-progress {
+              position: absolute;
+              inset-block-end: 0;
+              inset-inline-start: 0;
+              z-index: 8;
+              block-size: 4px;
+              inline-size: 0;
+              background: linear-gradient(90deg, var(--main-color), #38bdf8);
+              border-start-start-radius: 4px;
+              border-end-start-radius: 4px;
             }
 
             @media (max-width: 600px) {
               .dynamic-hero-slider {
                 border-radius: 16px;
-                perspective: 4000px;
+              }
+
+              .dynamic-hero-slider .slider-stage {
+                padding: 22px;
               }
 
               .dynamic-hero-slider .slider-caption {
-                inset-inline-start: 10px;
-                inset-inline-end: 10px;
+                inset-inline: 10px;
                 inset-block-end: 10px;
                 padding-block: 11px;
                 padding-inline: 14px;
                 border-radius: 14px;
-                backdrop-filter: blur(20px) saturate(170%);
-                -webkit-backdrop-filter: blur(20px) saturate(170%);
               }
 
-              .dynamic-hero-slider .slider-caption strong {
-                font-size: 0.95rem;
+              .dynamic-hero-slider .slider-nav-btn {
+                inline-size: 36px;
+                block-size: 36px;
+                margin-block-start: -18px;
+                opacity: 1;
               }
 
-              .dynamic-hero-slider .slider-caption span {
-                font-size: 0.9rem;
+              .dynamic-hero-slider .slider-arrow {
+                inline-size: 38px;
+                block-size: 38px;
               }
             }
 
             @media (prefers-reduced-motion: reduce) {
               .dynamic-hero-slider .slider-item,
-              .dynamic-hero-slider .slider-item img,
               .dynamic-hero-slider .slider-caption {
                 transition-duration: 0.01ms;
                 transition-delay: 0s;
+              }
+
+              .dynamic-hero-slider .slider-progress {
+                display: none;
               }
             }
           </style>
           <?php $sliderItems = $sliderProducts ?? $featuredProducts ?? []; ?>
           <?php if (!empty($sliderItems)): ?>
-          <div class="dynamic-hero-slider">
-            <?php foreach ($sliderItems as $i => $p): ?>
-            <?php $slideTitle = ($currentLang === 'en' && !empty($p['title_en'])) ? $p['title_en'] : $p['title']; ?>
-            <a href="/product?id=<?= $p['id'] ?>" class="slider-item<?= $i === 0 ? ' active' : '' ?>">
-              <img src="<?= Product::getImageUrl($p['image_url']) ?>" alt="<?= htmlspecialchars($slideTitle) ?>" />
-              <span class="slider-caption">
-                <strong><?= htmlspecialchars($slideTitle) ?></strong>
-                <span><?= $p['price'] ?> <?= lang('currency_egp') ?></span>
-              </span>
-            </a>
-            <?php endforeach; ?>
+          <div class="dynamic-hero-slider" data-autoplay="5000">
+            <div class="slider-stage">
+              <?php foreach (array_values($sliderItems) as $i => $p): ?>
+              <?php
+                $slideDiscount = false;
+                $slidePct = 0;
+                $slideFinal = floatval($p['price']);
+                $slideOld = 0;
+                foreach ($activeCoupons as $c) {
+                    if (($c['target_type'] ?? '') === 'all' || (($c['target_type'] ?? '') === 'specific_product' && (int)($c['target_product_id'] ?? 0) === (int)$p['id'])) {
+                        $slideDiscount = true;
+                        if (($c['discount_type'] ?? '') === 'percentage') {
+                            $slideFinal = $slideFinal - ($slideFinal * ($c['discount_value'] / 100));
+                            $slidePct = round($c['discount_value']);
+                        } else {
+                            $slideFinal = $slideFinal - $c['discount_value'];
+                            $slidePct = ($slideFinal > 0) ? round((($c['discount_value'] / ($slideFinal + $c['discount_value'])) * 100)) : 0;
+                        }
+                        $slideFinal = max(0, $slideFinal);
+                        break;
+                    }
+                }
+                if (!$slideDiscount && !empty($p['old_price']) && (float)$p['old_price'] > (float)$p['price']) {
+                    $slideDiscount = true;
+                    $slideOld = floatval($p['old_price']);
+                    $slideFinal = floatval($p['price']);
+                    $slidePct = ($slideOld > 0) ? round(((($slideOld - $slideFinal) / $slideOld) * 100)) : 0;
+                }
+              ?>
+              <a href="/product?id=<?= $p['id'] ?>" class="slider-item<?= $i === 0 ? ' active' : '' ?>">
+                <img src="<?= Product::getImageUrl($p['image_url']) ?>" alt="<?= htmlspecialchars(langField($p, 'title')) ?>" loading="<?= $i === 0 ? 'eager' : 'lazy' ?>" decoding="async" />
+                <?php if ($slideDiscount && $slidePct > 0): ?>
+                <span class="slider-badge"><i class="fa-solid fa-tag"></i> <?= lang('discount_text') ?> <?= $slidePct ?>%</span>
+                <?php endif; ?>
+                <span class="slider-caption">
+                  <span class="slider-meta">
+                    <strong><?= htmlspecialchars(langField($p, 'title')) ?></strong>
+                    <span class="slider-price">
+                      <?= number_format($slideFinal, 2) ?> <?= lang('currency_egp') ?>
+                      <?php if ($slideDiscount && $slideOld > 0): ?>
+                      <del><?= number_format($slideOld, 2) ?> <?= lang('currency_egp') ?></del>
+                      <?php endif; ?>
+                    </span>
+                  </span>
+                  <span class="slider-arrow"><i class="fa-solid fa-arrow-up-left-from-square"></i></span>
+                </span>
+              </a>
+              <?php endforeach; ?>
+            </div>
+            <span class="slider-counter">1 / <?= count($sliderItems) ?></span>
+            <button type="button" class="slider-nav-btn prev" aria-label="previous"><i class="fa-solid fa-chevron-right"></i></button>
+            <button type="button" class="slider-nav-btn next" aria-label="next"><i class="fa-solid fa-chevron-left"></i></button>
+            <span class="slider-progress"></span>
           </div>
           <script>
             (function () {
               var sliders = document.querySelectorAll('.dynamic-hero-slider');
 
               sliders.forEach(function (slider) {
-                var items = Array.from(slider.querySelectorAll('.slider-item'));
-
+                var items = Array.prototype.slice.call(slider.querySelectorAll('.slider-item'));
                 if (!items.length) return;
 
+                var counter = slider.querySelector('.slider-counter');
+                var progress = slider.querySelector('.slider-progress');
+                var prevBtn = slider.querySelector('.slider-nav-btn.prev');
+                var nextBtn = slider.querySelector('.slider-nav-btn.next');
+                var delay = parseInt(slider.getAttribute('data-autoplay'), 10) || 5000;
                 var current = items.findIndex(function (item) {
                   return item.classList.contains('active');
                 });
-
-                if (current < 0) {
-                  current = 0;
-                  items[current].classList.add('active');
-                }
-
-                if (items.length === 1) return;
+                if (current < 0) current = 0;
 
                 var timer = null;
-                var delay = 5000;
-                var duration = 1250;
-                var direction = 1;
+                var progressTimer = null;
+                var single = items.length === 1;
 
-                function updateDirection() {
-                  direction = window.getComputedStyle(slider).direction === 'rtl' ? -1 : 1;
+                function isRtl() {
+                  return window.getComputedStyle(slider).direction === 'rtl';
                 }
 
-                function updateCube(animate) {
-                  updateDirection();
-
-                  var width = slider.clientWidth;
-
-                  if (!width) return;
-
-                  var count = items.length;
-                  var step = 360 / count;
-                  var depth = count === 2
-                    ? width / 2
-                    : width / (2 * Math.tan(Math.PI / count));
-
-                  slider.style.setProperty('--cube-depth', depth + 'px');
-                  slider.style.transitionDuration = animate ? duration + 'ms' : '0ms';
-
+                function paint() {
                   items.forEach(function (item, index) {
-                    var angle = (index - current) * step * direction;
+                    item.classList.toggle('active', index === current);
+                    item.classList.toggle('prev', index !== current);
+                  });
+                  if (counter) {
+                    counter.textContent = (current + 1) + ' / ' + items.length;
+                  }
+                }
 
-                    item.style.setProperty('--cube-angle', angle + 'deg');
-                    item.style.transitionDuration = animate ? duration + 'ms' : '0ms';
+                function go(step) {
+                  current = (current + step + items.length) % items.length;
+                  paint();
+                  restart();
+                }
+
+                function startProgress() {
+                  if (!progress || single) return;
+                  progress.style.transition = 'none';
+                  progress.style.width = '0%';
+                  window.requestAnimationFrame(function () {
+                    progress.style.transition = 'width ' + delay + 'ms linear';
+                    progress.style.width = '100%';
                   });
                 }
 
-                function showNext() {
-                  items[current].classList.remove('active');
-                  current = (current + 1) % items.length;
-                  items[current].classList.add('active');
-                  updateCube(true);
+                function stopProgress() {
+                  if (!progress) return;
+                  progress.style.transition = 'none';
+                  progress.style.width = '0%';
                 }
 
-                function startSlider() {
-                  if (timer !== null || document.hidden) return;
-
-                  timer = window.setInterval(showNext, delay);
+                function start() {
+                  if (single || timer !== null || document.hidden) return;
+                  timer = window.setInterval(function () {
+                    go(isRtl() ? -1 : 1);
+                  }, delay);
+                  startProgress();
                 }
 
-                function stopSlider() {
+                function stop() {
                   if (timer !== null) {
                     window.clearInterval(timer);
                     timer = null;
                   }
+                  if (progressTimer !== null) {
+                    window.clearTimeout(progressTimer);
+                    progressTimer = null;
+                  }
+                  stopProgress();
                 }
 
-                updateCube(false);
+                function restart() {
+                  stop();
+                  start();
+                }
 
-                window.requestAnimationFrame(function () {
-                  window.requestAnimationFrame(function () {
-                    items.forEach(function (item) {
-                      item.style.transitionDuration = '';
-                    });
-
-                    startSlider();
+                if (prevBtn) {
+                  prevBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    go(isRtl() ? 1 : -1);
                   });
+                }
+
+                if (nextBtn) {
+                  nextBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    go(isRtl() ? -1 : 1);
+                  });
+                }
+
+                slider.addEventListener('mouseenter', function () {
+                  if (timer !== null) {
+                    window.clearInterval(timer);
+                    timer = null;
+                    stopProgress();
+                  }
                 });
 
-                window.addEventListener('resize', function () {
-                  updateCube(false);
+                slider.addEventListener('mouseleave', function () {
+                  start();
+                });
 
-                  window.requestAnimationFrame(function () {
-                    items.forEach(function (item) {
-                      item.style.transitionDuration = '';
-                    });
-                  });
+                var touchStartX = 0;
+                var touchDeltaX = 0;
+
+                slider.addEventListener('touchstart', function (e) {
+                  touchStartX = e.touches[0].clientX;
+                  touchDeltaX = 0;
+                  stop();
+                }, { passive: true });
+
+                slider.addEventListener('touchmove', function (e) {
+                  touchDeltaX = e.touches[0].clientX - touchStartX;
+                }, { passive: true });
+
+                slider.addEventListener('touchend', function () {
+                  var threshold = 45;
+                  if (Math.abs(touchDeltaX) > threshold) {
+                    go(touchDeltaX < 0 ? 1 : -1);
+                  } else {
+                    start();
+                  }
+                  touchDeltaX = 0;
                 });
 
                 document.addEventListener('visibilitychange', function () {
                   if (document.hidden) {
-                    stopSlider();
+                    stop();
                   } else {
-                    startSlider();
+                    start();
                   }
                 });
+
+                paint();
+                start();
               });
             })();
           </script>
