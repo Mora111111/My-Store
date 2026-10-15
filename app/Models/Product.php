@@ -1,6 +1,7 @@
 <?php
 class Product {
     private PDO $db;
+    private static bool $checked = false;
 
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
@@ -167,19 +168,73 @@ class Product {
         $stmt = $this->db->prepare("DELETE FROM products WHERE id = ?");
         return $stmt->execute([$id]);
     }
+   public static function ensureUploadTableExists(): void {
+        if (self::$checked) {
+            return;
+        }
+        self::$checked = true;
+        try {
+            $db = Database::getInstance()->getConnection();
+            $db->exec("CREATE TABLE IF NOT EXISTS uploaded_files (file_path VARCHAR(255) NOT NULL PRIMARY KEY, mime_type VARCHAR(50) NOT NULL, file_data LONGBLOB NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+        } catch (Throwable $e) {
+        }
+    }
+
+    public static function saveUploadedFileBackup(string $relativePath, string $mimeType, string $binaryData): void {
+        self::ensureUploadTableExists();
+        try {
+            $db = Database::getInstance()->getConnection();
+            $stmt = $db->prepare("INSERT INTO uploaded_files (file_path, mime_type, file_data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE mime_type = VALUES(mime_type), file_data = VALUES(file_data)");
+            $stmt->execute([ltrim($relativePath, '/'), $mimeType, $binaryData]);
+        } catch (Throwable $e) {
+        }
+    }
+
+    public static function deleteUploadedFileBackup(string $relativePath): void {
+        self::ensureUploadTableExists();
+        try {
+            $db = Database::getInstance()->getConnection();
+            $stmt = $db->prepare("DELETE FROM uploaded_files WHERE file_path = ?");
+            $stmt->execute([ltrim($relativePath, '/')]);
+        } catch (Throwable $e) {
+        }
+    }
+
    public static function getImageUrl(?string $path): string {
         if (empty($path)) {
             return BASE_URL . 'images/logos/logo.png';
         }
         
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, 'data:image/')) {
             return $path;
         }
         
         $cleanPath = ltrim($path, '/');
+        $fullPath = ROOT_DIR . '/' . $cleanPath;
         
-        if (file_exists(ROOT_DIR . '/' . $cleanPath)) {
+        if (file_exists($fullPath)) {
             return BASE_URL . $cleanPath;
+        }
+        
+        if (str_starts_with($cleanPath, 'uploads/')) {
+            try {
+                self::ensureUploadTableExists();
+                $db = Database::getInstance()->getConnection();
+                $stmt = $db->prepare("SELECT file_data FROM uploaded_files WHERE file_path = ? LIMIT 1");
+                $stmt->execute([$cleanPath]);
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($row && !empty($row['file_data'])) {
+                    $dir = dirname($fullPath);
+                    if (!is_dir($dir)) {
+                        @mkdir($dir, 0775, true);
+                    }
+                    @file_put_contents($fullPath, $row['file_data']);
+                    if (file_exists($fullPath)) {
+                        return BASE_URL . $cleanPath;
+                    }
+                }
+            } catch (Throwable $e) {
+            }
         }
         
         return BASE_URL . 'images/logos/logo.png';

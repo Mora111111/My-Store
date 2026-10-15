@@ -100,12 +100,41 @@ class AdminProductController {
         if (@getimagesize($_FILES[$fileKey]['tmp_name']) === false) {
             return null;
         }
+        $tmpName = $_FILES[$fileKey]['tmp_name'];
+        if (defined('IMGBB_API_KEY') && !empty(IMGBB_API_KEY)) {
+            try {
+                $imageBinary = @file_get_contents($tmpName);
+                if ($imageBinary !== false) {
+                    $chImgbb = curl_init('https://api.imgbb.com/1/upload');
+                    curl_setopt($chImgbb, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($chImgbb, CURLOPT_POST, true);
+                    curl_setopt($chImgbb, CURLOPT_TIMEOUT, 15);
+                    curl_setopt($chImgbb, CURLOPT_POSTFIELDS, [
+                        'key' => IMGBB_API_KEY,
+                        'image' => base64_encode($imageBinary)
+                    ]);
+                    $imgbbResponse = curl_exec($chImgbb);
+                    curl_close($chImgbb);
+                    $imgbbData = json_decode((string)$imgbbResponse, true);
+                    $imgbbUrl = $imgbbData['data']['url'] ?? '';
+                    if (is_string($imgbbUrl) && str_starts_with($imgbbUrl, 'http')) {
+                        return $imgbbUrl;
+                    }
+                }
+            } catch (Throwable $e) {
+            }
+        }
         $fileName = time() . '_' . uniqid() . '.' . $ext;
         $targetPath = $uploadDir . $fileName;
-        if (!move_uploaded_file($_FILES[$fileKey]['tmp_name'], $targetPath)) {
+        $binaryData = @file_get_contents($tmpName);
+        if (!move_uploaded_file($tmpName, $targetPath)) {
             return null;
         }
-        return 'uploads/' . $fileName;
+        $relativePath = 'uploads/' . $fileName;
+        if ($binaryData !== false) {
+            Product::saveUploadedFileBackup($relativePath, $mime, $binaryData);
+        }
+        return $relativePath;
     }
 
     public function edit(): void {
@@ -161,6 +190,9 @@ class AdminProductController {
                     if (!empty($existing[$dbField]) && file_exists(ROOT_DIR . '/' . ltrim($existing[$dbField], '/'))) {
                         unlink(ROOT_DIR . '/' . ltrim($existing[$dbField], '/'));
                     }
+                    if (!empty($existing[$dbField]) && !str_starts_with($existing[$dbField], 'http')) {
+                        Product::deleteUploadedFileBackup($existing[$dbField]);
+                    }
                 }
             }
 
@@ -197,6 +229,9 @@ class AdminProductController {
                 foreach ($imageFields as $field) {
                     if (!empty($product[$field]) && file_exists(ROOT_DIR . '/' . ltrim($product[$field], '/'))) {
                         unlink(ROOT_DIR . '/' . ltrim($product[$field], '/'));
+                    }
+                    if (!empty($product[$field]) && !str_starts_with($product[$field], 'http')) {
+                        Product::deleteUploadedFileBackup($product[$field]);
                     }
                 }
                 

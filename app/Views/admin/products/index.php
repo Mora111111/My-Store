@@ -164,9 +164,10 @@ document.getElementById('generateAiData').addEventListener('click', async () => 
         const data = await response.json();
         
         if(data && !data.error) {
+            const catVal = data.category_class || data.category;
             if(data.title) document.querySelector('input[name="title"]').value = data.title;
             if(data.title_en) document.querySelector('input[name="title_en"]').value = data.title_en;
-            if(data.category_class) document.querySelector('select[name="category_class"]').value = data.category_class;
+            if(catVal) document.querySelector('select[name="category_class"]').value = catVal;
             if(data.price) document.querySelector('input[name="price"]').value = data.price;
             if(data.description) {
                 let cleanText = data.description.replace(/<br\s*[\/]?>/gi, "\n").replace(/<\/p>/gi, "\n\n").replace(/<[^>]+>/ig, "");

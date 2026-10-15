@@ -85,24 +85,20 @@ class AiController {
         
         $api_key = GEMINI_API_KEY;
         $api_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $api_key;
-        $system_instruction = "أنت مساعد ذكي ومسوق محترف لمدير متجر إلكتروني. سأعطيك وصفاً مختصراً لمنتج. 
-مهمتك هي استخراج وتوليد البيانات التالية:
-1. title: اسم جذاب واحترافي للمنتج.
-2. price: سعر تقديري أو منطقي للمنتج بالجنيه المصري (أرقام فقط بدون فواصل).
-3. category: اختر القسم الأنسب بدقة من هذه القائمة فقط: (هواتف, جهاز لوحي, لابتوب, ساعات ذكية, فلاشات, كاميرات, راوترات, اكسسوارات, مستعمل).
-4. description: قم بكتابة وصف تسويقي تفصيلي وجذاب جداً للمنتج. اذكر مميزاته ولماذا يجب على العميل شراءه. 
-*هام جداً في الوصف*: استخدم علامات HTML البسيطة لتنسيق الوصف (مثل استخدام <p> للفقرات، <ul> و <li> للقوائم النقطية للمميزات، و <strong> للكلمات المهمة).
+$system_instruction = "أنت مساعد ذكي ومسوق محترف لمدير متجر إلكتروني. سأعطيك وصفاً مختصراً لمنتج.
+مهمتك هي استخراج وتوليد البيانات التالية، ويجب أن تكون كلها في كائن JSON واحد:
+1. title: اسم جذاب واحترافي للمنتج باللغة العربية.
+2. title_en: اسم جذاب واحترافي للمنتج باللغة الإنجليزية.
+3. price: سعر تقديري أو منطقي للمنتج بالجنيه المصري (أرقام فقط بدون فواصل).
+4. category_class: اختر القسم الأنسب بدقة. يجب أن يكون أحد هذه القيم التسع بالضبط بدون أي إضافات: (هواتف, جهاز لوحي, لابتوب, ساعات ذكية, فلاشات, كاميرات, راوترات, اكسسوارات, مستعمل).
+5. description: وصف تسويقي تفصيلي وجذاب جداً للمنتج باللغة العربية. اذكر مميزاته ولماذا يجب على العميل شراءه.
+6. description_en: وصف تسويقي تفصيلي وجذاب جداً للمنتج باللغة الإنجليزية.
+*هام جداً في الوصفين*: استخدم علامات HTML البسيطة لتنسيق الوصف (مثل استخدام <p> للفقرات، <ul> و <li> للقوائم النقطية للمميزات، و <strong> للكلمات المهمة).
 
 يجب أن يكون ردك عبارة عن كود JSON نقي فقط، بدون أي نصوص إضافية، وبدون علامات الماركداون.
 مثال للرد المطلوب:
-{\"title\": \"لابتوب ديل \", \"price\": \"15000\", \"category\": \"لابتوب\", \"description\": \"<p>اكتشف القوة مع لابتوب ديل...</p><ul><li>معالج قوي</li><li>رام 16 جيجا</li></ul>\"}";
+{\"title\": \"لابتوب ديل\", \"title_en\": \"Dell Laptop\", \"price\": \"15000\", \"category_class\": \"لابتوب\", \"description\": \"<p>اكتشف القوة مع لابتوب ديل...</p><ul><li>معالج قوي</li><li>رام 16 جيجا</li></ul>\", \"description_en\": \"<p>Discover power with the Dell laptop...</p><ul><li>Powerful processor</li><li>16GB RAM</li></ul>\"}";
 
-        if ($lang === 'en') {
-            $system_instruction .= "\nCRITICAL: You MUST respond strictly in English for ALL fields (title, description, category).";
-        } else {
-            $system_instruction .= "\nCRITICAL: You MUST respond strictly in Arabic for ALL fields.";
-        }
-        
         $payload = [
             "contents" => [
                 [
@@ -117,7 +113,22 @@ class AiController {
                 ]
             ],
             "generationConfig" => [
-                "responseMimeType" => "application/json"
+                "responseMimeType" => "application/json",
+                "responseSchema" => [
+                    "type" => "OBJECT",
+                    "properties" => [
+                        "title" => ["type" => "STRING"],
+                        "title_en" => ["type" => "STRING"],
+                        "price" => ["type" => "NUMBER"],
+                        "category_class" => [
+                            "type" => "STRING",
+                            "enum" => ["هواتف", "جهاز لوحي", "لابتوب", "ساعات ذكية", "فلاشات", "كاميرات", "راوترات", "اكسسوارات", "مستعمل"]
+                        ],
+                        "description" => ["type" => "STRING"],
+                        "description_en" => ["type" => "STRING"]
+                    ],
+                    "required" => ["title", "title_en", "price", "category_class", "description", "description_en"]
+                ]
             ]
         ];
         
