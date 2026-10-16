@@ -7,7 +7,7 @@ $sysSettings = $maintenanceSetting->getSettings();
 if (!empty($sysSettings['maintenance_mode'])) {
     $isAdmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
     $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    $isLoginRoute = ($currentUri === '/login');
+    $isLoginRoute = in_array($currentUri, ['/login', '/auth/google/login', '/auth/google/callback', '/switch-lang'], true);
 
     if (!$isAdmin && !$isLoginRoute) {
         $m_title = lang('maintenance_title');
@@ -162,6 +162,7 @@ if (!empty($sysSettings['maintenance_mode'])) {
                   <?php else: ?>
                       <a href="/profile" class="mob-btn"><i class="fa-solid fa-user-gear"></i> <?= lang('profile') ?></a>
                       <a href="/my-orders" class="mob-btn"><i class="fa-solid fa-box-open"></i> <?= lang('my_orders') ?></a>
+                      <a href="/my-messages" class="mob-btn"><i class="fa-solid fa-envelope"></i> <?= lang('my_messages') ?></a>
                   <?php endif; ?>
                   <a href="/logout" class="mob-btn" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ef4444;"></i> <?= lang('logout') ?></a>
               <?php else: ?>
