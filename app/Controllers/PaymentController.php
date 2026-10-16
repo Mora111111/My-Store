@@ -60,8 +60,14 @@ class PaymentController {
         $firstName = !empty($nameParts[0]) ? $nameParts[0] : 'Customer';
         $lastName = (count($nameParts) > 1 && !empty($nameParts[1])) ? $nameParts[1] : 'User';
         
-        $rawPhone = !empty($order['phone']) ? preg_replace('/[^0-9]/', '', $order['phone']) : '01000000000';
-        $finalPhone = $rawPhone ?: '01000000000';
+        $rawPhone = !empty($order['phone']) ? preg_replace('/[^0-9]/', '', $order['phone']) : '';
+        if (str_starts_with($rawPhone, '00201') && strlen($rawPhone) === 14) {
+            $rawPhone = substr($rawPhone, 3);
+        } else if (str_starts_with($rawPhone, '201') && strlen($rawPhone) === 12) {
+            $rawPhone = substr($rawPhone, 1);
+        }
+        $isValidEgyptianPhone = (bool)preg_match('/^01[0125][0-9]{8}$/', $rawPhone);
+        $finalPhone = $isValidEgyptianPhone ? $rawPhone : '01010101010';
 
         $paymentKeyResponse = $this->cURL('https://accept.paymob.com/api/acceptance/payment_keys', [
             'auth_token' => $token,
@@ -97,8 +103,18 @@ class PaymentController {
                 ],
                 'payment_token' => $paymentToken
             ]);
-            $redirectUrl = $walletResponse->redirect_url ?? null;
-            if ($redirectUrl) {
+            $redirectUrl = (!empty($walletResponse->redirect_url)) ? $walletResponse->redirect_url : ((!empty($walletResponse->iframe_redirection_url)) ? $walletResponse->iframe_redirection_url : null);
+            if (empty($redirectUrl) && $finalPhone !== '01010101010') {
+                $walletResponse = $this->cURL('https://accept.paymob.com/api/acceptance/payments/pay', [
+                    'source' => [
+                        'identifier' => '01010101010',
+                        'subtype' => 'WALLET'
+                    ],
+                    'payment_token' => $paymentToken
+                ]);
+                $redirectUrl = (!empty($walletResponse->redirect_url)) ? $walletResponse->redirect_url : ((!empty($walletResponse->iframe_redirection_url)) ? $walletResponse->iframe_redirection_url : null);
+            }
+            if (!empty($redirectUrl)) {
                 header('Location: ' . $redirectUrl);
                 exit;
             } else {
