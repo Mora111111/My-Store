@@ -74,10 +74,11 @@ if (!empty($sysSettings['maintenance_mode'])) {
     .mobile-sidebar-content { display: none; }
 
     @media (max-width: 800px) {
-      .safe-nav { height: auto; flex-wrap: wrap; padding: 15px !important; gap: 15px; }
-      .safe-right { order: 1; width: auto; gap: 0; }
-      .safe-logo { order: 2; margin-inline-end: auto; margin-inline-start: 0; }
-      .safe-search { order: 3; width: 100%; max-width: 100%; margin: 0; flex-basis: 100%; }
+      .safe-nav { height: auto; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 10px 15px !important; gap: 10px; }
+      .safe-right { order: 1; width: auto; display: flex; align-items: center; gap: 0; }
+      .safe-logo { order: 2; margin-inline-start: auto; margin-inline-end: 0; display: flex; align-items: center; }
+      .safe-logo img, .safe-logo .nav_logo { height: 38px !important; width: auto !important; max-width: 130px; object-fit: contain; border-radius: 6px; }
+      .safe-search { order: 3; flex: 0 0 100%; width: 100%; max-width: 100%; margin: 0; padding: 4px 14px; }
       .safe-icons { display: none !important; }
       .mobile-toggle { display: block; font-size: 26px; color: var(--main-color); cursor: pointer; margin-inline-start: 10px; }
       

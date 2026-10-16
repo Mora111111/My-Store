@@ -247,33 +247,39 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
               border-end-start-radius: 4px;
             }
 
-            @media (max-width: 600px) {
+            @media (max-width: 800px) {
               .dynamic-hero-slider {
+                display: block;
+                width: 100%;
+                max-width: 480px;
+                min-height: 240px;
+                aspect-ratio: 4 / 3;
+                margin: 0 auto;
                 border-radius: 16px;
               }
 
               .dynamic-hero-slider .slider-stage {
-                padding: 22px;
+                padding: 20px;
               }
 
               .dynamic-hero-slider .slider-caption {
                 inset-inline: 10px;
                 inset-block-end: 10px;
-                padding-block: 11px;
-                padding-inline: 14px;
+                padding-block: 10px;
+                padding-inline: 12px;
                 border-radius: 14px;
               }
 
               .dynamic-hero-slider .slider-nav-btn {
-                inline-size: 36px;
-                block-size: 36px;
-                margin-block-start: -18px;
+                inline-size: 34px;
+                block-size: 34px;
+                margin-block-start: -17px;
                 opacity: 1;
               }
 
               .dynamic-hero-slider .slider-arrow {
-                inline-size: 38px;
-                block-size: 38px;
+                inline-size: 36px;
+                block-size: 36px;
               }
             }
 

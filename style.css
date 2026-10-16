@@ -172,9 +172,22 @@ a {
     top: 0;
     width: 100%;
     height: 100vh;
-    background-color: #333;
     transition: var(--main-transition);
     z-index: 1001;
+  }
+
+  body {
+    padding-top: 130px !important;
+  }
+
+  main.main {
+    padding-top: 10px !important;
+  }
+
+  .about_us_page,
+  .contact_us,
+  .all_products {
+    padding-top: 20px !important;
   }
 
   .nav_menu_close {
@@ -464,30 +477,41 @@ a {
 
 @media only screen and (max-width: 800px) {
   .home {
+    height: auto !important;
+    min-height: auto !important;
+    padding: 20px 15px 30px !important;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
     text-align: center;
-    flex-wrap: wrap-reverse;
+    gap: 20px;
   }
 
-  .home_box_mobile {
-    margin: 0;
-  }
-
+  .home_box,
+  .home_box_mobile,
   .home_box:last-child {
-    margin-top: 70px;
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    margin: 0 !important;
   }
 
   .home_title {
-    font-size: 30px;
-    line-height: 50px;
-    margin: 18px 0;
+    font-size: 24px;
+    line-height: 1.45;
+    margin: 8px 0 12px;
   }
 
   .home_description {
-    font-size: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 14px;
   }
 
   .home_btn {
-    margin: 20px 0;
+    margin: 8px 0 0;
   }
 }
 
@@ -918,8 +942,28 @@ a {
 
 @media only screen and (max-width: 800px) {
   .brands {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    row-gap: 100px;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+    row-gap: 24px !important;
+    margin: 30px auto !important;
+    padding: 15px !important;
+    align-items: center;
+    justify-items: center;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .brand img {
+    max-width: 85px !important;
+    max-height: 50px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
   }
 }
 
@@ -1955,10 +1999,123 @@ input[type="checkbox"] {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
     gap: 15px;
   }
-  
+
+  .cards.grid_content {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .ser-container.grid_content,
+  .testimonial_boxs.grid_content {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .card {
+    padding: 8px;
+    border-radius: 10px;
+  }
+
   /* تصغير صور المنتجات لتوفير المساحة */
   .box_img { 
-    height: 200px; 
+    height: 140px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .box_img .card_image {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .card_details {
+    padding: 10px 6px 10px !important;
+  }
+
+  .card_title {
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 35px;
+  }
+
+  .card_details .rating i {
+    font-size: 11px;
+  }
+
+  .card_price {
+    font-size: 13px !important;
+    flex-wrap: wrap;
+    gap: 4px !important;
+  }
+
+  .card_btn {
+    padding: 8px 8px !important;
+    font-size: 12px !important;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .heart-action-btn {
+    padding: 6px 8px !important;
+    font-size: 15px !important;
+  }
+
+  .categories,
+  .featured_products,
+  .latest_products,
+  .offer,
+  .services,
+  .testimonial {
+    margin-top: 35px !important;
+    margin-bottom: 35px !important;
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+  }
+
+  .main_title {
+    font-size: 22px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .offer_items {
+    flex-wrap: wrap-reverse;
+    text-align: center;
+    padding: 25px 15px !important;
+    gap: 20px;
+  }
+
+  .offer_item {
+    width: 100%;
+  }
+
+  .offer_title {
+    font-size: 26px !important;
+    line-height: 1.35 !important;
+    margin: 10px 0 12px !important;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 30px 15px 20px !important;
+    margin-top: 30px !important;
+  }
+
+  .footer .container,
+  .footer_container,
+  .footer_boxs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px !important;
   }
   
   /* ضمان ظهور القائمة الجانبية فوق كل العناصر */
