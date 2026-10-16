@@ -1,6 +1,31 @@
+  <style>
+    .product-split-card {
+      margin-top: 130px;
+      margin-bottom: 50px;
+      max-width: 1150px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 35px;
+      display: grid !important;
+      grid-template-columns: minmax(300px, 45%) 1fr;
+      gap: 40px;
+      align-items: start;
+      border-radius: 16px;
+    }
+    .product-split-card:hover .card_image {
+      transform: scale(1.03);
+    }
+    @media (max-width: 850px) {
+      .product-split-card {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 25px;
+      }
+    }
+  </style>
   <div class="product_details_section container">
-    <div class="card" style="margin-top: 150px; margin-bottom: 50px; max-width: 600px; margin-left: auto; margin-right: auto; padding: 20px;">
-     <div class="product-gallery" style="display: flex; flex-direction: column; gap: 15px;">
+    <div class="card product-split-card">
+     <div class="product-gallery" style="display: flex; flex-direction: column; gap: 15px; position: sticky; top: 100px;">
        <div class="box_img main-image-container" style="height: 400px; background: #fff; padding: 10px; border-radius: 12px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; position: relative;">
            <?php if($has_coupon_discount): ?>
            <div style="position: absolute; top: 20px; right: 20px; background: #ef4444; color: #fff; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><?= lang('discount_text') ?> <?php echo $discount_pct_badge; ?>%</div>
@@ -30,7 +55,7 @@
            });
        </script>
      </div>
-      <div class="card_details" style="text-align: center; margin-top: 20px;">
+      <div class="card_details" style="text-align: start; margin-top: 0; padding: 5px 0;">
         <div style="margin-bottom: 15px;">
             <h2 class="product_details_title card_title" style="font-size: 24px; color: var(--main-color); margin: 0;"><?php echo htmlspecialchars(langField($product, 'title')); ?></h2>
         </div>
@@ -73,7 +98,7 @@
   </div>
 
   <div id="comments-section" class="container" style="margin-bottom: 60px;">
-    <div class="card" style="max-width: 800px; margin: 0 auto; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 10px;">
+    <div class="card" style="max-width: 1150px; margin: 0 auto; padding: 35px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 16px;">
         <h2 style="color: #2c3e50; margin-top:0; border-bottom: 2px solid #eee; padding-bottom: 15px;"><?= lang('customer_reviews') ?> <i class="fa-solid fa-comments" style="color: var(--main-color);"></i></h2>
 
         <div class="comments-list grid_content" style="margin-top: 25px; margin-bottom: 40px;">
