@@ -66,6 +66,10 @@ if (!empty($sysSettings['maintenance_mode'])) {
     }
     .lang-switch-btn:hover { background: #e2e8f0; color: var(--main-color); }
 
+    .profile-dropdown-container { position: relative; }
+    html[dir="ltr"] .profile-menu::before { left: 25px; right: auto; }
+    html[dir="rtl"] .profile-menu::before { right: 25px; left: auto; }
+
     .mobile-toggle { display: none; }
     .mobile-sidebar-content { display: none; }
 
@@ -120,7 +124,7 @@ if (!empty($sysSettings['maintenance_mode'])) {
               <a href="javascript:void(0);" class="login_link profile-trigger" id="profile-btn">
                 <i class="fa-solid fa-circle-user" style="color: var(--main-color); font-size: 26px;"></i>
               </a>
-              <div class="profile-menu" id="profile-menu" style="<?= $pageDir === 'rtl' ? 'left:-15px; right:auto;' : 'right:-15px; left:auto;' ?>">
+              <div class="profile-menu" id="profile-menu" style="<?= $pageDir === 'rtl' ? 'right:-15px; left:auto;' : 'left:-15px; right:auto;' ?>">
                 <div class="profile-header">
                   <?= lang('hello') ?>، <span><?php echo (isset($_SESSION['user_name']) && !empty(trim($_SESSION['user_name']))) ? htmlspecialchars(explode(' ', trim($_SESSION['user_name']))[0]) : lang('guest_user'); ?></span> 👋
                 </div>
