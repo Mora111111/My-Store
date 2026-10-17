@@ -12,7 +12,7 @@
     <tr>
       <td>
         <span style="display: inline-flex; align-items: center; gap: 10px;">
-          <img src="<?= htmlspecialchars($item['image_url']) ?>" width="40" height="40" style="border-radius:8px; object-fit:cover;">
+          <img src="<?= htmlspecialchars(Product::getImageUrl($item['image_url'] ?? '')) ?>" width="40" height="40" style="border-radius:8px; object-fit:cover;">
           <span style="font-weight:500;"><?= htmlspecialchars($item['title']) ?></span>
         </span>
       </td>

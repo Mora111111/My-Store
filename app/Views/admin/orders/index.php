@@ -28,7 +28,16 @@
       <?php if (!empty($orders)): ?>
         <?php foreach ($orders as $row):$status = $row['status'];$status_class = $status_map[$status] ?? 'status-pending';
           $display_status =$status_lang_map[$status] ?? $status;
-          $products_json = htmlspecialchars($row['products'], ENT_QUOTES, 'UTF-8');
+          $products_items = json_decode((string)($row['products'] ?? ''), true);
+          if (is_array($products_items)) {
+            foreach ($products_items as &$cart_item) {
+              if (is_array($cart_item) && array_key_exists('src', $cart_item)) {
+                $cart_item['src'] = Product::getImageUrl($cart_item['src'] ?? '');
+              }
+            }
+            unset($cart_item);
+          }
+          $products_json = htmlspecialchars(json_encode($products_items ?: [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), ENT_QUOTES, 'UTF-8');
           
           $pay_method = in_array($row['payment_method'] ?? 'cod', ['online', 'online_card', 'online_wallet']) ? '<span class="badge" style="background:#eff6ff; color:#3b82f6;"><i class="fa-regular fa-credit-card"></i> ' . lang('pay_online_badge') . '</span>' : '<span class="badge" style="background:#f0fdf4; color:#166534;"><i class="fa-solid fa-money-bill"></i> ' . lang('pay_cod_badge') . '</span>';
           $pay_status = ($row['payment_status'] ?? 'pending') === 'paid' ? '<span style="color:#10b981; font-size:12px; font-weight:bold;"><i class="fa-solid fa-check"></i> ' . lang('pay_status_paid') . '</span>' : '<span style="color:#f59e0b; font-size:12px; font-weight:bold;"><i class="fa-solid fa-clock"></i> ' . lang('pay_status_pending') . '</span>';
@@ -186,8 +195,8 @@ document.querySelectorAll('.details-btn').forEach(btn => {
         productsList.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;"><?= lang('no_product_details') ?></div>';
       } else {
         products.forEach(product => {
-          const rawSrc = product.src || 'images/logos/logo.png';
-          const imgUrl = rawSrc.startsWith('http') ? rawSrc : '<?= BASE_URL ?>' + rawSrc.replace(/^\/+/, '');
+          const rawSrc = product.src || '<?= BASE_URL ?>images/logos/logo.png';
+          const imgUrl = (rawSrc.startsWith('http') || rawSrc.startsWith('data:')) ? rawSrc : '<?= BASE_URL ?>' + rawSrc.replace(/^\/+/, '');
           const title = product.title || '<?= lang('unknown_product') ?>';
           const price = product.price || '0';
           const qty = product.number || product.quantity || product.qty || product.quantty || 1;

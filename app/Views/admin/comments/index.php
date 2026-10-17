@@ -14,7 +14,16 @@
       <tbody>
       <?php if (!empty($comments)): ?>
         <?php foreach ($comments as $row):
-          $safe_name = htmlspecialchars($row['customer_name']);
+          $raw_name = trim((string)($row['customer_name'] ?? ''));
+          $raw_email = trim((string)($row['customer_email'] ?? ''));
+          $name_matches_email = ($raw_email !== '' && strtolower($raw_name) === strtolower($raw_email));
+          if ($raw_name === '' || $name_matches_email) {
+            $display_name = $raw_email !== '' ? explode('@', $raw_email)[0] : $raw_name;
+          } else {
+            $display_name = $raw_name;
+          }
+          $safe_name = htmlspecialchars($display_name);
+          $safe_email = htmlspecialchars($raw_email);
           $safe_comment = htmlspecialchars($row['comment_text']);
           $safe_reply = htmlspecialchars($row['admin_reply'] ?? '');
           $status_badge = !empty($row['admin_reply']) ? "<span class='badge-success'><i class='fa-solid fa-circle-check'></i> " . lang('status_replied') . "</span>" : "<span class='badge-warning'><i class='fa-solid fa-clock'></i> " . lang('status_pending') . "</span>";
@@ -31,8 +40,8 @@
           <td>
               <div style="display: flex; flex-direction: column; gap: 4px;">
                   <span class="user-badge" style="width: fit-content;"><i class="fa-solid fa-user"></i> <?php echo $safe_name; ?></span>
-                  <?php if (!empty($row['customer_email'])): ?>
-                      <span style="font-size: 12px; color: #64748b; margin-right: 5px;"><i class="fa-solid fa-envelope"></i> <?php echo htmlspecialchars($row['customer_email']); ?></span>
+                  <?php if ($raw_email !== ''): ?>
+                      <span style="font-size: 12px; color: #64748b; margin-right: 5px;"><i class="fa-solid fa-envelope"></i> <?php echo $safe_email; ?></span>
                   <?php else: ?>
                       <span style="font-size: 12px; color: #cbd5e1; margin-right: 5px;"><?= lang('guest_no_email') ?></span>
                   <?php endif; ?>
