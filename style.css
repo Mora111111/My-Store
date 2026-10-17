@@ -176,18 +176,38 @@ a {
     z-index: 1001;
   }
 
+  html {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+  }
+
   body {
-    padding-top: 130px !important;
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-top: var(--mobile-header-offset, 7.5rem) !important;
+    box-sizing: border-box !important;
+  }
+
+  main,
+  .main,
+  .home {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   main.main {
-    padding-top: 10px !important;
+    padding-top: 0.625rem !important;
   }
 
-  .about_us_page,
+  .about_us_page {
+    padding-top: 1.5rem !important;
+  }
+
   .contact_us,
   .all_products {
-    padding-top: 20px !important;
+    padding-top: 1.25rem !important;
   }
 
   .nav_menu_close {
@@ -203,8 +223,9 @@ a {
 
   .nav-list {
     flex-direction: column;
+    flex-wrap: wrap;
     width: 100%;
-    margin-top: 60px;
+    margin-top: 0.5rem !important;
   }
 
   .login_link,
@@ -234,7 +255,11 @@ a {
   }
 
   .nav_logo {
-    width: 100px;
+    width: auto !important;
+    max-width: 32vw !important;
+    max-height: 2.375rem !important;
+    height: auto !important;
+    object-fit: contain;
   }
 
   .show_menu {
@@ -478,15 +503,15 @@ a {
 @media only screen and (max-width: 800px) {
   .home {
     height: auto !important;
-    min-height: auto !important;
-    padding: 20px 15px 30px !important;
+    min-height: 0 !important;
+    padding: 1.25rem 4% 1.875rem !important;
     display: flex;
     flex-direction: column;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: flex-start;
     text-align: center;
-    gap: 20px;
+    gap: 1.25rem;
   }
 
   .home_box,
@@ -864,7 +889,7 @@ a {
 
 @media only screen and (max-width: 800px) {
   .about_us_page {
-    padding-top: 100px;
+    padding-top: 1.5rem !important;
   }
 
   .about_brand {
@@ -943,24 +968,27 @@ a {
 @media only screen and (max-width: 800px) {
   .brands {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 20px !important;
-    row-gap: 24px !important;
-    margin: 30px auto !important;
-    padding: 15px !important;
+    gap: 1.25rem !important;
+    row-gap: 1.5rem !important;
+    margin: 1.875rem auto !important;
+    padding: 0.9375rem 4% !important;
     align-items: center;
     justify-items: center;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .brand {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     width: 100%;
   }
 
   .brand img {
-    max-width: 85px !important;
-    max-height: 50px !important;
+    max-width: 45% !important;
+    max-height: 3.125rem !important;
     width: auto !important;
     height: auto !important;
     object-fit: contain;
@@ -1199,7 +1227,9 @@ input[type="checkbox"] {
 
 @media only screen and (max-width: 576px) {
   .form-container {
-    max-width: 310px;
+    width: 100% !important;
+    max-width: 92vw !important;
+    box-sizing: border-box;
   }
 }
 
@@ -1334,13 +1364,16 @@ input[type="checkbox"] {
   }
 
   .map {
-    height: 200px;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 25vh !important;
+    aspect-ratio: 16 / 9;
   }
 }
 
 @media only screen and (max-width: 510px) {
   .contact_us {
-    padding: 100px 0 40px;
+    padding: 1.5rem 0 2rem !important;
   }
 
   .row_50 {
@@ -1986,15 +2019,16 @@ input[type="checkbox"] {
   /* ضبط حجم القائمة الجديدة على الهواتف */
   .profile-menu { 
     right: auto; 
-    left: -15px; 
-    width: 250px; 
+    left: -0.75rem; 
+    width: 75vw !important;
+    max-width: 15.5rem !important;
+    box-sizing: border-box;
   }
   .profile-menu::before {
     right: auto;
     left: 25px;
   }
   
-  /* تحسين عرض شبكة المنتجات على الموبايل لتظهر كروت مناسبة */
   .grid_content { 
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
     gap: 15px;
@@ -2002,24 +2036,34 @@ input[type="checkbox"] {
 
   .cards.grid_content {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 12px !important;
+    gap: 0.75rem !important;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .ser-container.grid_content,
   .testimonial_boxs.grid_content {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 1rem !important;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .card {
-    padding: 8px;
-    border-radius: 10px;
+    padding: 0.5rem;
+    border-radius: 0.625rem;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
-  /* تصغير صور المنتجات لتوفير المساحة */
   .box_img { 
-    height: 140px !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 8.75rem !important;
+    aspect-ratio: 4 / 3;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     overflow: hidden;
@@ -2075,10 +2119,10 @@ input[type="checkbox"] {
   .offer,
   .services,
   .testimonial {
-    margin-top: 35px !important;
-    margin-bottom: 35px !important;
-    padding-top: 15px !important;
-    padding-bottom: 15px !important;
+    margin-top: 2.1875rem !important;
+    margin-bottom: 2.1875rem !important;
+    padding-top: 0.9375rem !important;
+    padding-bottom: 0.9375rem !important;
   }
 
   .main_title {
@@ -2105,8 +2149,8 @@ input[type="checkbox"] {
 
   .footer {
     text-align: center;
-    padding: 30px 15px 20px !important;
-    margin-top: 30px !important;
+    padding: 1.875rem 4% 1.25rem !important;
+    margin-top: 1.875rem !important;
   }
 
   .footer .container,
@@ -2114,11 +2158,13 @@ input[type="checkbox"] {
   .footer_boxs {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 20px !important;
+    gap: 1.25rem !important;
+    width: 100%;
+    box-sizing: border-box;
   }
   
-  /* ضمان ظهور القائمة الجانبية فوق كل العناصر */
   .nav_menu { 
     z-index: 1000; 
   }
