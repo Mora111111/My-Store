@@ -329,9 +329,9 @@
         $pageLabel = $isAdminPage ? lang('admin_panel_page') : $page;
         $elapsed = time() - (int)($user['last_activity'] ?? 0);
         if ($elapsed < 60) {
-            $relative = vsprintf(lang('time_seconds_ago'), $elapsed);
+            $relative = sprintf(lang('time_seconds_ago'), (int)$elapsed);
         } elseif ($elapsed < 3600) {
-            $relative = vsprintf(lang('time_minutes_ago'), (int)floor($elapsed / 60));
+            $relative = sprintf(lang('time_minutes_ago'), (int)floor($elapsed / 60));
         } else {
             $relative = date('h:i A', (int)($user['last_activity'] ?? 0));
         }

@@ -43,11 +43,13 @@ class AdminController {
 
     public function onlineVisitors() {
         $db = Database::getInstance()->getConnection();
-        $now = time();
+        $cutoff = time() - 300;
 
-        $db->prepare("DELETE FROM online_users WHERE last_activity < ?")->execute([$now - 300]);
+        $delStmt = $db->prepare("DELETE FROM online_users WHERE last_activity < ?");
+        $delStmt->execute([$cutoff]);
 
-        $stmt = $db->query("SELECT * FROM online_users WHERE last_activity >= ? ORDER BY last_activity DESC");
+        $stmt = $db->prepare("SELECT * FROM online_users WHERE last_activity >= ? ORDER BY last_activity DESC");
+        $stmt->execute([$cutoff]);
         $onlineUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $unknownLabel = lang('undefined_location');
