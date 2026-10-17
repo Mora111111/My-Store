@@ -75,21 +75,22 @@
                ['name' => 'image_3', 'db' => 'image_3', 'label' => lang('img_3')],
                ['name' => 'image_4', 'db' => 'image_4', 'label' => lang('img_4')]
            ];
-           foreach($imgFields as $f):$currentImg = $product[$f['db']] ?? '';
-           ?>
-           <div style="border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; text-align: center; background: #f8fafc;">
+            foreach($imgFields as $f):$currentImg = $product[$f['db']] ?? '';
+            $isMainImage = ($f['name'] === 'image');
+            ?>
+            <div style="border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; text-align: center; background: #f8fafc;">
                <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #475569;"><?= $f['label']; ?></p>
                <div style="height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; background: #fff; border-radius: 4px; overflow: hidden;">
-                   <?php if(!empty($currentImg)): ?>
-                       <?php $displaySrc = strpos($currentImg, 'data:image') === 0 ? $currentImg : Product::getImageUrl($currentImg); ?>
-                       <img src="<?= htmlspecialchars($displaySrc); ?>" onerror="this.onerror=null;this.src='<?= BASE_URL ?>images/logos/logo.png';" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                   <?php if ($isMainImage || !empty($currentImg)): ?>
+                       <?php $displaySrc = Product::getImageUrl((string)($currentImg ?? '')); ?>
+                       <img<?= $isMainImage ? ' id="edit_image_preview"' : '' ?> src="<?= htmlspecialchars($displaySrc); ?>" alt="" onerror="this.onerror=null;this.src='<?= BASE_URL ?>images/logos/logo.png';" style="max-height: 100%; max-width: 100%; object-fit: contain;">
                    <?php else: ?>
                        <span style="color: #cbd5e1; font-size: 12px;"><?= lang('no_image') ?></span>
                    <?php endif; ?>
                </div>
-               <input type="file" name="<?= $f['name']; ?>" accept="image/png, image/jpeg, image/webp" style="width: 100%; font-size: 12px;">
-           </div>
-           <?php endforeach; ?>
+               <input type="file" name="<?= $f['name']; ?>"<?= $isMainImage ? ' id="edit_product_image"' : '' ?> accept="image/png, image/jpeg, image/webp" style="width: 100%; font-size: 12px;">
+            </div>
+            <?php endforeach; ?>
         </div>
      </div>
 
@@ -117,6 +118,18 @@ function closeAiModal() { document.getElementById('aiModal').style.display = 'no
 document.getElementById('openAiModal').addEventListener('click', function() {
     document.getElementById('aiModal').style.display = 'flex';
 });
+
+(function () {
+    var mainImageInput = document.getElementById('edit_product_image');
+    var mainImagePreview = document.getElementById('edit_image_preview');
+    if (!mainImageInput || !mainImagePreview) return;
+    mainImageInput.addEventListener('change', function () {
+        if (!this.files || !this.files[0]) return;
+        if (typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function') {
+            mainImagePreview.src = URL.createObjectURL(this.files[0]);
+        }
+    });
+})();
 
 document.getElementById('aiModal').addEventListener('click', function(e) {
     if (e.target === this) closeAiModal();

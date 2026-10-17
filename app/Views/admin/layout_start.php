@@ -248,6 +248,7 @@ function isActive($path) {
       .main-content {
         margin-right: 0 !important;
         margin-left: 0 !important;
+        padding-top: var(--admin-header-offset, 6.25rem) !important;
         width: 100% !important;
         max-width: 100% !important;
         min-height: 100vh;
@@ -256,12 +257,21 @@ function isActive($path) {
       }
 
       .header {
-        padding: 0.875rem 4% !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1020 !important;
+        background: rgba(255, 255, 255, 0.96) !important;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 0.25rem 1rem rgba(15, 23, 42, 0.06);
+        padding: 0.75rem 4% !important;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         align-items: center;
-        gap: 0.625rem;
+        gap: 0.5rem;
         width: 100%;
         box-sizing: border-box;
       }
@@ -464,6 +474,21 @@ function isActive($path) {
       var toggleBtn = document.getElementById('admin-menu-toggle');
       var closeBtn = document.getElementById('admin-sidebar-close');
       var backdrop = document.getElementById('admin-backdrop');
+      var adminHeader = document.querySelector('.main-content > .header');
+      function syncAdminHeaderOffset() {
+        if (!adminHeader) return;
+        var h = adminHeader.offsetHeight;
+        if (h > 0) {
+          document.documentElement.style.setProperty('--admin-header-offset', h + 'px');
+        }
+      }
+      syncAdminHeaderOffset();
+      if (adminHeader && typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(syncAdminHeaderOffset).observe(adminHeader);
+      } else {
+        window.addEventListener('resize', syncAdminHeaderOffset);
+      }
+      window.addEventListener('load', syncAdminHeaderOffset);
       if (!sidebar) return;
       function closeAdminDrawer() {
         sidebar.classList.remove('admin-sidebar-open');
