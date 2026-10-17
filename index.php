@@ -48,7 +48,9 @@ try {
 
 Language::load();
 
-Session::trackOnline();
+if ((string)(parse_url((string)($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH) ?: '') !== '/api/visitor-geo') {
+    Session::trackOnline();
+}
 
 $reaperFile = sys_get_temp_dir() . '/mystore_reaper.ts';
 if (!file_exists($reaperFile) || (time() - @filemtime($reaperFile)) >= 60) {

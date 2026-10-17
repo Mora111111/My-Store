@@ -343,7 +343,7 @@ class Session {
         return $fallback;
     }
 
-    private static function curlGet(string $url): ?string {
+    private static function curlGet(string $url, int $connectMs = 1200, int $totalMs = 1800): ?string {
         if (!function_exists('curl_init')) {
             return null;
         }
@@ -352,8 +352,8 @@ class Session {
             return null;
         }
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT_MS, 1200);
-        curl_setopt($handle, CURLOPT_TIMEOUT_MS, 1800);
+        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT_MS, $connectMs);
+        curl_setopt($handle, CURLOPT_TIMEOUT_MS, $totalMs);
         curl_setopt($handle, CURLOPT_USERAGENT, self::GEO_USER_AGENT);
         curl_setopt($handle, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($handle, CURLOPT_ACCEPT_ENCODING, '');
@@ -366,9 +366,111 @@ class Session {
         return (string)$body;
     }
 
+    public static function locationComplete(array $location): bool {
+        $country = trim((string)($location['country'] ?? ''));
+        $region = trim((string)($location['region'] ?? ''));
+        return $country !== '' && $country !== self::UNKNOWN && $region !== '' && $region !== self::UNKNOWN;
+    }
+
+    private static function isGenericEgyptGateway(?array $location): bool {
+        if (!is_array($location)) {
+            return false;
+        }
+        if (strtoupper((string)($location['country_code'] ?? '')) !== 'EG') {
+            return false;
+        }
+        return in_array(trim((string)($location['region'] ?? '')), ['القاهرة', 'الجيزة'], true);
+    }
+
+    private static function resolveFromOrderAddress($db, int $userId): ?array {
+        if ($db === null || $userId <= 0) {
+            return null;
+        }
+        try {
+            $stmt = $db->prepare("SELECT city, governorate FROM orders WHERE user_id = ? ORDER BY id DESC LIMIT 1");
+            $stmt->execute([$userId]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$row) {
+                return null;
+            }
+            $candidates = [
+                trim((string)($row['governorate'] ?? '')),
+                trim((string)($row['city'] ?? '')),
+            ];
+            foreach ($candidates as $candidate) {
+                if ($candidate === '' || $candidate === self::UNKNOWN) {
+                    continue;
+                }
+                $governorate = self::resolveGovernorate($candidate);
+                if ($governorate !== '') {
+                    return self::normalizeLocation('مصر', 'EG', $governorate, $governorate);
+                }
+            }
+        } catch (Throwable $e) {
+        }
+        return null;
+    }
+
+    public static function resolveProviders(string $ip, $userId = null): array {
+        $db = null;
+        try {
+            $db = Database::getInstance()->getConnection();
+        } catch (Throwable $e) {
+        }
+
+        if ($userId !== null && is_numeric($userId)) {
+            $fromOrder = self::resolveFromOrderAddress($db, (int)$userId);
+            if ($fromOrder !== null) {
+                return $fromOrder;
+            }
+        }
+
+        if (!self::isPublicIp($ip)) {
+            return self::normalizeLocation(self::UNKNOWN, '', '', '');
+        }
+
+        $tierOne = self::fetchTierOne($ip);
+        $tierOneComplete = is_array($tierOne) && self::locationComplete($tierOne);
+
+        if (!$tierOneComplete || self::isGenericEgyptGateway($tierOne)) {
+            $tierTwo = self::fetchTierTwo($ip);
+            if (is_array($tierTwo)) {
+                $tierTwoRegion = trim((string)($tierTwo['region'] ?? ''));
+                $tierTwoUsable = ($tierTwoRegion !== '' && $tierTwoRegion !== self::UNKNOWN && !self::isGenericEgyptGateway($tierTwo));
+                if ($tierTwoUsable) {
+                    return $tierTwo;
+                }
+                if (!$tierOneComplete) {
+                    $tierTwoCountry = trim((string)($tierTwo['country'] ?? ''));
+                    if ($tierTwoCountry !== '' && $tierTwoCountry !== self::UNKNOWN) {
+                        return $tierTwo;
+                    }
+                }
+            }
+        }
+
+        if ($tierOneComplete) {
+            return $tierOne;
+        }
+
+        if (is_array($tierOne)) {
+            $tierOneCountry = trim((string)($tierOne['country'] ?? ''));
+            if ($tierOneCountry !== '' && $tierOneCountry !== self::UNKNOWN) {
+                return $tierOne;
+            }
+        }
+
+        $cloudflare = self::resolveCloudflareLocation();
+        if (is_array($cloudflare)) {
+            return $cloudflare;
+        }
+
+        return is_array($tierOne) ? $tierOne : self::normalizeLocation(self::UNKNOWN, '', '', '');
+    }
+
     private static function fetchTierOne(string $ip): ?array {
         $url = 'http://ip-api.com/json/' . rawurlencode($ip) . '?fields=status,country,countryCode,regionName,city&lang=ar';
-        $raw = self::curlGet($url);
+        $raw = self::curlGet($url, 1500, 2500);
         if ($raw === null) {
             return null;
         }
@@ -385,7 +487,7 @@ class Session {
     }
 
     private static function fetchTierTwo(string $ip): ?array {
-        $raw = self::curlGet('https://ipwho.is/' . rawurlencode($ip));
+        $raw = self::curlGet('https://ipwho.is/' . rawurlencode($ip), 1500, 2500);
         if ($raw === null) {
             return null;
         }
@@ -401,28 +503,15 @@ class Session {
         );
     }
 
-    private static function fetchTierThree(string $ip): array {
-        $headerCode = '';
-        foreach (['HTTP_CF_IPCOUNTRY', 'HTTP_X_COUNTRY_CODE'] as $header) {
-            $value = strtoupper(trim((string)($_SERVER[$header] ?? '')));
-            if ($value !== '' && $value !== 'XX' && $value !== 'T1') {
-                $headerCode = $value;
-                break;
-            }
-        }
-        return self::normalizeLocation('', $headerCode, '', '');
-    }
-
-    private static function lookupCachedLocation(string $ip): ?array {
-        if ($ip === '') {
+    private static function lookupCachedLocation($db, string $ip): ?array {
+        if ($ip === '' || $db === null) {
             return null;
         }
         try {
-            $db = Database::getInstance()->getConnection();
-            $stmt = $db->prepare("SELECT country, country_code, region, city FROM online_users WHERE ip_address = ? AND country IS NOT NULL AND country != ? AND region IS NOT NULL AND region != '' LIMIT 1");
-            $stmt->execute([$ip, self::UNKNOWN]);
+            $stmt = $db->prepare("SELECT country, country_code, region, city FROM online_users WHERE ip_address = ? AND country IS NOT NULL AND country != ? AND region IS NOT NULL AND region != '' AND region != ? LIMIT 1");
+            $stmt->execute([$ip, self::UNKNOWN, self::UNKNOWN]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!$row || empty($row['country']) || empty($row['region'])) {
+            if (!$row) {
                 return null;
             }
             $cached = self::normalizeLocation(
@@ -431,6 +520,9 @@ class Session {
                 (string)($row['region'] ?? ''),
                 (string)($row['city'] ?? '')
             );
+            if (!self::locationComplete($cached)) {
+                return null;
+            }
             return $cached;
         } catch (Throwable $e) {
             return null;
@@ -452,39 +544,32 @@ class Session {
         $ipKey = $ip !== '' ? $ip : 'local';
 
         $cached = $_SESSION['visitor_location'] ?? null;
-        if (is_array($cached) && ($cached['ip'] ?? '') === $ipKey) {
-            $cachedCountry = trim((string)($cached['country'] ?? ''));
-            $cachedRegion = trim((string)($cached['region'] ?? ''));
-            $isPrecise = !empty($cached['precise']);
-            $isResolved = $cachedCountry !== '' && $cachedCountry !== self::UNKNOWN && $cachedRegion !== '' && $cachedRegion !== self::UNKNOWN;
-            if ($isPrecise || $isResolved) {
-                return $cached;
-            }
+        if (is_array($cached) && ($cached['ip'] ?? '') === $ipKey && self::locationComplete($cached)) {
+            return $cached;
         }
 
         if ($ip === '') {
             $resolved = self::normalizeLocation(self::UNKNOWN, '', '', '');
         } else {
-            $resolved = self::resolveCloudflareLocation();
-
-            if ($resolved === null) {
-                $resolved = self::lookupCachedLocation($ip);
+            $db = null;
+            try {
+                $db = Database::getInstance()->getConnection();
+            } catch (Throwable $e) {
             }
 
-            if ($resolved === null && !self::isPublicIp($ip)) {
-                $resolved = self::normalizeLocation(self::UNKNOWN, '', '', '');
+            $fromOrder = null;
+            $userId = $_SESSION['user_id'] ?? null;
+            if ($userId !== null && is_numeric($userId)) {
+                $fromOrder = self::resolveFromOrderAddress($db, (int)$userId);
             }
 
-            if ($resolved === null) {
-                $resolved = self::fetchTierOne($ip);
-            }
-
-            if ($resolved === null) {
-                $resolved = self::fetchTierTwo($ip);
-            }
-
-            if ($resolved === null) {
-                $resolved = self::fetchTierThree($ip);
+            if ($fromOrder !== null) {
+                $resolved = $fromOrder;
+            } else {
+                $resolved = self::lookupCachedLocation($db, $ip);
+                if ($resolved === null) {
+                    $resolved = self::resolveProviders($ip, null);
+                }
             }
         }
 
@@ -493,9 +578,7 @@ class Session {
         }
 
         $resolved['ip'] = $ipKey;
-        if (empty($resolved['precise'])) {
-            $resolved['precise'] = false;
-        }
+        $resolved['precise'] = false;
         $_SESSION['visitor_location'] = $resolved;
 
         return $resolved;
@@ -629,6 +712,37 @@ class Session {
         }
     }
 
+    public static function forceResolveIp(string $ip, $userId = null): ?array {
+        $ip = trim($ip);
+        if ($ip === '' || !filter_var($ip, FILTER_VALIDATE_IP) || !self::isPublicIp($ip)) {
+            return null;
+        }
+
+        $resolved = self::resolveProviders($ip, $userId);
+        if (!is_array($resolved) || !self::locationComplete($resolved)) {
+            $_SESSION['geo_force_failures'] = (int)($_SESSION['geo_force_failures'] ?? 0) + 1;
+            return null;
+        }
+
+        unset($_SESSION['geo_force_failures']);
+
+        try {
+            $db = Database::getInstance()->getConnection();
+            $stmt = $db->prepare("UPDATE online_users SET country = ?, country_code = ?, region = ?, city = ? WHERE ip_address = ? AND (region IS NULL OR region = '' OR region = ?)");
+            $stmt->execute([
+                $resolved['country'],
+                $resolved['country_code'],
+                $resolved['region'],
+                $resolved['city'],
+                $ip,
+                self::UNKNOWN,
+            ]);
+        } catch (Throwable $e) {
+        }
+
+        return $resolved;
+    }
+
     public static function updatePreciseLocation(): void {
         header('Content-Type: application/json; charset=utf-8');
 
@@ -643,6 +757,8 @@ class Session {
         $countryCode = trim((string)($payload['country_code'] ?? ''));
         $region = trim((string)($payload['region'] ?? ''));
         $city = trim((string)($payload['city'] ?? ''));
+        $latitude = isset($payload['lat']) ? (float)$payload['lat'] : null;
+        $longitude = isset($payload['lon']) ? (float)$payload['lon'] : null;
 
         if ($country === '' && $countryCode === '' && $region === '' && $city === '') {
             http_response_code(400);
@@ -655,6 +771,11 @@ class Session {
         };
 
         $norm = self::normalizeLocation($clamp($country), $clamp($countryCode), $clamp($region), $clamp($city));
+
+        if (trim((string)$norm['region']) === self::UNKNOWN || trim((string)$norm['region']) === '') {
+            echo json_encode(['status' => 'skipped']);
+            return;
+        }
 
         $ip = self::extractClientIp();
         if ($ip === '' || !filter_var($ip, FILTER_VALIDATE_IP)) {
@@ -687,6 +808,10 @@ class Session {
                 $ip,
             ]);
         } catch (Throwable $e) {
+        }
+
+        if ($latitude !== null && $longitude !== null) {
+            $_SESSION['visitor_coords'] = ['lat' => $latitude, 'lon' => $longitude];
         }
 
         echo json_encode(['status' => 'ok']);

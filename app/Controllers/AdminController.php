@@ -52,6 +52,27 @@ class AdminController {
         $stmt->execute([$cutoff]);
         $onlineUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        if ((int)($_SESSION['geo_force_failures'] ?? 0) < 3) {
+            foreach ($onlineUsers as &$healRow) {
+                $rowRegion = trim((string)($healRow['region'] ?? ''));
+                $rowIp = trim((string)($healRow['ip_address'] ?? ''));
+                if ($rowRegion !== '' && $rowRegion !== 'غير محدد') {
+                    continue;
+                }
+                if ($rowIp === '') {
+                    continue;
+                }
+                $forced = Session::forceResolveIp($rowIp, $healRow['user_id'] ?? null);
+                if (is_array($forced)) {
+                    $healRow['country'] = $forced['country'];
+                    $healRow['country_code'] = $forced['country_code'];
+                    $healRow['region'] = $forced['region'];
+                    $healRow['city'] = $forced['city'];
+                }
+            }
+            unset($healRow);
+        }
+
         foreach ($onlineUsers as &$visitor) {
             $normalized = Session::normalizeLocation(
                 (string)($visitor['country'] ?? ''),
