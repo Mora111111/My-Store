@@ -185,7 +185,7 @@ a {
     overflow-x: hidden !important;
     max-width: 100% !important;
     width: 100% !important;
-    padding-top: var(--mobile-header-offset, 7.5rem) !important;
+    padding-top: var(--mobile-header-offset, 4.25rem) !important;
     box-sizing: border-box !important;
   }
 
@@ -256,8 +256,8 @@ a {
 
   .nav_logo {
     width: auto !important;
-    max-width: 32vw !important;
-    max-height: 2.375rem !important;
+    max-width: 24vw !important;
+    max-height: 2.125rem !important;
     height: auto !important;
     object-fit: contain;
   }

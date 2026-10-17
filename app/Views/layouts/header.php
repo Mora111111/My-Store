@@ -74,13 +74,15 @@ if (!empty($sysSettings['maintenance_mode'])) {
     .mobile-sidebar-content { display: none; }
 
     @media (max-width: 800px) {
-      .safe-nav { height: auto; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 0.625rem 4% !important; gap: 0.625rem; }
-      .safe-right { order: 1; width: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 0; }
-      .safe-logo { order: 2; margin-inline-start: auto; margin-inline-end: 0; display: flex; flex-wrap: wrap; align-items: center; }
-      .safe-logo img, .safe-logo .nav_logo { max-height: 2.375rem !important; width: auto !important; max-width: 32vw !important; object-fit: contain; border-radius: 0.375rem; }
-      .safe-search { order: 3; flex: 0 0 100%; width: 100%; max-width: 100%; margin: 0; padding: 0.25rem 0.875rem; box-sizing: border-box; }
+      .safe-nav { height: auto; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 0.5rem 3% !important; gap: 0.5rem; }
+      .safe-right { order: 1; flex: 0 0 auto; width: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 0; }
+      .safe-search { order: 2; flex: 1 1 0%; width: auto; min-width: 0; max-width: none; margin: 0; padding: 0.1875rem 0.625rem; box-sizing: border-box; }
+      .safe-search input { width: 100%; min-width: 0; padding: 0.3125rem 0; font-size: 0.8125rem; }
+      .safe-search button { font-size: 0.9375rem; margin-inline-start: 0.375rem; padding: 0; flex-shrink: 0; }
+      .safe-logo { order: 3; flex: 0 0 auto; margin: 0; display: flex; flex-wrap: wrap; align-items: center; }
+      .safe-logo img, .safe-logo .nav_logo { max-height: 2.125rem !important; width: auto !important; max-width: 24vw !important; object-fit: contain; border-radius: 0.375rem; }
       .safe-icons { display: none !important; }
-      .mobile-toggle { display: block; font-size: 1.625rem; color: var(--main-color); cursor: pointer; margin-inline-start: 0.625rem; }
+      .mobile-toggle { display: block; font-size: 1.5rem; color: var(--main-color); cursor: pointer; margin: 0; }
       
       .nav_menu {
         position: fixed; top: 0; <?= $pageDir === 'rtl' ? 'right' : 'left' ?>: -100%; width: 82vw; max-width: 85%; height: 100vh;
