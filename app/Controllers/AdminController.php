@@ -52,6 +52,20 @@ class AdminController {
         $stmt->execute([$cutoff]);
         $onlineUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        foreach ($onlineUsers as &$visitor) {
+            $normalized = Session::normalizeLocation(
+                (string)($visitor['country'] ?? ''),
+                (string)($visitor['country_code'] ?? ''),
+                (string)($visitor['region'] ?? ''),
+                (string)($visitor['city'] ?? '')
+            );
+            $visitor['country'] = $normalized['country'];
+            $visitor['country_code'] = $normalized['country_code'];
+            $visitor['region'] = $normalized['region'];
+            $visitor['city'] = $normalized['city'];
+        }
+        unset($visitor);
+
         $unknownLabel = lang('undefined_location');
         $totalOnline = count($onlineUsers);
         $egyptCount = 0;

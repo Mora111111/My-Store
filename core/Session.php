@@ -99,66 +99,98 @@ class Session {
         return $map;
     }
 
+    private static function countryTable(): array {
+        static $table = null;
+        if ($table !== null) {
+            return $table;
+        }
+        $table = [
+            'EG' => ['ar' => 'مصر', 'en' => 'Egypt', 'alias' => []],
+            'SA' => ['ar' => 'السعودية', 'en' => 'Saudi Arabia', 'alias' => ['saudi']],
+            'AE' => ['ar' => 'الإمارات', 'en' => 'United Arab Emirates', 'alias' => ['uae']],
+            'KW' => ['ar' => 'الكويت', 'en' => 'Kuwait', 'alias' => []],
+            'QA' => ['ar' => 'قطر', 'en' => 'Qatar', 'alias' => []],
+            'BH' => ['ar' => 'البحرين', 'en' => 'Bahrain', 'alias' => []],
+            'OM' => ['ar' => 'عُمان', 'en' => 'Oman', 'alias' => []],
+            'JO' => ['ar' => 'الأردن', 'en' => 'Jordan', 'alias' => []],
+            'LB' => ['ar' => 'لبنان', 'en' => 'Lebanon', 'alias' => []],
+            'IQ' => ['ar' => 'العراق', 'en' => 'Iraq', 'alias' => []],
+            'LY' => ['ar' => 'ليبيا', 'en' => 'Libya', 'alias' => []],
+            'SD' => ['ar' => 'السودان', 'en' => 'Sudan', 'alias' => []],
+            'SS' => ['ar' => 'جنوب السودان', 'en' => 'South Sudan', 'alias' => ['southern sudan']],
+            'MA' => ['ar' => 'المغرب', 'en' => 'Morocco', 'alias' => []],
+            'TN' => ['ar' => 'تونس', 'en' => 'Tunisia', 'alias' => []],
+            'DZ' => ['ar' => 'الجزائر', 'en' => 'Algeria', 'alias' => []],
+            'PS' => ['ar' => 'فلسطين', 'en' => 'Palestine', 'alias' => ['palestinian territory']],
+            'SY' => ['ar' => 'سوريا', 'en' => 'Syria', 'alias' => ['syrian arab republic']],
+            'YE' => ['ar' => 'اليمن', 'en' => 'Yemen', 'alias' => []],
+            'US' => ['ar' => 'الولايات المتحدة', 'en' => 'United States', 'alias' => ['usa', 'united states of america', 'us', 'america']],
+            'GB' => ['ar' => 'المملكة المتحدة', 'en' => 'United Kingdom', 'alias' => ['uk', 'great britain', 'britain', 'england']],
+            'DE' => ['ar' => 'ألمانيا', 'en' => 'Germany', 'alias' => []],
+            'FR' => ['ar' => 'فرنسا', 'en' => 'France', 'alias' => []],
+            'TR' => ['ar' => 'تركيا', 'en' => 'Turkey', 'alias' => ['turkiye', 'türkiye']],
+            'RU' => ['ar' => 'روسيا', 'en' => 'Russia', 'alias' => ['russian federation']],
+            'CN' => ['ar' => 'الصين', 'en' => 'China', 'alias' => ['peoples republic of china']],
+            'JP' => ['ar' => 'اليابان', 'en' => 'Japan', 'alias' => []],
+            'IN' => ['ar' => 'الهند', 'en' => 'India', 'alias' => []],
+            'PK' => ['ar' => 'باكستان', 'en' => 'Pakistan', 'alias' => []],
+            'ID' => ['ar' => 'إندونيسيا', 'en' => 'Indonesia', 'alias' => []],
+            'MY' => ['ar' => 'ماليزيا', 'en' => 'Malaysia', 'alias' => []],
+            'CA' => ['ar' => 'كندا', 'en' => 'Canada', 'alias' => []],
+            'AU' => ['ar' => 'أستراليا', 'en' => 'Australia', 'alias' => []],
+            'NZ' => ['ar' => 'نيوزيلندا', 'en' => 'New Zealand', 'alias' => []],
+            'IT' => ['ar' => 'إيطاليا', 'en' => 'Italy', 'alias' => []],
+            'ES' => ['ar' => 'إسبانيا', 'en' => 'Spain', 'alias' => []],
+            'NL' => ['ar' => 'هولندا', 'en' => 'Netherlands', 'alias' => ['the netherlands', 'holland']],
+            'BE' => ['ar' => 'بلجيكا', 'en' => 'Belgium', 'alias' => []],
+            'SE' => ['ar' => 'السويد', 'en' => 'Sweden', 'alias' => []],
+            'NO' => ['ar' => 'النرويج', 'en' => 'Norway', 'alias' => []],
+            'DK' => ['ar' => 'الدنمارك', 'en' => 'Denmark', 'alias' => []],
+            'FI' => ['ar' => 'فنلندا', 'en' => 'Finland', 'alias' => []],
+            'CH' => ['ar' => 'سويسرا', 'en' => 'Switzerland', 'alias' => []],
+            'AT' => ['ar' => 'النمسا', 'en' => 'Austria', 'alias' => []],
+            'IE' => ['ar' => 'أيرلندا', 'en' => 'Ireland', 'alias' => []],
+            'PT' => ['ar' => 'البرتغال', 'en' => 'Portugal', 'alias' => []],
+            'GR' => ['ar' => 'اليونان', 'en' => 'Greece', 'alias' => []],
+            'BR' => ['ar' => 'البرازيل', 'en' => 'Brazil', 'alias' => []],
+            'MX' => ['ar' => 'المكسيك', 'en' => 'Mexico', 'alias' => []],
+            'ZA' => ['ar' => 'جنوب أفريقيا', 'en' => 'South Africa', 'alias' => []],
+            'NG' => ['ar' => 'نيجيريا', 'en' => 'Nigeria', 'alias' => []],
+            'KE' => ['ar' => 'كينيا', 'en' => 'Kenya', 'alias' => []],
+            'ET' => ['ar' => 'إثيوبيا', 'en' => 'Ethiopia', 'alias' => []],
+        ];
+        return $table;
+    }
+
+    private static function resolveCountryCode(string $name): string {
+        static $index = null;
+        if ($index === null) {
+            $index = [];
+            foreach (self::countryTable() as $code => $entry) {
+                $index[self::normalizeKey((string)$entry['ar'])] = $code;
+                $index[self::normalizeKey((string)$entry['en'])] = $code;
+                $index[strtolower($code)] = $code;
+                foreach ((array)$entry['alias'] as $alias) {
+                    $index[self::normalizeKey((string)$alias)] = $code;
+                }
+            }
+        }
+        $key = self::normalizeKey($name);
+        if ($key === '') {
+            return '';
+        }
+        return $index[$key] ?? '';
+    }
+
     public static function countryNameMap(): array {
         static $map = null;
         if ($map !== null) {
             return $map;
         }
-        $map = [
-            'EG' => 'مصر',
-            'SA' => 'السعودية',
-            'AE' => 'الإمارات',
-            'KW' => 'الكويت',
-            'QA' => 'قطر',
-            'BH' => 'البحرين',
-            'OM' => 'عُمان',
-            'JO' => 'الأردن',
-            'LB' => 'لبنان',
-            'IQ' => 'العراق',
-            'LY' => 'ليبيا',
-            'SD' => 'السودان',
-            'SS' => 'جنوب السودان',
-            'MA' => 'المغرب',
-            'TN' => 'تونس',
-            'DZ' => 'الجزائر',
-            'PS' => 'فلسطين',
-            'SY' => 'سوريا',
-            'YE' => 'اليمن',
-            'US' => 'الولايات المتحدة',
-            'GB' => 'المملكة المتحدة',
-            'DE' => 'ألمانيا',
-            'FR' => 'فرنسا',
-            'TR' => 'تركيا',
-            'RU' => 'روسيا',
-            'CN' => 'الصين',
-            'JP' => 'اليابان',
-            'IN' => 'الهند',
-            'PK' => 'باكستان',
-            'ID' => 'إندونيسيا',
-            'MY' => 'ماليزيا',
-            'CA' => 'كندا',
-            'AU' => 'أستراليا',
-            'NZ' => 'نيوزيلندا',
-            'IT' => 'إيطاليا',
-            'ES' => 'إسبانيا',
-            'NL' => 'هولندا',
-            'BE' => 'بلجيكا',
-            'SE' => 'السويد',
-            'NO' => 'النرويج',
-            'DK' => 'الدنمارك',
-            'FI' => 'فنلندا',
-            'CH' => 'سويسرا',
-            'AT' => 'النمسا',
-            'IE' => 'أيرلندا',
-            'PT' => 'البرتغال',
-            'GR' => 'اليونان',
-            'BR' => 'البرازيل',
-            'MX' => 'المكسيك',
-            'ZA' => 'جنوب أفريقيا',
-            'NG' => 'نيجيريا',
-            'KE' => 'كينيا',
-            'ET' => 'إثيوبيا',
-        ];
+        $map = [];
+        foreach (self::countryTable() as $code => $entry) {
+            $map[$code] = (string)$entry['ar'];
+        }
         return $map;
     }
 
@@ -169,7 +201,9 @@ class Session {
         $city = trim($city);
 
         $lowCountry = mb_strtolower($country, 'UTF-8');
+        $nameCode = self::resolveCountryCode($country);
         $isEgypt = ($countryCode === 'EG')
+            || ($nameCode === 'EG')
             || in_array($lowCountry, ['egypt', 'مصر'], true)
             || in_array(self::normalizeKey($country), ['egypt', 'مصر'], true);
 
@@ -188,8 +222,17 @@ class Session {
         }
 
         $names = self::countryNameMap();
+
+        if ($countryCode === '' || !isset($names[$countryCode])) {
+            if ($nameCode !== '') {
+                $countryCode = $nameCode;
+            }
+        }
+
         if ($country === '' || self::normalizeKey($country) === self::normalizeKey(self::UNKNOWN)) {
             $country = isset($names[$countryCode]) ? $names[$countryCode] : ($countryCode !== '' ? $countryCode : self::UNKNOWN);
+        } elseif ($nameCode !== '' && isset($names[$nameCode])) {
+            $country = $names[$nameCode];
         }
 
         $resolvedRegion = trim($region);
@@ -242,6 +285,12 @@ class Session {
     private static function isTrackableRequest(): bool {
         $uri = (string)($_SERVER['REQUEST_URI'] ?? '/');
         $path = (string)(parse_url($uri, PHP_URL_PATH) ?: $uri);
+
+        $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
+        if ($method === 'HEAD' || $method === 'OPTIONS') {
+            return false;
+        }
+
         $extension = strtolower((string)pathinfo($path, PATHINFO_EXTENSION));
         $staticExtensions = [
             'css', 'js', 'mjs', 'map', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg', 'ico',
@@ -251,10 +300,16 @@ class Session {
         if ($extension !== '' && in_array($extension, $staticExtensions, true)) {
             return false;
         }
+
         $agent = (string)($_SERVER['HTTP_USER_AGENT'] ?? '');
-        if ($agent !== '' && preg_match('/render|uptimerobot|pingdom|statuscake|gtmetrix/i', $agent)) {
+        if ($agent !== '' && preg_match('/render|uptimerobot|pingdom|statuscake|gtmetrix|googlehc|kube-probe|go-http-client|curl|wget|python-requests|node-fetch|headlesschrome|libwww-perl|java\/|okhttp|axios/i', $agent)) {
             return false;
         }
+
+        if (empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) && $path === '/') {
+            return false;
+        }
+
         return true;
     }
 
@@ -382,6 +437,16 @@ class Session {
         }
     }
 
+    private static function resolveCloudflareLocation(): ?array {
+        $country = strtoupper(trim((string)($_SERVER['HTTP_CF_IPCOUNTRY'] ?? '')));
+        if ($country === '' || $country === 'XX' || $country === 'T1' || $country === 'UNKNOWN') {
+            return null;
+        }
+        $region = trim((string)($_SERVER['HTTP_CF_REGION'] ?? ''));
+        $city = trim((string)($_SERVER['HTTP_CF_IPCITY'] ?? ''));
+        return self::normalizeLocation('', $country, $region, $city);
+    }
+
     private static function getVisitorLocation(): array {
         $ip = self::extractClientIp();
         $ipKey = $ip !== '' ? $ip : 'local';
@@ -390,7 +455,9 @@ class Session {
         if (is_array($cached) && ($cached['ip'] ?? '') === $ipKey) {
             $cachedCountry = trim((string)($cached['country'] ?? ''));
             $cachedRegion = trim((string)($cached['region'] ?? ''));
-            if ($cachedCountry !== '' && $cachedCountry !== self::UNKNOWN && $cachedRegion !== '' && $cachedRegion !== self::UNKNOWN) {
+            $isPrecise = !empty($cached['precise']);
+            $isResolved = $cachedCountry !== '' && $cachedCountry !== self::UNKNOWN && $cachedRegion !== '' && $cachedRegion !== self::UNKNOWN;
+            if ($isPrecise || $isResolved) {
                 return $cached;
             }
         }
@@ -398,7 +465,11 @@ class Session {
         if ($ip === '') {
             $resolved = self::normalizeLocation(self::UNKNOWN, '', '', '');
         } else {
-            $resolved = self::lookupCachedLocation($ip);
+            $resolved = self::resolveCloudflareLocation();
+
+            if ($resolved === null) {
+                $resolved = self::lookupCachedLocation($ip);
+            }
 
             if ($resolved === null && !self::isPublicIp($ip)) {
                 $resolved = self::normalizeLocation(self::UNKNOWN, '', '', '');
@@ -422,6 +493,9 @@ class Session {
         }
 
         $resolved['ip'] = $ipKey;
+        if (empty($resolved['precise'])) {
+            $resolved['precise'] = false;
+        }
         $_SESSION['visitor_location'] = $resolved;
 
         return $resolved;
@@ -487,6 +561,14 @@ class Session {
             return;
         }
 
+        $ip = self::extractClientIp();
+        if ($ip === '' || !filter_var($ip, FILTER_VALIDATE_IP)) {
+            return;
+        }
+        if (!self::isPublicIp($ip)) {
+            return;
+        }
+
         try {
             $db = Database::getInstance()->getConnection();
             $time = time();
@@ -525,7 +607,7 @@ class Session {
                 $userId,
                 $userName,
                 $time,
-                $location['ip'] ?? '',
+                $ip,
                 $location['country'] ?? self::UNKNOWN,
                 $location['country_code'] ?? '',
                 $location['region'] ?? self::UNKNOWN,
@@ -534,9 +616,80 @@ class Session {
                 $deviceType,
             ]);
 
+            if ($userId !== null) {
+                $dedupe = $db->prepare("DELETE FROM online_users WHERE session_id != ? AND (user_id = ? OR (user_id IS NULL AND ip_address = ?))");
+                $dedupe->execute([$sessionId, $userId, $ip]);
+            } else {
+                $dedupe = $db->prepare("DELETE FROM online_users WHERE session_id != ? AND user_id IS NULL AND ip_address = ? AND device_type = ?");
+                $dedupe->execute([$sessionId, $ip, $deviceType]);
+            }
+
             $db->prepare("DELETE FROM online_users WHERE last_activity < ?")->execute([$time - self::OFFLINE_TTL]);
         } catch (Throwable $e) {
         }
+    }
+
+    public static function updatePreciseLocation(): void {
+        header('Content-Type: application/json; charset=utf-8');
+
+        $payload = json_decode((string)@file_get_contents('php://input'), true);
+        if (!is_array($payload)) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'invalid_payload']);
+            return;
+        }
+
+        $country = trim((string)($payload['country'] ?? ''));
+        $countryCode = trim((string)($payload['country_code'] ?? ''));
+        $region = trim((string)($payload['region'] ?? ''));
+        $city = trim((string)($payload['city'] ?? ''));
+
+        if ($country === '' && $countryCode === '' && $region === '' && $city === '') {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'empty_payload']);
+            return;
+        }
+
+        $clamp = static function (string $value): string {
+            return mb_substr(trim($value), 0, 120);
+        };
+
+        $norm = self::normalizeLocation($clamp($country), $clamp($countryCode), $clamp($region), $clamp($city));
+
+        $ip = self::extractClientIp();
+        if ($ip === '' || !filter_var($ip, FILTER_VALIDATE_IP)) {
+            $ip = 'local';
+        }
+
+        $stored = $_SESSION['visitor_location'] ?? [];
+        if (!is_array($stored)) {
+            $stored = [];
+        }
+
+        $stored['ip'] = $ip;
+        $stored['country'] = $norm['country'];
+        $stored['country_code'] = $norm['country_code'];
+        $stored['region'] = $norm['region'];
+        $stored['city'] = $norm['city'];
+        $stored['precise'] = true;
+        $_SESSION['visitor_location'] = $stored;
+
+        try {
+            self::ensureOnlineSchema();
+            $db = Database::getInstance()->getConnection();
+            $update = $db->prepare("UPDATE online_users SET country = ?, country_code = ?, region = ?, city = ? WHERE session_id = ? OR ip_address = ?");
+            $update->execute([
+                $norm['country'],
+                $norm['country_code'],
+                $norm['region'],
+                $norm['city'],
+                (string)session_id(),
+                $ip,
+            ]);
+        } catch (Throwable $e) {
+        }
+
+        echo json_encode(['status' => 'ok']);
     }
 
     public static function getOnlineCount(): int {
