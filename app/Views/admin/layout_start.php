@@ -26,7 +26,9 @@ function isActive($path) {
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Tajawal', sans-serif; background: #f8fafc; color: #1e293b; }
-    .sidebar { width: 280px; background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); color: #f1f5f9; padding: 30px 0; display: flex; flex-direction: column; position: fixed; top: 0; <?= $pageDir === 'rtl' ? 'right' : 'left' ?>: 0; height: 100vh; z-index: 10; box-shadow: <?= $pageDir === 'rtl' ? '-5px' : '5px' ?> 0 20px rgba(0,0,0,0.08); }
+    .sidebar { width: 280px; background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); color: #f1f5f9; padding: 30px 0; display: flex; flex-direction: column; position: fixed; top: 0; <?= $pageDir === 'rtl' ? 'right' : 'left' ?>: 0; height: 100vh; z-index: 10; box-shadow: <?= $pageDir === 'rtl' ? '-5px' : '5px' ?> 0 20px rgba(0,0,0,0.08); overflow-y: auto; overflow-x: hidden; }
+    .header-title-group { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+    .admin-menu-toggle, .admin-sidebar-close, .admin-backdrop { display: none; }
     .sidebar h2 { text-align: center; margin-bottom: 40px; font-size: 26px; font-weight: 700; background: linear-gradient(135deg, #38bdf8, #2dd4bf); -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0 15px; }
     .sidebar a { display: flex; align-items: center; color: #cbd5e1; padding: 14px 25px; margin: 4px 12px; text-decoration: none; border-radius: 12px; font-size: 16px; font-weight: 500; transition: all 0.3s; }
     .sidebar a i { margin-<?= $pageDir === 'rtl' ? 'left' : 'right' ?>: 15px; width: 24px; text-align: center; font-size: 18px; }
@@ -165,10 +167,233 @@ function isActive($path) {
     .btn-save-modern { padding: 12px 24px; background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #ffffff; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3); }
     .btn-save-modern:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(2, 132, 199, 0.4); }
     @keyframes slideUpModal { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    @media only screen and (max-width: 800px) {
+      html,
+      body {
+        overflow-x: hidden !important;
+        max-width: 100% !important;
+        width: 100% !important;
+      }
+
+      .sidebar {
+        width: 82vw !important;
+        max-width: 18rem !important;
+        <?= $pageDir === 'rtl' ? 'right' : 'left' ?>: -100% !important;
+        padding: 1.5rem 0 2rem !important;
+        z-index: 1050 !important;
+        transition: 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        box-sizing: border-box !important;
+      }
+
+      .sidebar.admin-sidebar-open {
+        <?= $pageDir === 'rtl' ? 'right' : 'left' ?>: 0 !important;
+      }
+
+      .sidebar h2 {
+        margin-bottom: 1.25rem !important;
+        font-size: 1.35rem !important;
+        padding: 0 3rem 0 1rem !important;
+      }
+
+      .sidebar a {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 0.75rem 1.125rem !important;
+        margin: 0.2rem 0.625rem !important;
+        font-size: 0.9375rem !important;
+      }
+
+      .admin-sidebar-close {
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 1rem;
+        <?= $pageDir === 'rtl' ? 'left' : 'right' ?>: 1rem;
+        width: 2.125rem;
+        height: 2.125rem;
+        border-radius: 50%;
+        border: none;
+        background: rgba(239, 68, 68, 0.16);
+        color: #f87171;
+        font-size: 1.125rem;
+        cursor: pointer;
+      }
+
+      .admin-backdrop {
+        display: block !important;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 1040;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+      }
+
+      .admin-backdrop.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .main-content {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 100vh;
+        overflow-x: hidden !important;
+        box-sizing: border-box !important;
+      }
+
+      .header {
+        padding: 0.875rem 4% !important;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.625rem;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .header-title-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.625rem;
+        min-width: 0;
+        flex: 1 1 auto;
+      }
+
+      .admin-menu-toggle {
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        width: 2.375rem;
+        height: 2.375rem;
+        border-radius: 0.625rem;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        color: #0f172a;
+        font-size: 1.15rem;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      .header h3 {
+        font-size: 1.125rem !important;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        min-width: 0;
+      }
+
+      .header-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem !important;
+        align-items: center;
+      }
+
+      .view-store-btn,
+      .logout-btn {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.8125rem !important;
+        border-radius: 0.625rem !important;
+      }
+
+      .content-area {
+        padding: 1.25rem 4% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        box-sizing: border-box !important;
+      }
+
+      .welcome-card {
+        padding: 1.25rem 5% !important;
+        margin-bottom: 1.25rem !important;
+        border-radius: 1rem !important;
+        display: flex;
+        flex-wrap: wrap;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .stats-container,
+      .stats-grid-beautiful {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 0.875rem !important;
+        margin-bottom: 1.5rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .b-card,
+      .stat-card {
+        padding: 1rem !important;
+        border-radius: 1rem !important;
+        gap: 0.875rem !important;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      table {
+        display: block;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        box-sizing: border-box;
+      }
+
+      td:last-child {
+        width: auto !important;
+        min-width: 0 !important;
+        white-space: nowrap;
+      }
+
+      .modal-content,
+      .modal-content-modern,
+      .ai-modal-content {
+        width: 92vw !important;
+        max-width: 92vw !important;
+        padding: 1.25rem 5% !important;
+        max-height: 88vh;
+        overflow-y: auto;
+        box-sizing: border-box !important;
+      }
+
+      .modal-body-modern {
+        padding: 1rem !important;
+      }
+
+      .textarea-modern {
+        height: auto !important;
+        min-height: 6.5rem !important;
+      }
+    }
   </style>
 </head>
 <body>
-<div class="sidebar">
+<div class="sidebar" id="admin-sidebar">
+    <button type="button" class="admin-sidebar-close" id="admin-sidebar-close" aria-label="Close Menu">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
     <h2><?= lang('store_manager') ?></h2>
     <a href="/admin" class="<?= isActive('/admin') ?>">
         <i class="fa-solid fa-house"></i><span><?= lang('menu_home') ?></span>
@@ -205,9 +430,16 @@ function isActive($path) {
     </a>
 </div>
 
+<div class="admin-backdrop" id="admin-backdrop"></div>
+
 <div class="main-content">
     <div class="header">
-      <h3><i class="fa-solid <?= $pageIcon ?? 'fa-cog' ?>" style="color:#38bdf8;"></i><?= $pageTitle ?? lang('admin_default_title') ?></h3>
+      <div class="header-title-group">
+        <button type="button" class="admin-menu-toggle" id="admin-menu-toggle" aria-label="Open Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <h3><i class="fa-solid <?= $pageIcon ?? 'fa-cog' ?>" style="color:#38bdf8;"></i><?= $pageTitle ?? lang('admin_default_title') ?></h3>
+      </div>
       
       <div class="header-actions">
           <a href="/" target="_blank" class="view-store-btn" title="<?= lang('open_store_window') ?>">
@@ -225,4 +457,26 @@ function isActive($path) {
       </div>
       
     </div>
+
+    <script>
+    (function () {
+      var sidebar = document.querySelector('.sidebar');
+      var toggleBtn = document.getElementById('admin-menu-toggle');
+      var closeBtn = document.getElementById('admin-sidebar-close');
+      var backdrop = document.getElementById('admin-backdrop');
+      if (!sidebar) return;
+      function closeAdminDrawer() {
+        sidebar.classList.remove('admin-sidebar-open');
+        if (backdrop) backdrop.classList.remove('active');
+      }
+      function openAdminDrawer() {
+        sidebar.classList.add('admin-sidebar-open');
+        if (backdrop) backdrop.classList.add('active');
+      }
+      if (toggleBtn) toggleBtn.addEventListener('click', openAdminDrawer);
+      if (closeBtn) closeBtn.addEventListener('click', closeAdminDrawer);
+      if (backdrop) backdrop.addEventListener('click', closeAdminDrawer);
+    })();
+    </script>
+
     <div class="content-area">
