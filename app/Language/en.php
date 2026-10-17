@@ -292,6 +292,18 @@ return [
     'unknown_ip' => 'Unknown',
     'undefined_location' => 'Undefined',
     'no_online_visitors' => 'No online visitors currently.',
+    'stats_total_online' => 'Total Online Now',
+    'stats_egypt_visitors' => 'Visitors From Egypt',
+    'stats_foreign_visitors' => 'Visitors From Abroad',
+    'geo_breakdown_title' => 'Geographic Distribution of Current Visitors',
+    'col_governorate' => 'Governorate / Region',
+    'col_page_device' => 'Page & Device',
+    'device_mobile' => 'Mobile',
+    'device_desktop' => 'Desktop',
+    'time_now' => 'Just now',
+    'time_minutes_ago' => '%d min ago',
+    'time_seconds_ago' => '%d sec ago',
+    'admin_panel_page' => 'Admin Panel',
 
     // Admin Comments
     'admin_comments_title' => 'Customer Comments & Ratings Management',

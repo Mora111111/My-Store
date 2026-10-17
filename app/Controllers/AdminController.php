@@ -43,8 +43,47 @@ class AdminController {
 
     public function onlineVisitors() {
         $db = Database::getInstance()->getConnection();
-        $stmt = $db->query("SELECT * FROM online_users ORDER BY last_activity DESC");
+        $now = time();
+
+        $db->prepare("DELETE FROM online_users WHERE last_activity < ?")->execute([$now - 300]);
+
+        $stmt = $db->query("SELECT * FROM online_users WHERE last_activity >= ? ORDER BY last_activity DESC");
         $onlineUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $unknownLabel = lang('undefined_location');
+        $totalOnline = count($onlineUsers);
+        $egyptCount = 0;
+        $governorateBreakdown = [];
+        $countryBreakdown = [];
+
+        foreach ($onlineUsers as $visitor) {
+            $code = strtoupper(trim((string)($visitor['country_code'] ?? '')));
+            $country = trim((string)($visitor['country'] ?? ''));
+            if ($country === '' || $country === 'غير محدد') {
+                $country = $unknownLabel;
+            }
+            $isEgypt = ($code === 'EG') || ($country === 'مصر');
+            if ($isEgypt) {
+                $egyptCount++;
+                $governorate = trim((string)($visitor['region'] ?? ''));
+                if ($governorate === '' || $governorate === 'غير محدد') {
+                    $governorate = $unknownLabel;
+                }
+                if (!isset($governorateBreakdown[$governorate])) {
+                    $governorateBreakdown[$governorate] = 0;
+                }
+                $governorateBreakdown[$governorate]++;
+            } else {
+                if (!isset($countryBreakdown[$country])) {
+                    $countryBreakdown[$country] = 0;
+                }
+                $countryBreakdown[$country]++;
+            }
+        }
+
+        $foreignCount = $totalOnline - $egyptCount;
+        arsort($governorateBreakdown);
+        arsort($countryBreakdown);
 
         $showSearch = false;
         $pageTitle = 'الزوار المتصلين';

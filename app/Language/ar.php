@@ -279,6 +279,18 @@ return [
     'unknown_ip' => 'غير معروف',
     'undefined_location' => 'غير محدد',
     'no_online_visitors' => 'لا يوجد زوار متصلين حالياً.',
+    'stats_total_online' => 'إجمالي المتصلين الآن',
+    'stats_egypt_visitors' => 'زوار من داخل مصر',
+    'stats_foreign_visitors' => 'زوار من خارج مصر',
+    'geo_breakdown_title' => 'التوزيع الجغرافي للمتصلين حالياً',
+    'col_governorate' => 'المحافظة / المنطقة',
+    'col_page_device' => 'الصفحة والجهاز',
+    'device_mobile' => 'موبايل',
+    'device_desktop' => 'كمبيوتر',
+    'time_now' => 'الآن',
+    'time_minutes_ago' => 'منذ %d دقيقة',
+    'time_seconds_ago' => 'منذ %d ثانية',
+    'admin_panel_page' => 'لوحة التحكم',
 
     // Admin Comments
     'admin_comments_title' => 'إدارة تعليقات وتقييمات العملاء',

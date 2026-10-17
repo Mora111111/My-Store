@@ -1,0 +1,369 @@
+================================================================================
+ACTIVE VISITORS / ONLINE USERS - STRUCTURAL AND LOGIC AUDIT
+================================================================================
+
+================================================================================
+SECTION 1 - TRACKING LOGIC
+================================================================================
+
+--------------------------------------------------------------------------------
+1.1 TRIGGER POINT - index.php (line 51), global front controller bootstrap
+--------------------------------------------------------------------------------
+Lines 1-51:
+
+<?php
+ob_start();
+session_start();
+
+define('ROOT_DIR', __DIR__);
+define('APP_DIR', __DIR__ . '/app');
+define('CORE_DIR', __DIR__ . '/core');
+
+require_once CORE_DIR . '/Language.php';
+
+spl_autoload_register(function ($class) {
+    $className = basename(str_replace('\\', '/', $class));
+    $directories = [
+        __DIR__ . '/core',
+        __DIR__ . '/app/Models',
+        __DIR__ . '/app/Controllers'
+    ];
+
+    foreach ($directories as $dir) {
+        $file = $dir . '/' . $className . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            if ($class !== $className && !class_exists($class, false)) {
+                class_alias($className, $class);
+            }
+            return;
+        }
+    }
+});
+
+require_once __DIR__ . '/config.php';
+
+// --- النظام الذكي لضبط التوقيت ---
+try {
+    $dbConnection = Database::getInstance()->getConnection();
+    $tzStmt = $dbConnection->query("SELECT timezone FROM settings WHERE id = 1");
+    $shopTimezone = $tzStmt->fetchColumn() ?: 'Africa/Cairo';
+
+    // 1. ضبط توقيت سيرفر الـ PHP
+    date_default_timezone_set($shopTimezone);
+
+    // 2. ضبط توقيت قاعدة بيانات MySQL أوتوماتيكياً لتتطابق مع الـ PHP
+    $offset = date('P'); // يجلب فارق التوقيت مثل +03:00 أو +02:00
+    $dbConnection->exec("SET time_zone = '{$offset}'");
+} catch (Exception $e) {
+    date_default_timezone_set('Africa/Cairo'); // توقيت افتراضي في حالة الخطأ
+}
+
+Language::load();
+
+Session::trackOnline();
+
+
+--------------------------------------------------------------------------------
+1.2 RECORDING METHOD - core/Session.php :: trackOnline() (lines 45-71)
+--------------------------------------------------------------------------------
+<?php
+    public static function trackOnline(): void {
+        $db = Database::getInstance()->getConnection();
+        $sessionId = session_id();
+        $time = time();
+
+        // جلب بيانات العميل إذا كان مسجل الدخول
+        $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+        $userName = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : null;
+
+        $location = self::getVisitorLocation();
+
+        $stmt = $db->prepare("
+            INSERT INTO online_users (session_id, user_id, user_name, last_activity, ip_address, country, city)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+            user_id = VALUES(user_id),
+            user_name = VALUES(user_name),
+            last_activity = VALUES(last_activity),
+            ip_address = VALUES(ip_address),
+            country = VALUES(country),
+            city = VALUES(city)
+        ");
+        $stmt->execute([$sessionId, $userId, $userName, $time, $location['ip'], $location['country'], $location['city']]);
+
+        $timeout = $time - 300; // 5 دقائق
+        $db->prepare("DELETE FROM online_users WHERE last_activity < ?")->execute([$timeout]);
+    }
+
+
+--------------------------------------------------------------------------------
+1.3 IP / GEOLOCATION RESOLUTION - core/Session.php :: getVisitorLocation() (lines 9-43)
+--------------------------------------------------------------------------------
+<?php
+    private static function getVisitorLocation(): array {
+        if (isset($_SESSION['visitor_location'])) {
+            return $_SESSION['visitor_location'];
+        }
+
+        $ip = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
+if (strpos($ip, ',') !== false) {
+    $ip = trim(explode(',', $ip)[0]);
+}
+
+if ($ip === '127.0.0.1' || $ip === '::1' || empty($ip)) {
+    $location = ['ip' => $ip, 'country' => 'Localhost', 'city' => 'Localhost'];
+    $_SESSION['visitor_location'] = $location;
+    return $location;
+}
+
+        $ctx = stream_context_create(['http' => ['timeout' => 2]]);
+        $geoData = @file_get_contents("http://ip-api.com/json/{$ip}?fields=status,country,city", false, $ctx);
+
+        $country = 'غير محدد';
+        $city = 'غير محدد';
+
+        if ($geoData) {
+            $geo = json_decode($geoData, true);
+            if (isset($geo['status']) && $geo['status'] === 'success') {
+                $country = $geo['country'];
+                $city = $geo['city'];
+            }
+        }
+
+        $location = ['ip' => $ip, 'country' => $country, 'city' => $city];
+        $_SESSION['visitor_location'] = $location;
+
+        return $location;
+    }
+
+
+--------------------------------------------------------------------------------
+1.4 SESSION CONTAINER - core/Session.php (lines 1-7)
+--------------------------------------------------------------------------------
+<?php
+class Session {
+    public static function set(string $key, $value): void { $_SESSION[$key] = $value; }
+    public static function get(string $key) { return $_SESSION[$key] ?? null; }
+    public static function remove(string $key): void { unset($_SESSION[$key]); }
+    public static function destroy(): void { session_unset(); session_destroy(); }
+    public static function isLoggedIn(): bool { return isset($_SESSION['user_id']); }
+
+
+--------------------------------------------------------------------------------
+1.5 DATABASE TABLE DEFINITION - e-website.sql (lines 1174-1178)
+--------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `online_users` (
+    `session_id` varchar(255) NOT NULL,
+    `last_activity` int(11) NOT NULL,
+    PRIMARY KEY (`session_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+
+
+================================================================================
+SECTION 2 - COUNTING CONTROLLER / MODEL
+================================================================================
+
+--------------------------------------------------------------------------------
+2.1 COUNT METHOD - core/Session.php :: getOnlineCount() (lines 73-76)
+--------------------------------------------------------------------------------
+<?php
+    public static function getOnlineCount(): int {
+        $db = Database::getInstance()->getConnection();
+        return (int)$db->query("SELECT COUNT(*) FROM online_users")->fetchColumn();
+    }
+
+
+--------------------------------------------------------------------------------
+2.2 COUNT CALL SITE - app/Controllers/AdminController.php :: index() (line 19)
+--------------------------------------------------------------------------------
+<?php
+    public function index(): void {
+        $productModel = new Product();
+        $productsCount = $productModel->countAll();
+        // جلب عدد الأقسام بناءً على الأقسام الفعلية المربوطة بالمنتجات
+        $categoriesCount = count($productModel->getCategories());
+
+        $ordersCount = (new Order())->countAll();
+        $commentsCount = (new Comment())->countAll();
+        $messagesCount = (new Message())->countAllContactMessages();
+        $onlineUsersCount = Session::getOnlineCount();
+        $revenueSummary = (new Order())->getRevenueSummary('2000-01-01 00:00:00', date('Y-m-d H:i:s'));
+        $totalRevenue = (float)($revenueSummary['net'] ?? 0);
+        $usersCount = (new User())->countAll();
+        $activeCouponsCount = 0;
+        foreach ((new Coupon())->getAll() as $couponRow) {
+            if ((int)($couponRow['status'] ?? 0) === 1) {
+                $activeCouponsCount++;
+            }
+        }
+        $pendingOrdersCount = (new Order())->countPending();
+
+        // نظام الاسترجاع التلقائي (The Reaper)
+        $orderModel = new \App\Models\Order();
+        $orderModel->reclaimAbandonedOrders(30);
+
+        $showSearch = false;
+        $pageIcon = 'fa-house';
+        $pageTitle = 'لوحة التحكم';
+
+        require_once APP_DIR . '/Views/admin/layout_start.php';
+        require_once APP_DIR . '/Views/admin/dashboard.php';
+        require_once APP_DIR . '/Views/admin/layout_end.php';
+    }
+
+
+--------------------------------------------------------------------------------
+2.3 LIVE LISTING METHOD - app/Controllers/AdminController.php :: onlineVisitors() (lines 44-56)
+--------------------------------------------------------------------------------
+<?php
+    public function onlineVisitors() {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->query("SELECT * FROM online_users ORDER BY last_activity DESC");
+        $onlineUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $showSearch = false;
+        $pageTitle = 'الزوار المتصلين';
+        $pageIcon = 'fa-globe';
+
+        require_once APP_DIR . '/Views/admin/layout_start.php';
+        require_once APP_DIR . '/Views/admin/online_visitors.php';
+        require_once APP_DIR . '/Views/admin/layout_end.php';
+    }
+
+
+--------------------------------------------------------------------------------
+2.4 ROUTE REGISTRATION - index.php (line 136)
+--------------------------------------------------------------------------------
+$router->add('GET', '/admin/online-visitors', 'AdminController@onlineVisitors');
+
+
+================================================================================
+SECTION 3 - FRONTEND DISPLAY
+================================================================================
+
+--------------------------------------------------------------------------------
+3.1 DASHBOARD COUNTER MARKUP - app/Views/admin/dashboard.php (lines 168-174)
+--------------------------------------------------------------------------------
+  <div class="b-card c-visitors">
+    <div class="b-icon-wrapper"><i class="fa-solid fa-globe"></i></div>
+    <div class="b-info">
+      <h3><?= lang('online_users') ?></h3>
+      <p><?= $onlineUsersCount ?></p>
+    </div>
+  </div>
+
+
+--------------------------------------------------------------------------------
+3.2 DASHBOARD COUNTER STYLING - app/Views/admin/dashboard.php (line 65)
+--------------------------------------------------------------------------------
+.c-visitors   .b-icon-wrapper { background: #dcfce7; color: #16a34a; }
+
+
+--------------------------------------------------------------------------------
+3.3 ACTIVE VISITORS TABLE VIEW - app/Views/admin/online_visitors.php (lines 1-41)
+--------------------------------------------------------------------------------
+<div class="card">
+  <h2 style="margin-top:0;"><i class="fa-solid fa-globe"></i> <?= lang('online_visitors_title') ?></h2>
+  <table>
+    <tr>
+      <th><?= lang('col_user') ?></th>
+      <th><?= lang('col_ip') ?></th>
+      <th><?= lang('col_country') ?></th>
+      <th><?= lang('col_city') ?></th>
+      <th><?= lang('col_last_activity') ?></th>
+    </tr>
+    <?php if (!empty($onlineUsers)): ?>
+      <?php foreach ($onlineUsers as $user): ?>
+      <tr>
+        <td>
+            <?php if (!empty($user['user_name'])): ?>
+                <span class="user-badge"><i class="fa-solid fa-user-check"></i> <?= htmlspecialchars($user['user_name']) ?></span>
+            <?php else: ?>
+                <span class="guest-badge"><i class="fa-solid fa-user-secret"></i> <?= lang('guest_anonymous') ?></span>
+            <?php endif; ?>
+        </td>
+        <td style="font-weight:600; color:#3b82f6;"><?= htmlspecialchars($user['ip_address'] ?? lang('unknown_ip')) ?></td>
+        <td style="font-weight:500; color:#1e293b;"><?= htmlspecialchars($user['country'] ?? lang('undefined_location')) ?></td>
+        <td style="font-weight:500; color:#1e293b;"><?= htmlspecialchars($user['city'] ?? lang('undefined_location')) ?></td>
+        <td>
+          <span class="date-badge">
+            <i class="fa-regular fa-clock"></i>
+            <?= date('h:i A', $user['last_activity']) ?>
+          </span>
+        </td>
+      </tr>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <tr>
+        <td colspan="5" style="text-align:center; padding:40px; color:#94a3b8; font-size:16px;">
+          <i class="fa-solid fa-user-slash" style="font-size:40px; margin-bottom:15px; opacity:0.5;"></i><br>
+          <?= lang('no_online_visitors') ?>
+        </td>
+      </tr>
+    <?php endif; ?>
+  </table>
+</div>
+
+
+--------------------------------------------------------------------------------
+3.4 ADMIN SIDEBAR ENTRY - app/Views/admin/layout_start.php (lines 431-434)
+--------------------------------------------------------------------------------
+    <a href="/admin/online-visitors" class="<?= isActive('/admin/online-visitors') ?>">
+        <i class="fa-solid fa-globe"></i><span><?= lang('menu_visitors') ?></span>
+    </a>
+
+
+--------------------------------------------------------------------------------
+3.5 LANGUAGE KEYS - app/Language/en.php
+--------------------------------------------------------------------------------
+    'visitor_messages' => 'Visitor Messages',
+    'online_users' => 'Online Users',
+    'admin_messages_title' => 'Visitor Messages:',
+    'menu_messages' => 'Visitor Messages',
+    'menu_visitors' => 'Online Visitors',
+    // Online Visitors
+    'online_visitors_title' => 'Online Visitors Right Now',
+    'no_online_visitors' => 'No online visitors currently.',
+
+    'visitors_online' => 'Online Visitors',
+
+
+--------------------------------------------------------------------------------
+3.6 LANGUAGE KEYS - app/Language/ar.php
+--------------------------------------------------------------------------------
+    'visitor_messages' => 'رسائل الزوار',
+    'online_users' => 'المتصلين حالياً',
+
+    'menu_visitors' => 'الزوار المتصلين',
+
+    // Online Visitors
+    'online_visitors_title' => 'الزوار المتصلين حالياً',
+
+    'no_online_visitors' => 'لا يوجد زوار متصلين حالياً.',
+
+    'visitors_online' => 'زوار متصلون',
+
+
+--------------------------------------------------------------------------------
+3.7 AJAX / POLLING / HEARTBEAT - NOT FOUND
+--------------------------------------------------------------------------------
+Searched: Js/app.js, Js/scroll.js, Js/account.js, Js/payment.js,
+app/Views/layouts/header.php, app/Views/layouts/footer.php,
+app/Views/admin/layout_end.php, app/Views/admin/dashboard.php,
+app/Views/admin/online_visitors.php
+
+setInterval occurrences        : 0
+visitor / online AJAX fetch   : 0
+XMLHttpRequest for visitors   : 0
+ping / heartbeat endpoint     : 0
+
+Existing fetch() calls in Js/app.js, Js/payment.js, app/Views/layouts/footer.php
+target only: /toggle-favorite, /api/validate-coupon, /checkout/process
+
+There is no middleware directory:
+  app/Middleware     - does not exist
+  core/Middleware    - does not exist
+
+Tracking is invoked solely by the unconditional call at index.php line 51,
+which executes on every routed request for every visitor.
