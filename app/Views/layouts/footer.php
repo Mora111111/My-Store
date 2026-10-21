@@ -29,7 +29,7 @@ $footerSettings =$footerSettingModel->getSettings();
   <div class="footer_container container grid_content">
     <div class="footer_item">
       <h3 class="footer_title"><?= lang('footer_about') ?></h3>
-      <p class="footer_p"><?php echo !empty($footerSettings['about_text']) ? htmlspecialchars(langField($footerSettings, 'about_text')) : lang('maintenance_desc'); ?></p>
+      <p class="footer_p"><?= lang('footer_about_text') ?></p>
       <img src="/images/logos/logo-white.png" alt="" class="footer_img">
     </div>
     <div class="footer_item">

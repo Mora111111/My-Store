@@ -9,16 +9,16 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
 ?>
     <main class="main">
       <section class="home">
-        <div class="home_box home_box_mobile">
+<div class="home_box home_box_mobile">
           <h1 class="home_title">
-           أدواتك للنجاح تبدأ بجهاز ذكي.. اختر منتجاتك    <br />
-         بالسعر اللي يناسبك
+            <?= lang('title_home_main') ?><br />
+            <?= lang('subtitle_home_main') ?>
           </h1>
           <p class="home_description">
-             لا تتردد في خوض التجربة 😉 فالتكنولوجيا وُجدت لتكسر حدود المستحيل<br />
-             كن من اوائل الذين يجربون الاجهزة الحديثة  🤩
+            <?= lang('desc_home_experience') ?><br />
+            <?= lang('btn_home_start') ?>
           </p>
-          <a href="/products" class="home_btn">→ تسوق الان</a>
+          <a href="/products" class="home_btn">→ <?= lang('btn_shop_now') ?></a>
         </div>
         <div class="home_box">
           <?php $currentLang = $_SESSION['lang'] ?? 'ar'; ?>
@@ -513,7 +513,7 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
         </div>
       </section>
 <section class="featured_products container" id="features">
-        <h2 class="main_title"><?= lang('featured_products') ?></h2>
+<h2 class="main_title"><?= lang('featured_products') ?></h2>
         <div class="cards grid_content">
           <?php foreach ($featuredProducts as $row):
              // Dynamic Strikethrough Logic
@@ -547,29 +547,29 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
                    else $stars_html .= '<i class="fa-regular fa-star"></i>';
                }
                $price_parts = explode('.', number_format($row['price'], 2, '.', ''));
-           ?>
-           <div class="card" style="position: relative;">
-             <?php if($has_coupon_discount): ?>
-             <div style="position: absolute; top: 15px; right: 15px; background: #ef4444; color: #fff; padding: 5px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                 خصم <?php echo $discount_pct_badge; ?>%
-             </div>
-             <?php endif; ?>
-             <div class="box_img">
-               <img src="<?= Product::getImageUrl($row['image_url']) ?>" alt="" class="card_image" />
-             </div>
-             <div class="card_details">
-               <div class="card_title_wrapper" style="margin-bottom:10px;">
-                 <a href="/product?id=<?php echo $row['id']; ?>" class="card_title" style="display:block; color:#555; font-weight:normal; font-size:14px; margin:0; position:relative; z-index:2;"><?php echo htmlspecialchars(langField($row, 'title')); ?></a>
-               </div>
-               <div style="margin-bottom: 10px;">
-                   <div class="rating"><?php echo $stars_html; ?></div>
-               </div>
-               <p class="card_price" style="display: inline-flex; align-items: center; gap: 8px;">
-                   <span style="font-weight: 700; color: #0f172a;"><?php echo number_format($final_price, 2); ?> ج.م</span>
-                   <?php if($has_coupon_discount): ?>
-                       <del style="color: #ef4444; font-size: 0.85em; font-weight: normal;"><?php echo htmlspecialchars($row['price']); ?> ج.م</del>
-                   <?php endif; ?>
-               </p>
+            ?>
+            <div class="card" style="position: relative;">
+              <?php if($has_coupon_discount): ?>
+              <div style="position: absolute; top: 15px; right: 15px; background: #ef4444; color: #fff; padding: 5px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                  <?= lang('discount_text') ?> <?php echo $discount_pct_badge; ?>%
+              </div>
+              <?php endif; ?>
+              <div class="box_img">
+                <img src="<?= Product::getImageUrl($row['image_url']) ?>" alt="" class="card_image" />
+              </div>
+              <div class="card_details">
+                <div class="card_title_wrapper" style="margin-bottom:10px;">
+                  <a href="/product?id=<?php echo $row['id']; ?>" class="card_title" style="display:block; color:#555; font-weight:normal; font-size:14px; margin:0; position:relative; z-index:2;"><?php echo htmlspecialchars(langField($row, 'title')); ?></a>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <div class="rating"><?php echo $stars_html; ?></div>
+                </div>
+                <p class="card_price" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <span style="font-weight: 700; color: #0f172a;"><?php echo number_format($final_price, 2); ?> <?= lang('currency_egp') ?></span>
+                    <?php if($has_coupon_discount): ?>
+                        <del style="color: #ef4444; font-size: 0.85em; font-weight: normal;">><?php echo htmlspecialchars($row['price']); ?> <?= lang('currency_egp') ?></del>
+                    <?php endif; ?>
+                </p>
                <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
                    <button class="card_btn" data-id="<?php echo $row['id']; ?>" style="flex: 1; margin: 0; padding: 10px 15px;"><?= lang('add_to_cart') ?></button>
                    <?php 
@@ -590,7 +590,7 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
         </div>
       </section>
 <section class="latest_products container" id="latest">
-        <h2 class="main_title"><?= lang('latest_products') ?></h2>
+<h2 class="main_title"><?= lang('latest_products') ?></h2>
         <div class="cards grid_content">
           <?php foreach ($latestProducts as $row):
              // Dynamic Strikethrough Logic
@@ -624,29 +624,29 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
                    else $stars_html .= '<i class="fa-regular fa-star"></i>';
                }
                $price_parts = explode('.', number_format($row['price'], 2, '.', ''));
-           ?>
-           <div class="card" style="position: relative;">
-             <?php if($has_coupon_discount): ?>
-             <div style="position: absolute; top: 15px; right: 15px; background: #ef4444; color: #fff; padding: 5px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                 خصم <?php echo $discount_pct_badge; ?>%
-             </div>
-             <?php endif; ?>
-             <div class="box_img">
-               <img src="<?= Product::getImageUrl($row['image_url']) ?>" alt="" class="card_image" />
-             </div>
-             <div class="card_details">
-               <div class="card_title_wrapper" style="margin-bottom:10px;">
-                 <a href="/product?id=<?php echo $row['id']; ?>" class="card_title" style="display:block; color:#555; font-weight:normal; font-size:14px; margin:0; position:relative; z-index:2;"><?php echo htmlspecialchars(langField($row, 'title')); ?></a>
-               </div>
-               <div style="margin-bottom: 10px;">
-                   <div class="rating"><?php echo $stars_html; ?></div>
-               </div>
-               <p class="card_price" style="display: inline-flex; align-items: center; gap: 8px;">
-                   <span style="font-weight: 700; color: #0f172a;"><?php echo number_format($final_price, 2); ?> ج.م</span>
-                   <?php if($has_coupon_discount): ?>
-                       <del style="color: #ef4444; font-size: 0.85em; font-weight: normal;"><?php echo htmlspecialchars($row['price']); ?> ج.م</del>
-                   <?php endif; ?>
-               </p>
+            ?>
+            <div class="card" style="position: relative;">
+              <?php if($has_coupon_discount): ?>
+              <div style="position: absolute; top: 15px; right: 15px; background: #ef4444; color: #fff; padding: 5px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; z-index: 10; box-shadow: 0 4px 666 rgba(0,0,0,0.1);">
+                  <?= lang('discount_text') ?> <?php echo $discount_pct_badge; ?>%
+              </div>
+              <?php endif; ?>
+              <div class="box_img">
+                <img src="<?= Product::getImageUrl($row['image_url']) ?>" alt="" class="card_image" />
+              </div>
+              <div class="card_details">
+                <div class="card_title_wrapper" style="margin-bottom:10px;">
+                  <a href="/product?id=<?php echo $row['id']; ?>" class="card_title" style="display:block; color:#555; font-weight:normal; font-size:14px; margin:0; position:relative; z-index:2;"><?php echo htmlspecialchars(langField($row, 'title')); ?></a>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <div class="rating"><?php echo $stars_html; ?></div>
+                </div>
+                <p class="card_price" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <span style="font-weight: 700; color: #0f172a;"><?php echo number_format($final_price, 2); ?> <?= lang('currency_egp') ?></span>
+                    <?php if($has_coupon_discount): ?>
+                        <del style="color: #ef4444; font-size: 0.85em; font-weight: normal;">><?php echo htmlspecialchars($row['price']); ?> <?= lang('currency_egp') ?></del>
+                    <?php endif; ?>
+                </p>
                <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
                    <button class="card_btn" data-id="<?php echo $row['id']; ?>" style="flex: 1; margin: 0; padding: 10px 15px;"><?= lang('add_to_cart') ?></button>
                   <?php 
@@ -669,12 +669,12 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
       <section class="offer">
         <div class="offer_items container">
           <div class="offer_item ">
-            <span><?= lang('exclusive_on_store') ?? 'متوفر حصرياً على MY Store' ?></span>
+            <span><?= lang('exclusive_on_store') ?></span>
             <h2 class="offer_title">Smart Band 4</h2>
             <p class="offer_description">
-              ساعة سامسونج جالكسي الترا  (47 ملم، LTE، رمادي) مع بطارية تدوم حتى 100 ساعة | معالج 3 نانومتر | نظام تحديد المواقع العالمي (GPS)
+              <?= lang('offer_smart_band_desc') ?>
             </p>
-            <a href="/products" class="btn">→ <?= lang('buy_now') ?? 'اشترى الاّن' ?></a>
+            <a href="/products" class="btn">→ <?= lang('buy_now') ?></a>
           </div>
           <div class="offer_item offer_item_mobile">
             <img src="/images/products/product-13.png" class="offer-img">
@@ -702,11 +702,11 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
         </div>
       </section>
       <section class="testimonial container">
-        <h2 class="main_title">تعليقات العملاء</h2>
+        <h2 class="main_title"><?= lang('comments_title') ?></h2>
         <div class="testimonial_boxs grid_content">
           <div class="testimonial_box">
             <i class="fa-solid fa-quote-left quote_icon"></i>
-            <p>أوصي بهذا المتجر لكم جميعاً، لديهم منتجات ذات جودة عالية.</p>
+            <p><?= lang('testimonial_1_text') ?></p>
             <div class="rating">
               <i class="fa-solid fa-star"></i>
               <i class="fa-solid fa-star"></i>
@@ -715,12 +715,12 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
               <i class="fa-regular fa-star"></i>
             </div>
             <img src="/images/users/user-1.png">
-            <h3>عميل</h3>
+            <h3><?= lang('testimonial_client') ?></h3>
           </div>
           <div class="testimonial_box">
             <i class="fa-solid fa-quote-left quote_icon"></i>
               <p>
-                هذا المتجر رائع في الشحن . إنهم يشحنون بسرعة. لقد طلبت منهم مرة واحدة ووصلت السلعة لي في نفس الأسبوع!
+                <?= lang('testimonial_2_text') ?>
               </p>
               <div class="rating">
                 <i class="fa-solid fa-star"></i>
@@ -730,12 +730,12 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
                 <i class="fa-solid fa-star"></i>
               </div>
               <img src="/images/users/user-2.png">
-              <h3>عميل</h3>
+              <h3><?= lang('testimonial_client') ?></h3>
           </div>
           <div class="testimonial_box">
             <i class="fa-solid fa-quote-left quote_icon"></i>
               <p>
-                متجر MY Store هو أفضل مكان للشراء عبر الأنترنت. لديهم منتجات ذات جودة سحرية.
+                <?= lang('testimonial_3_text') ?>
               </p>
               <div class="rating">
                 <i class="fa-solid fa-star"></i>
@@ -745,7 +745,7 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
                 <i class="fa-regular fa-star-half-stroke fa-flip-horizontal"></i>
               </div>
               <img src="/images/users/user-3.png">
-              <h3>عميل</h3>
+              <h3><?= lang('testimonial_client') ?></h3>
           </div>
         </div>
       </section>
