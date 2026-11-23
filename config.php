@@ -1,8 +1,10 @@
 <?php
 define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_PORT', getenv('DB_PORT') ?: '3306');
 define('DB_USER', getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('DB_PASS') ?: '');
 define('DB_NAME', getenv('DB_NAME') ?: 'e-website');
+define('DB_SSL_CA', getenv('DB_SSL_CA') ?: '');
 define('GEMINI_API_KEY', getenv('GEMINI_API_KEY'));
 define('SMTP_USER', getenv('SMTP_USER') ?: 'amr.mansour.mohamed1@gmail.com');
 define('SMTP_PASS', getenv('SMTP_PASS') ?: 'faqutwlhlpqqhbps');
