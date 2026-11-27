@@ -3,6 +3,7 @@ class Order {
     public const HIGH_VALUE_THRESHOLD = 10000.0;
     private const DELIVERY_CODE_INDEX = 'orders_delivery_code_unique';
     private static bool $deliveryCodeColumnChecked = false;
+    private static bool $deliveryCodeSchemaReady = false;
     private PDO $db;
 
     public function __construct() {
@@ -40,34 +41,40 @@ class Order {
             return;
         }
 
-        $index = self::DELIVERY_CODE_INDEX;
-        $hasColumn = (bool)$this->db->query("SHOW COLUMNS FROM orders LIKE 'delivery_code'")->fetchColumn();
-        if (!$hasColumn) {
-            try {
-                $this->db->exec("ALTER TABLE orders ADD COLUMN delivery_code VARCHAR(16) DEFAULT NULL, ADD UNIQUE INDEX $index (delivery_code)");
-                self::$deliveryCodeColumnChecked = true;
-                return;
-            } catch (PDOException $e) {
-                if ((int)($e->errorInfo[1] ?? 0) !== 1060) {
-                    throw $e;
-                }
-            }
-        }
-
-        if (!$this->db->query("SHOW INDEX FROM orders WHERE Key_name = '$index'")->fetchColumn()) {
-            try {
-                $this->db->exec("ALTER TABLE orders ADD UNIQUE INDEX $index (delivery_code)");
-            } catch (PDOException $e) {
-                if ((int)($e->errorInfo[1] ?? 0) !== 1061) {
-                    throw $e;
-                }
-            }
-        }
         self::$deliveryCodeColumnChecked = true;
+        try {
+            $hasColumn = (bool)$this->db->query("SHOW COLUMNS FROM orders LIKE 'delivery_code'")->fetchColumn();
+            if (!$hasColumn) {
+                try {
+                    $this->db->exec("ALTER TABLE orders ADD COLUMN delivery_code VARCHAR(16) DEFAULT NULL");
+                } catch (PDOException $e) {
+                    if ((int)($e->errorInfo[1] ?? 0) !== 1060) {
+                        throw $e;
+                    }
+                }
+            }
+
+            $index = self::DELIVERY_CODE_INDEX;
+            if (!$this->db->query("SHOW INDEX FROM orders WHERE Key_name = '$index'")->fetchColumn()) {
+                try {
+                    $this->db->exec("ALTER TABLE orders ADD UNIQUE INDEX $index (delivery_code)");
+                } catch (PDOException $e) {
+                    if ((int)($e->errorInfo[1] ?? 0) !== 1061) {
+                        throw $e;
+                    }
+                }
+            }
+            self::$deliveryCodeSchemaReady = true;
+        } catch (Throwable $e) {
+            error_log('Order delivery code schema check failed: ' . $e->getMessage());
+        }
     }
 
     public function create(array $data): int|false {
         $this->ensureDeliveryCodeColumnExists();
+        if (!self::$deliveryCodeSchemaReady) {
+            return false;
+        }
         $sql = "INSERT INTO orders (user_id, full_name, phone, address_line1, address_line2, city, governorate, zip_code, status, total_price, subtotal, shipping_fee, discount_amount, coupon_code, products, payment_method, payment_status, transaction_id, delivery_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $values = [
