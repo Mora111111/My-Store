@@ -37,7 +37,10 @@ public function reply(): void {
             $reply_text = trim($_POST['reply_text'] ?? '');
 
             if ($type === 'user') {
-                $messageModel->replyUserMessage($id, $reply_text);
+                $saved = $messageModel->replyUserMessage($id, $reply_text);
+                if ($saved && $id > 0 && $reply_text !== '') {
+                    $this->notifyUserOfReply($messageModel, $id, $reply_text);
+                }
             } else {
                 $messageModel->replyContactMessage($id, $reply_text);
             }
@@ -46,6 +49,36 @@ public function reply(): void {
         }
         header('Location: /admin/messages');
         exit;
+    }
+
+    private function notifyUserOfReply(Message $messageModel, int $id, string $reply): void {
+        try {
+            $userMessage = $messageModel->findUserMessageById($id);
+            if (empty($userMessage['user_id'])) {
+                return;
+            }
+
+            $preview = $reply;
+            if (function_exists('mb_strimwidth')) {
+                $preview = mb_strimwidth($reply, 0, 140, '...', 'UTF-8');
+            } elseif (preg_match('/^(\X{137})\X{4}/u', $reply, $matches)) {
+                $preview = $matches[1] . '...';
+            }
+
+            $subject = trim((string)($userMessage['subject'] ?? ''));
+            (new Notification())->create(
+                (int)$userMessage['user_id'],
+                'message',
+                $id,
+                'رد جديد من الدعم الفني',
+                'New Reply from Support',
+                ($subject !== '' ? "الموضوع: {$subject}\n" : '') . $preview,
+                ($subject !== '' ? "Subject: {$subject}\n" : '') . $preview,
+                '/my-messages'
+            );
+        } catch (Throwable $e) {
+            error_log('Support reply notification failed: ' . $e->getMessage());
+        }
     }
 
     public function delete(): void {

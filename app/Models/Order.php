@@ -1,13 +1,76 @@
 <?php
 class Order {
+    public const HIGH_VALUE_THRESHOLD = 10000.0;
+    private const DELIVERY_CODE_INDEX = 'orders_delivery_code_unique';
+    private static bool $deliveryCodeColumnChecked = false;
     private PDO $db;
+
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
     }
+
+    public static function formatOrderNumber(int $id): string {
+        return '#' . str_pad((string)$id, 5, '0', STR_PAD_LEFT);
+    }
+
+    public static function renderOrderBadge(int $id): string {
+        return '<span class="order-ref-code" dir="ltr" style="display:inline-block; unicode-bidi:isolate; font-family:monospace; font-weight:800; letter-spacing:0.5px;">'
+            . htmlspecialchars(self::formatOrderNumber($id), ENT_QUOTES, 'UTF-8') . '</span>';
+    }
+
+    public static function generateDeliveryCode(): string {
+        return (string)random_int(100000, 999999);
+    }
+
+    public static function getVisibleDeliveryCode(array $order): string {
+        if ((float)($order['total_price'] ?? 0) < self::HIGH_VALUE_THRESHOLD || ($order['status'] ?? '') === 'ملغي') {
+            return '';
+        }
+        return (string)($order['delivery_code'] ?? '');
+    }
+
+    public static function renderDeliveryCodeBadge(string $code, ?string $id = null): string {
+        $idAttribute = $id === null ? '' : ' id="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '"';
+        return '<span' . $idAttribute . ' dir="ltr" style="display:inline-block; unicode-bidi:isolate; font-family:monospace; font-weight:800; letter-spacing:0.08em; padding:3px 8px; border-radius:6px; background:#0f172a; color:#fff;">'
+            . htmlspecialchars($code, ENT_QUOTES, 'UTF-8') . '</span>';
+    }
+
+    public function ensureDeliveryCodeColumnExists(): void {
+        if (self::$deliveryCodeColumnChecked) {
+            return;
+        }
+
+        $index = self::DELIVERY_CODE_INDEX;
+        $hasColumn = (bool)$this->db->query("SHOW COLUMNS FROM orders LIKE 'delivery_code'")->fetchColumn();
+        if (!$hasColumn) {
+            try {
+                $this->db->exec("ALTER TABLE orders ADD COLUMN delivery_code VARCHAR(16) DEFAULT NULL, ADD UNIQUE INDEX $index (delivery_code)");
+                self::$deliveryCodeColumnChecked = true;
+                return;
+            } catch (PDOException $e) {
+                if ((int)($e->errorInfo[1] ?? 0) !== 1060) {
+                    throw $e;
+                }
+            }
+        }
+
+        if (!$this->db->query("SHOW INDEX FROM orders WHERE Key_name = '$index'")->fetchColumn()) {
+            try {
+                $this->db->exec("ALTER TABLE orders ADD UNIQUE INDEX $index (delivery_code)");
+            } catch (PDOException $e) {
+                if ((int)($e->errorInfo[1] ?? 0) !== 1061) {
+                    throw $e;
+                }
+            }
+        }
+        self::$deliveryCodeColumnChecked = true;
+    }
+
     public function create(array $data): int|false {
-        $sql = "INSERT INTO orders (user_id, full_name, phone, address_line1, address_line2, city, governorate, zip_code, status, total_price, subtotal, shipping_fee, discount_amount, coupon_code, products, payment_method, payment_status, transaction_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $this->ensureDeliveryCodeColumnExists();
+        $sql = "INSERT INTO orders (user_id, full_name, phone, address_line1, address_line2, city, governorate, zip_code, status, total_price, subtotal, shipping_fee, discount_amount, coupon_code, products, payment_method, payment_status, transaction_id, delivery_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
-        $success = $stmt->execute([
+        $values = [
             $data['user_id'] ?? null,
             $data['full_name'],
             $data['phone'],
@@ -26,8 +89,21 @@ class Order {
             $data['payment_method'] ?? 'cod',
             $data['payment_status'] ?? 'pending',
             $data['transaction_id'] ?? null
-        ]);
-        return $success ? (int)$this->db->lastInsertId() : false;
+        ];
+        $deliveryCode = $data['delivery_code'] ?? null;
+        for ($attempt = 1; $attempt <= 10; $attempt++) {
+            try {
+                $success = $stmt->execute([...$values, $deliveryCode]);
+                return $success ? (int)$this->db->lastInsertId() : false;
+            } catch (PDOException $e) {
+                if ($deliveryCode === null || (int)($e->errorInfo[1] ?? 0) !== 1062
+                    || !str_contains($e->errorInfo[2] ?? '', self::DELIVERY_CODE_INDEX)) {
+                    throw $e;
+                }
+                $deliveryCode = self::generateDeliveryCode();
+            }
+        }
+        return false;
     }
     
 
@@ -42,11 +118,13 @@ class Order {
     }
 
     public function getAll(): array {
+        $this->ensureDeliveryCodeColumnExists();
         $stmt = $this->db->query("SELECT * FROM orders WHERE admin_hidden = 0 AND status != 'بانتظار الدفع' ORDER BY created_at DESC");
         return $stmt->fetchAll();
     }
 
     public function findById(int $id) {
+        $this->ensureDeliveryCodeColumnExists();
         $stmt = $this->db->prepare("SELECT * FROM orders WHERE id = ? LIMIT 1");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -147,6 +225,7 @@ class Order {
     }
 
     public function getByUserId(int $userId): array {
+        $this->ensureDeliveryCodeColumnExists();
         $stmt = $this->db->prepare("SELECT * FROM orders WHERE user_id = ? AND user_hidden = 0 AND status != 'بانتظار الدفع' ORDER BY created_at DESC");
         $stmt->execute([$userId]);
         return $stmt->fetchAll();
@@ -176,6 +255,7 @@ class Order {
     }
 
     public function getByIdAndUser(int $id, int $userId): array|false {
+        $this->ensureDeliveryCodeColumnExists();
         $stmt = $this->db->prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?");
         $stmt->execute([$id, $userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);

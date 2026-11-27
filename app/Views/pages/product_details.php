@@ -64,12 +64,15 @@
           <?php echo $starsHtml; ?>
         </div>
 
-        <p class="product_details_price card_price" style="font-size: 28px; font-weight: bold; margin-bottom: 30px; display: inline-flex; align-items: center; gap: 12px;">
+        <?php $stockQty = max(0, (int)($product['quantity'] ?? 0)); ?>
+        <p class="product_details_price card_price" style="font-size: 28px; font-weight: bold; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 12px;">
             <span><?php echo number_format($final_price, 2); ?> <?= lang('currency_egp') ?></span>
             <?php if($has_coupon_discount): ?>
                 <del style="color: #94a3b8; font-size: 0.7em; font-weight: normal;"><?php echo number_format($original_price, 2); ?> <?= lang('currency_egp') ?></del>
             <?php endif; ?>
         </p>
+
+        <?php require APP_DIR . '/Views/partials/stock_badge.php'; ?>
 
         <?php if (!empty($product['description'])): ?>
         <div style="text-align: right; background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.8; color: #555; border: 1px solid #eee;">
@@ -80,7 +83,7 @@
         </div>
         <?php endif; ?>
         <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
-            <button class="card_btn" data-id="<?php echo $product['id']; ?>" style="flex: 1; margin: 0; padding: 12px 15px; font-size: 16px; position: relative; left: 0; transform: none;"><?= lang('add_to_cart') ?></button>
+            <button class="card_btn" data-id="<?php echo $product['id']; ?>" data-stock="<?= $stockQty ?>" <?= $stockQty <= 0 ? 'disabled' : '' ?> style="flex: 1; margin: 0; padding: 12px 15px; font-size: 16px; position: relative; left: 0; transform: none;"><?= lang($stockQty <= 0 ? 'stock_out_of_stock' : 'add_to_cart') ?></button>
             <?php 
             $favoriteIds = [];
             if (Session::isLoggedIn()) {

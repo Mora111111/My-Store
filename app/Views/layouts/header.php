@@ -17,6 +17,19 @@ if (!empty($sysSettings['maintenance_mode'])) {
         exit;
     }
 }
+$recentNotifications = [];
+$unreadNotifCount = 0;
+$notificationLocale = $currentLang === 'en' ? 'en' : 'ar';
+if (isset($_SESSION['user_id'])) {
+    try {
+        $notificationModel = new Notification();
+        $notificationUserId = (int)$_SESSION['user_id'];
+        $recentNotifications = $notificationModel->getRecentForUser($notificationUserId, 15);
+        $unreadNotifCount = $notificationModel->getUnreadCount($notificationUserId);
+    } catch (Throwable $e) {
+        error_log('Notification header failed: ' . $e->getMessage());
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?= $currentLang ?>" dir="<?= $pageDir ?>">
@@ -70,11 +83,60 @@ if (!empty($sysSettings['maintenance_mode'])) {
     html[dir="ltr"] .profile-menu::before { left: 25px; right: auto; }
     html[dir="rtl"] .profile-menu::before { right: 25px; left: auto; }
 
+    .notif-dropdown-container { position: relative; flex-shrink: 0; }
+    .notif-trigger {
+      position: relative; display: grid; place-items: center; width: 2.5rem; height: 2.5rem;
+      border: 1px solid #e2e8f0; border-radius: 50%; background: #f8fafc;
+      color: #0f172a; font-size: 1.125rem; cursor: pointer;
+    }
+    .notif-trigger:hover, .notif-trigger[aria-expanded="true"] { background: #e0f2fe; color: #0369a1; }
+    .notif-badge {
+      position: absolute; top: -0.25rem; inset-inline-end: -0.375rem; min-width: 1.125rem;
+      padding: 0.125rem 0.25rem; border-radius: 1rem; background: #b91c1c; color: white;
+      font-size: 0.6875rem; line-height: 1.2; font-weight: 700; text-align: center;
+    }
+    .notif-panel {
+      position: absolute; inset-inline-start: 0; top: calc(100% + 0.75rem); z-index: 5;
+      width: min(24rem, calc(100vw - 24px)); border: 1px solid #e2e8f0;
+      border-radius: 12px; background: white; color: #0f172a; box-shadow: 0 10px 30px rgb(15 23 42 / 16%);
+    }
+    .notif-panel-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+      padding: 0.875rem 1rem; border-bottom: 1px solid #e2e8f0;
+    }
+    .notif-panel-header h2 { margin: 0; font-size: 1rem; }
+    #mark-all-read-btn {
+      border: 0; background: transparent; color: #0369a1;
+      font: inherit; font-size: 0.8125rem; font-weight: 700; cursor: pointer;
+    }
+    #mark-all-read-btn:disabled { opacity: 0.65; cursor: wait; }
+    .notif-list { max-height: min(24rem, calc(100vh - 145px)); overflow-y: auto; }
+    .notif-item {
+      position: relative; display: grid; gap: 0.375rem; padding: 0.75rem 1rem;
+      padding-inline-start: 1.75rem; border-bottom: 1px solid #e2e8f0;
+      color: inherit; text-decoration: none; overflow-wrap: anywhere;
+    }
+    .notif-item:last-child { border-bottom: 0; }
+    .notif-item.is-unread { background: #eff6ff; }
+    .notif-item.is-unread::before {
+      content: ""; position: absolute; top: 1.05rem; inset-inline-start: 0.75rem;
+      width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #2563eb;
+    }
+    .notif-item:hover, .notif-item:focus-visible { background: #e0f2fe; }
+    .notif-message, .notif-item-meta, .notif-empty { color: #475569; font-size: 0.8125rem; }
+    .notif-item-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 0.75rem; }
+    .notif-item-meta span { color: #0369a1; }
+    .notif-empty { padding: 1.25rem 1rem; margin: 0; text-align: center; }
+
     .mobile-toggle { display: none; }
     .mobile-sidebar-content { display: none; }
     .mobile-nav-backdrop { display: none; }
 
     @media (max-width: 800px) {
+      .notif-dropdown-container { margin-inline-start: 0.375rem; }
+      .notif-trigger { width: 2.25rem; height: 2.25rem; }
+      .notif-panel { position: fixed; top: 75px; left: 12px; right: 12px; width: auto; }
+
       .safe-nav {
         height: auto;
         flex-wrap: wrap;
@@ -319,6 +381,53 @@ if (!empty($sysSettings['maintenance_mode'])) {
         <div class="mobile-toggle" id="nav-toggle">
           <i class="fa-solid fa-bars"></i>
         </div>
+
+        <?php if (isset($_SESSION['user_id'])): ?>
+          <div class="notif-dropdown-container">
+            <button type="button" class="notif-trigger" id="notif-btn" aria-label="<?= lang('notifications_title') ?>" aria-controls="notif-menu" aria-expanded="false">
+              <i class="<?= $unreadNotifCount > 0 ? 'fa-solid' : 'fa-regular' ?> fa-bell" aria-hidden="true"></i>
+              <span class="notif-badge" id="notif-badge" aria-live="polite" <?= $unreadNotifCount === 0 ? 'hidden' : '' ?>><?= $unreadNotifCount > 99 ? '99+' : $unreadNotifCount ?></span>
+            </button>
+            <section class="notif-panel" id="notif-menu" aria-labelledby="notif-title" hidden>
+              <div class="notif-panel-header">
+                <h2 id="notif-title"><?= lang('notifications_title') ?></h2>
+                <button type="button" id="mark-all-read-btn" <?= $unreadNotifCount === 0 ? 'hidden' : '' ?>><?= lang('notifications_mark_all_read') ?></button>
+              </div>
+              <div class="notif-list">
+                <?php if (!$recentNotifications): ?>
+                  <p class="notif-empty"><?= lang('notifications_empty') ?></p>
+                <?php endif; ?>
+                <?php foreach ($recentNotifications as $notification): ?>
+                  <?php
+                  $notifIsRead = (int)$notification['is_read'];
+                  $notifTitle = htmlspecialchars($notification['title_' . $notificationLocale], ENT_QUOTES, 'UTF-8');
+                  $notifMessage = (string)($notification['message_' . $notificationLocale] ?? '');
+                  $notifLink = (string)($notification['link'] ?? '');
+                  $notifTime = (string)$notification['created_at'];
+                  if (!str_starts_with($notifLink, '/') || str_starts_with($notifLink, '//')
+                      || str_contains($notifLink, '\\') || preg_match('/[\x00-\x20\x7f]/', $notifLink)) {
+                      $notifLink = '#';
+                  }
+                  if ($notification['type'] === 'order') {
+                      $notifTitle = preg_replace('/(#[0-9]+)$/', '<bdi dir="ltr">$1</bdi>', $notifTitle);
+                  }
+                  ?>
+                  <a class="notif-item<?= $notifIsRead ? '' : ' is-unread' ?>" href="<?= htmlspecialchars($notifLink, ENT_QUOTES, 'UTF-8') ?>"
+                    data-notif-id="<?= (int)$notification['id'] ?>" data-is-read="<?= $notifIsRead ?>">
+                    <strong><?= $notifTitle ?></strong>
+                    <?php if ($notifMessage !== ''): ?>
+                      <span class="notif-message"><?= nl2br(htmlspecialchars($notifMessage, ENT_QUOTES, 'UTF-8')) ?></span>
+                    <?php endif; ?>
+                    <span class="notif-item-meta">
+                      <time dir="ltr" datetime="<?= htmlspecialchars(str_replace(' ', 'T', $notifTime), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($notifTime, ENT_QUOTES, 'UTF-8') ?></time>
+                      <span><?= lang('notifications_view_details') ?></span>
+                    </span>
+                  </a>
+                <?php endforeach; ?>
+              </div>
+            </section>
+          </div>
+        <?php endif; ?>
 
         <div class="safe-icons nav_btns">
           <!-- زر تغيير اللغة -->

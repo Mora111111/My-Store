@@ -52,6 +52,10 @@ class AdminOrderController {
                     $this->adjustStock($oldOrder['products'], 'deduct');
                 }
 
+                if (!empty($oldOrder['user_id'])) {
+                    $this->notifyOrderUpdate((int)$oldOrder['user_id'], $id, $newStatus, $adminMessage);
+                }
+
                 $_SESSION['toast_msg'] = 'تم تحديث حالة الطلب والمخزون بنجاح.';
                 $_SESSION['toast_type'] = 'success';
             } else {
@@ -61,6 +65,33 @@ class AdminOrderController {
         }
         header('Location: /admin/orders');
         exit;
+    }
+
+    private function notifyOrderUpdate(int $userId, int $id, string $status, string $adminMessage): void {
+        $orderCode = Order::formatOrderNumber($id);
+        $statusTranslations = [
+            'قيد المراجعة' => 'Pending Review',
+            'تم الشحن' => 'Shipped',
+            'مكتمل' => 'Completed',
+            'ملغي' => 'Cancelled',
+        ];
+        $statusEn = $statusTranslations[$status] ?? $status;
+        $messageSuffix = $adminMessage !== '' ? "\n" . $adminMessage : '';
+
+        try {
+            (new Notification())->create(
+                $userId,
+                'order',
+                $id,
+                "تحديث الطلب {$orderCode}",
+                "Order Update {$orderCode}",
+                'الحالة: ' . $status . $messageSuffix,
+                'Status: ' . $statusEn . $messageSuffix,
+                '/my-orders/invoice?id=' . $id
+            );
+        } catch (Throwable $e) {
+            error_log('Order update notification failed: ' . $e->getMessage());
+        }
     }
 
     // دالة مساعدة لضبط المخزون ديناميكياً

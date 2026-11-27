@@ -108,6 +108,7 @@ class UserProfileController {
         }
     }
     public function messages(): void {
+        $this->markNotificationsRead('message');
         $messageModel = new Message();
         $messages = $messageModel->getByUserId(Session::get('user_id'));
         require_once APP_DIR . '/Views/layouts/header.php';
@@ -177,11 +178,12 @@ class UserProfileController {
         $orderModel = new Order();
         $order = $orderModel->getByIdAndUser($orderId, (int)Session::get('user_id'));
 
-        if (!$order) {
+        if (!$order || ($order['status'] ?? '') === 'بانتظار الدفع' || ($order['payment_status'] ?? '') === 'failed') {
             header('Location: /my-orders');
             exit;
         }
 
+        $this->markNotificationsRead('order', $orderId);
         $settingModel = new Setting();
         $settings = $settingModel->getSettings();
         $products = json_decode($order['products'] ?? '[]', true) ?: [];
@@ -189,5 +191,13 @@ class UserProfileController {
         require_once APP_DIR . '/Views/layouts/header.php';
         require_once APP_DIR . '/Views/pages/order_invoice.php';
         require_once APP_DIR . '/Views/layouts/footer.php';
+    }
+
+    private function markNotificationsRead(string $type, ?int $referenceId = null): void {
+        try {
+            (new Notification())->markByReferenceAsRead((int)Session::get('user_id'), $type, $referenceId);
+        } catch (Throwable $e) {
+            error_log('Notification auto-read failed: ' . $e->getMessage());
+        }
     }
 }

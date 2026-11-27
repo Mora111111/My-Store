@@ -28,6 +28,8 @@
       <?php if (!empty($orders)): ?>
         <?php foreach ($orders as $row):$status = $row['status'];$status_class = $status_map[$status] ?? 'status-pending';
           $display_status =$status_lang_map[$status] ?? $status;
+          $orderCode = htmlspecialchars(Order::formatOrderNumber((int)$row['id']), ENT_QUOTES, 'UTF-8');
+          $escapedStatus = htmlspecialchars((string)$status, ENT_QUOTES, 'UTF-8');
           $products_items = json_decode((string)($row['products'] ?? ''), true);
           if (is_array($products_items)) {
             foreach ($products_items as &$cart_item) {
@@ -43,7 +45,7 @@
           $pay_status = ($row['payment_status'] ?? 'pending') === 'paid' ? '<span style="color:#10b981; font-size:12px; font-weight:bold;"><i class="fa-solid fa-check"></i> ' . lang('pay_status_paid') . '</span>' : '<span style="color:#f59e0b; font-size:12px; font-weight:bold;"><i class="fa-solid fa-clock"></i> ' . lang('pay_status_pending') . '</span>';
         ?>
         <tr>
-          <td><span style="font-weight:700;">#<?= $row['id']; ?></span></td>
+          <td><?= Order::renderOrderBadge((int)$row['id']); ?></td>
           <td style="font-weight:500;"><?= htmlspecialchars($row['full_name']); ?></td>
           <td><a href="tel:<?= htmlspecialchars($row['phone']); ?>" style="color:#3b82f6; text-decoration:none;"><?= htmlspecialchars($row['phone']); ?></a></td>
           <td style="font-weight:700; color:#0f172a;"><?= htmlspecialchars($row['total_price']); ?> <?= lang('currency_egp') ?></td>
@@ -58,7 +60,7 @@
             <?php if ($status === 'ملغي'): ?>
                 <span style="color:#ef4444; font-weight:bold; font-size:14px;"><i class="fa-solid fa-ban"></i> <?= lang('permanently_cancelled') ?></span>
             <?php else: ?>
-                <button type="button" class="btn-update" style="background:#8b5cf6;" onclick="openStatusModal(<?= $row['id']; ?>, '<?=$status; ?>')">
+                <button type="button" class="btn-update" style="background:#8b5cf6;" data-status="<?= $escapedStatus; ?>" onclick="openStatusModal(<?= (int)$row['id']; ?>, this.dataset.status, '<?= $orderCode; ?>')">
                     <i class="fa-solid fa-pen"></i> <?= lang('btn_change_status') ?>
                 </button>
             <?php endif; ?>
@@ -67,6 +69,9 @@
             <div class="actions-flex">
                 <button class="btn-view details-btn"
                   data-id="<?= $row['id']; ?>"
+                  data-order-code="<?= $orderCode; ?>"
+                  data-delivery-code="<?= htmlspecialchars(Order::getVisibleDeliveryCode($row), ENT_QUOTES, 'UTF-8'); ?>"
+                  data-status="<?= $escapedStatus; ?>"
                   data-customer="<?= htmlspecialchars($row['full_name'], ENT_QUOTES, 'UTF-8'); ?>"
                   data-total="<?= htmlspecialchars($row['total_price'], ENT_QUOTES, 'UTF-8'); ?>"
                   data-products="<?= $products_json; ?>"
@@ -106,7 +111,7 @@
     <div style="background: linear-gradient(135deg, #0f172a, #1e293b); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; border-radius: 16px 16px 0 0;">
       <h3 style="margin: 0; color: #fff; font-size: 20px; display: flex; align-items: center; gap: 10px;">
         <i class="fa-solid fa-file-invoice-dollar" style="color: #38bdf8; font-size: 24px;"></i> 
-        <?= lang('modal_order_details_title') ?> <span id="modalOrderId" style="color: #38bdf8; font-weight: 800; margin-right: 5px;"></span>
+        <?= lang('modal_order_details_title') ?> <span id="modalOrderId" dir="ltr" style="display:inline-block; unicode-bidi:isolate; font-family:monospace; color:#38bdf8; font-weight:800;"></span>
       </h3>
       <i class="fa-solid fa-xmark" id="closeAdminModalBtn" style="color: #cbd5e1; font-size: 24px; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#cbd5e1'"></i>
     </div>
@@ -132,6 +137,10 @@
           <p style="margin: 8px 0; font-size: 14px; color: #1e293b;"><strong><?= lang('lbl_address1') ?></strong> <span id="modalAddr1"></span></p>
           <p style="margin: 8px 0; font-size: 14px; color: #1e293b;"><strong><?= lang('lbl_address2') ?></strong> <span id="modalAddr2"></span></p>
           <p style="margin: 8px 0; font-size: 14px; color: #1e293b;"><strong><?= lang('lbl_zip') ?></strong> <span id="modalZip"></span></p>
+          <div id="modalDeliveryCodeRow" hidden style="margin-top:12px; padding:10px; border-radius:8px; background:#f1f5f9; color:#1e293b; font-size:14px;">
+            <strong><?= lang('delivery_code_label') ?></strong> <?= Order::renderDeliveryCodeBadge('', 'modalDeliveryCode') ?>
+            <p style="margin:6px 0 0;"><?= lang('delivery_code_admin_hint') ?></p>
+          </div>
         </div>
         
         <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
@@ -164,10 +173,13 @@
 <script>
 document.querySelectorAll('.details-btn').forEach(btn => {
   btn.addEventListener('click', function() {
-    const orderId = this.getAttribute('data-id');
+    const deliveryCode = this.getAttribute('data-delivery-code');
+    const showDeliveryCode = deliveryCode !== '' && this.getAttribute('data-status') !== 'ملغي';
     const productsJson = this.getAttribute('data-products');
 
-    document.getElementById('modalOrderId').innerText = "#" + orderId;
+    document.getElementById('modalOrderId').textContent = this.getAttribute('data-order-code');
+    document.getElementById('modalDeliveryCodeRow').hidden = !showDeliveryCode;
+    document.getElementById('modalDeliveryCode').textContent = showDeliveryCode ? deliveryCode : '';
     document.getElementById('modalCustomer').innerText = this.getAttribute('data-customer');
     document.getElementById('modalDate').innerText = this.getAttribute('data-date');
     document.getElementById('modalAddr1').innerText = this.getAttribute('data-address1');
@@ -248,7 +260,7 @@ window.onclick = function(event) {
 <div id="statusModal" class="modal-overlay">
   <div class="modal-content-modern" style="width: 450px;">
     <div class="modal-header-modern">
-      <h3 class="modal-title-modern"><i class="fa-solid fa-pen-to-square" style="color:#38bdf8;"></i> <?= lang('update_order_status_title') ?><span id="statusModalOrderIdTxt"></span></h3>
+      <h3 class="modal-title-modern"><i class="fa-solid fa-pen-to-square" style="color:#38bdf8;"></i> <?= lang('update_order_status_title') ?> <span id="statusModalOrderIdTxt" dir="ltr" style="display:inline-block; unicode-bidi:isolate; font-family:monospace;"></span></h3>
       <i class="fa-solid fa-xmark close-btn-modern" onclick="closeStatusModal()"></i>
     </div>
     <div class="modal-body-modern">
@@ -281,8 +293,8 @@ window.onclick = function(event) {
 </div>
 
 <script>
-function openStatusModal(orderId, currentStatus) {
-    document.getElementById('statusModalOrderIdTxt').innerText = orderId;
+function openStatusModal(orderId, currentStatus, orderCode) {
+    document.getElementById('statusModalOrderIdTxt').textContent = orderCode;
     document.getElementById('statusModalOrderId').value = orderId;
     document.getElementById('statusModalSelect').value = currentStatus;
     document.getElementById('statusModal').style.display = 'flex';

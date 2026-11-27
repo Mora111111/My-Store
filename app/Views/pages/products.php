@@ -22,6 +22,7 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
     <div class="cards grid_content">
       <?php if (count($allProducts) > 0):
           foreach ($allProducts as $row):
+             $stockQty = max(0, (int)($row['quantity'] ?? 0));
              // Dynamic Strikethrough Logic
              $final_price = $row['price'];$has_coupon_discount = false;
              $discount_pct_badge = 0;
@@ -82,8 +83,9 @@ $activeCoupons =$globalCouponModel->getActiveStrikethroughCoupons();
                     <del style="color: #ef4444; font-size: 0.85em; font-weight: normal;"><?php echo htmlspecialchars($row['price']); ?> <?= lang('currency_egp') ?></del>
                 <?php endif; ?>
             </p>
+            <?php require APP_DIR . '/Views/partials/stock_badge.php'; ?>
             <div style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 15px;">
-                <button class="card_btn" id="add_to_card" data-id="<?php echo $row['id']; ?>" style="flex: 1; margin: 0; padding: 10px 15px;"><?= lang('add_to_cart') ?></button>
+                <button class="card_btn" id="add_to_card" data-id="<?php echo $row['id']; ?>" data-stock="<?= $stockQty ?>" <?= $stockQty <= 0 ? 'disabled' : '' ?> style="flex: 1; margin: 0; padding: 10px 15px;"><?= lang($stockQty <= 0 ? 'stock_out_of_stock' : 'add_to_cart') ?></button>
                 <?php 
                 $favoriteIds = [];
                 if (Session::isLoggedIn()) {

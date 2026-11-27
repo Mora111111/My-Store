@@ -94,11 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
         cartItems = [];
     }
 
-    // Allow updateTotalPrice() from app.js to control the rendering of final-total-price
-    const orderTotals = document.querySelectorAll(".cart-total-price");
-    const localTotal = window.localStorage.getItem("total_Price");
-    orderTotals.forEach(el => el.textContent = localTotal ? localTotal : "0 ج.م");
-
     // --- Payment Modal Handlers ---
     if (paymentCard) {
         paymentCard.addEventListener("click", () => {
@@ -275,7 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
             formData.append("zip_code", document.getElementById("postal-Address").textContent);
             const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
             formData.append("payment_method", selectedPaymentMethod);
-            const activeCoupon = JSON.parse(localStorage.getItem('activeCoupon') || 'null');
             if (activeCoupon) {
                 formData.append("applied_promo_code", activeCoupon.code);
             }

@@ -234,8 +234,13 @@
         const displayShippingCost = document.getElementById('display-shipping-cost');
         const finalTotalElements = document.querySelectorAll('.final-total-price');
         const subTotalElements = document.querySelectorAll('.cart-total-price');
+        const discountRow = document.getElementById('discount-row');
+        const discountTitle = document.getElementById('discount-title');
+        const discountDisplay = document.getElementById('display-discount-amount');
+        const defaultDiscountTitle = discountTitle.textContent;
         
         let calculatedSubTotal = 0;
+        let cartTotals = null;
         const baseShippingCost = typeof BASE_SHIPPING_COST !== 'undefined' ? BASE_SHIPPING_COST : 0;
 
         if (reviewContainer && cartItems.length > 0) {
@@ -265,7 +270,6 @@
                     </div>
                 `;
             });
-            subTotalElements.forEach(el => { el.textContent = calculatedSubTotal.toFixed(2) + ' <?= lang("currency_egp") ?>'; });
         }
 
         const updateFinalTotal = () => {
@@ -276,16 +280,25 @@
                 displayShippingCost.textContent = currentShipping > 0 ? currentShipping.toFixed(2) + ' <?= lang("currency_egp") ?>' : '<?= lang("free_text") ?>';
             }
             
-            let baseSubTotal = calculatedSubTotal;
-            const localTotalStr = window.localStorage.getItem("total_Price");
-            if (localTotalStr) {
-                baseSubTotal = parseFloat(localTotalStr.replace(/[^\d.]/g, '')) || calculatedSubTotal;
+            const couponCode = localStorage.getItem('activeCoupon') && cartTotals?.couponCode;
+            const baseSubTotal = couponCode ? cartTotals.finalTotal : calculatedSubTotal;
+            const discount = couponCode ? cartTotals.discountTotal : 0;
+            discountRow.style.display = discount > 0 ? 'flex' : 'none';
+            if (discount > 0) {
+                discountTitle.textContent = defaultDiscountTitle + ' (' + couponCode + ')';
+                discountDisplay.textContent = '- ' + discount.toFixed(2) + ' <?= lang("currency_egp") ?>';
             }
+            subTotalElements.forEach(el => { el.textContent = calculatedSubTotal.toFixed(2) + ' <?= lang("currency_egp") ?>'; });
             
             let finalTotal = baseSubTotal + currentShipping;
             finalTotalElements.forEach(el => { el.textContent = finalTotal.toFixed(2) + ' <?= lang("currency_egp") ?>'; });
         };
 
+        window.addEventListener('cartTotalsUpdated', event => {
+            cartTotals = event.detail;
+            calculatedSubTotal = cartTotals.subtotal;
+            updateFinalTotal();
+        });
         updateFinalTotal();
 
         // --- 2. ستايل أزرار طرق الدفع ---

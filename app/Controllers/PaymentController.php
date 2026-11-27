@@ -205,6 +205,7 @@ class PaymentController {
     }
     
     public function response(): void {
+        $isVerifiedSuccess = false;
         if (isset($_GET['hmac'], $_GET['merchant_order_id'])) {
             $settingModel = new Setting();
             $settings = $settingModel->getSettings();
@@ -217,11 +218,11 @@ class PaymentController {
                 $isSuccess = ($_GET['success'] ?? 'false') === 'true' || ($_GET['success'] ?? false) === true;
                 $trxId = (string)($_GET['id'] ?? ($isSuccess ? 'paid_transaction' : 'failed_transaction'));
                 $this->settleOrderPayment($realOrderId, $isSuccess, $trxId);
+                $isVerifiedSuccess = $isSuccess;
             }
         }
 
-        $success = $_GET['success'] ?? 'false';
-        if ($success === 'true') {
+        if ($isVerifiedSuccess) {
             echo "<div style='text-align:center; padding:50px; font-family:sans-serif; background:#f0fdf4; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;'>
                     <h1 style='color:#166534; font-size:40px; margin-bottom:20px;'>تم الدفع بنجاح!</h1>
                     <p style='color:#15803d; font-size:20px; margin-bottom:40px;'>نشكرك، تم استلام طلبك وتأكيد الدفع.</p>

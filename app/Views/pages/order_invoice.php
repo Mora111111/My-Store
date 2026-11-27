@@ -3,7 +3,8 @@ $payMethod = in_array($order['payment_method'] ?? 'cod', ['online', 'online_card
     ? lang('invoice_payment_online') 
     : lang('invoice_payment_cod');
 $payStatus = ($order['payment_status'] ?? 'pending') === 'paid' ? lang('invoice_status_paid') : lang('invoice_status_pending');
-$transactionId = !empty($order['transaction_id']) ? $order['transaction_id'] : '#' . $order['id'];
+$transactionId = !empty($order['transaction_id']) ? $order['transaction_id'] : Order::formatOrderNumber((int)$order['id']);
+$deliveryCode = Order::getVisibleDeliveryCode($order);
 ?>
 
 <style>
@@ -180,7 +181,7 @@ $transactionId = !empty($order['transaction_id']) ? $order['transaction_id'] : '
   <div class="invoice-card">
     <div class="invoice-header">
       <div class="invoice-title">
-        <h2><?= lang('invoice_title_official') ?><?= $order['id'] ?></h2>
+        <h2><?= lang('invoice_title_official') ?> <?= Order::renderOrderBadge((int)$order['id']) ?></h2>
         <span><?= lang('invoice_issue_date') ?><?= date('Y-m-d h:i A', strtotime($order['created_at'])) ?></span>
       </div>
       <div class="invoice-actions no-print">
@@ -210,9 +211,16 @@ $transactionId = !empty($order['transaction_id']) ? $order['transaction_id'] : '
           <h4><i class="fa-solid fa-credit-card" style="color:#f59e0b;"></i> <?= lang('invoice_payment_details') ?></h4>
           <p><strong><?= lang('invoice_payment_method') ?></strong> <?= $payMethod ?></p>
           <p><strong><?= lang('invoice_payment_state') ?></strong> <?= $payStatus ?></p>
-          <p><strong><?= lang('invoice_transaction_id') ?></strong> <span style="font-family: monospace; color: #64748b;"><?= htmlspecialchars($transactionId) ?></span></p>
+          <p><strong><?= lang('invoice_transaction_id') ?></strong> <span dir="ltr" style="display:inline-block; unicode-bidi:isolate; font-family:monospace; color:#64748b;"><?= htmlspecialchars($transactionId) ?></span></p>
         </div>
       </div>
+
+      <?php if ($deliveryCode !== ''): ?>
+      <div style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:12px; padding:16px; margin-bottom:25px; color:#1e293b;">
+        <strong><?= lang('delivery_code_label') ?></strong> <?= Order::renderDeliveryCodeBadge($deliveryCode) ?>
+        <p style="margin:8px 0 0;"><?= lang('delivery_code_hint') ?></p>
+      </div>
+      <?php endif; ?>
 
       <?php if (!empty($order['admin_message'])): ?>
       <div style="background: #eef2ff; border-right: 4px solid #6366f1; padding: 20px; border-radius: 12px; margin-bottom: 25px;">

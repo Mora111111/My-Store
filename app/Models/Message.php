@@ -20,6 +20,13 @@ class Message {
         $stmt = $this->db->query("SELECT * FROM messages ORDER BY id DESC");
         return $stmt->fetchAll();
     }
+
+    public function findUserMessageById(int $id): ?array {
+        $stmt = $this->db->prepare("SELECT * FROM messages WHERE id = ? LIMIT 1");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
     public function replyUserMessage(int $id, string $reply): bool {
         $stmt = $this->db->prepare("UPDATE messages SET reply = ? WHERE id = ?");
         return $stmt->execute([$reply, $id]);

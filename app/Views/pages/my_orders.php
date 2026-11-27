@@ -77,11 +77,19 @@
                     <?php foreach ($orders as $row):
                         $status = $row['status'] ?? 'قيد المراجعة';
                         $status_class = $status_map[$status] ?? 'status-pending';
+                        $deliveryCode = Order::getVisibleDeliveryCode($row);
                         $products_json = htmlspecialchars($row['products'] ?? '[]', ENT_QUOTES, 'UTF-8');
                         $date = isset($row['created_at']) ? date('Y-m-d', strtotime($row['created_at'])) : '';
                     ?>
                     <tr>
-                        <td>#<?php echo $row['id']; ?></td>
+                        <td>
+                            <?= Order::renderOrderBadge((int)$row['id']) ?>
+                            <?php if ($deliveryCode !== ''): ?>
+                                <div style="margin-top:6px; font-size:12px;">
+                                    <?= lang('delivery_code_label') ?> <?= Order::renderDeliveryCodeBadge($deliveryCode) ?>
+                                </div>
+                            <?php endif; ?>
+                        </td>
                         <td><?php echo $date; ?></td>
                         <td style="font-weight:bold;"><?php echo htmlspecialchars($row['total_price'] ?? '0'); ?> جنيه</td>
                         <td><span class="status-badge <?php echo $status_class; ?>"><?php echo $status; ?></span></td>

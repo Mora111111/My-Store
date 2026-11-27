@@ -86,6 +86,7 @@ class CheckoutController {
             }
 
             try {
+                $orderModel->ensureDeliveryCodeColumnExists();
                 $db->beginTransaction();
                 $orderModel->cancelPendingPaymentOrdersForUser((int)Session::get('user_id'));
 
@@ -149,7 +150,8 @@ class CheckoutController {
                     ];
                 }
 
-                $server_total = $subtotal + $shipping;
+                $server_total = round($subtotal + $shipping, 2);
+                $deliveryCode = ($server_total >= Order::HIGH_VALUE_THRESHOLD) ? Order::generateDeliveryCode() : null;
                 $discountAmount = max(0, $grossSubtotal - $subtotal);
                 $couponCode = $appliedCoupon['code'] ?? null;
 
@@ -171,6 +173,7 @@ class CheckoutController {
                     'governorate' => $_POST['governorate'] ?? '',
                     'zip_code' => $_POST['zip_code'] ?? '',
                     'total_price' => $server_total,
+                    'delivery_code' => $deliveryCode,
                     'subtotal' => $grossSubtotal,
                     'shipping_fee' => $shipping,
                     'discount_amount' => $discountAmount,

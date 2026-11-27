@@ -130,6 +130,8 @@ $router->add('POST', '/admin/coupons/delete', 'AdminCouponController@delete');
 $router->add('POST', '/admin/coupons/toggle', 'AdminCouponController@toggle');
 
 $router->add('POST', '/api/validate-coupon', 'CouponApiController@validate');
+$router->add('POST', '/api/notifications/mark-read', 'NotificationController@markRead');
+$router->add('POST', '/api/notifications/mark-all-read', 'NotificationController@markAllRead');
 $router->add('POST', '/api/visitor-geo', 'VisitorGeoApiController@store');
 $router->add('GET', '/admin/messages', 'AdminMessageController@index');
 $router->add('POST', '/admin/messages/reply', 'AdminMessageController@reply');
